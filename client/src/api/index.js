@@ -1,3 +1,5 @@
 import axios from 'axios';
 
-export const _fetchFunction = () => axios.get('url');
+const url = 'http://localhost:3001/';
+
+export const getEmployees = () => axios.get(`${url}/zamestnanci`);

@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 
-// Edit _itemSchema and _Item var
-
 const employeesSchema = mongoose.Schema({
-  name: String,
-  surname: String,
-  present: Boolean,
+  Jmeno: String,
+  Prijmeni: String,
+  Pritomen: Boolean,
+  RC: Number,
 });
 
 const Employees = mongoose.model('Employee', employeesSchema);

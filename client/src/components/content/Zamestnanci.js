@@ -8,10 +8,6 @@ const _Items = () => {
   //const _items = useSelector((state) => state._items);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(_getItems());
-  }, [dispatch]);
-
   return <div>Zaměstnanci</div>;
 };
 
