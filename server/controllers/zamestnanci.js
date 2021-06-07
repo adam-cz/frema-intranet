@@ -11,14 +11,14 @@ export const fetchEmployees = async (req, res) => {
   }
 };
 
-//HELPER - Check if employee is still employed
+//Check if employee is still employed
 const isExpired = (SQLdate) => {
   if (SQLdate === null) return true;
   const date = new Date(SQLdate);
   return date > new Date();
 };
 
-//HELPER - Load actual employees from MSSQL attendance
+//Load actual employees from MSSQL attendance
 const loadEmployees = async () => {
   const poolConnection = await pool;
   const request = new sql.Request(poolConnection);
@@ -67,5 +67,32 @@ export const updateEmployees = async (req, res) => {
     });
   } catch (err) {
     res.status(400).send({ message: err.message });
+  }
+};
+
+//Update presence of Employees
+export const present = async (req, res) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const presence = await request.query(
+      'SELECT RC, Pritomnost, DatumCasOperace FROM PuvDochProMonitorovani'
+    );
+    for (let i = 0; i < presence.recordset.length; i++) {
+      console.log(presence.recordset[i].RC);
+      const employee = await Employees.findOne({
+        RC: presence.recordset[i].RC,
+      });
+      if (employee) {
+        console.log(employee);
+        employee.overwrite({
+          Pritomen: presence.recordset[i].Pritomnost,
+          CasOperace: presence.recordset[i].DatumCasOperace,
+        });
+        await employee.save();
+      }
+    }
+  } catch (err) {
+    res.send({ message: err.message });
   }
 };

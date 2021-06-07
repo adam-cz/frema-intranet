@@ -4,6 +4,7 @@ const employeesSchema = mongoose.Schema({
   Jmeno: String,
   Prijmeni: String,
   Pritomen: Boolean,
+  CasOperace: Date,
   RC: Number,
 });
 
