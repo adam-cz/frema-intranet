@@ -13,7 +13,7 @@ const config = {
   driver: 'tedious',
   stream: false,
   options: {
-    appName: '<app-name>',
+    appName: 'Intranet',
     encrypt: true,
     trustServerCertificate: true,
   },

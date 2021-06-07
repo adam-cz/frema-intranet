@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import pool from './utils/mssql.js';
 
 //ROUTES IMPORT
 import zamestnanciRoutes from './routes/zamestnanci.js';
@@ -13,9 +12,9 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 //MIDDLEWARE
-
 app.use(cors());
 
+//ROUTING
 app.use('/zamestnanci', zamestnanciRoutes);
 
 //DB AND SERVER
