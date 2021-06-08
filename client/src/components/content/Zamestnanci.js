@@ -2,13 +2,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 //import actions
-import { _getItems } from '../../actions/_';
+import { getEmployees } from '../../actions/zamestnanci';
 
-const _Items = () => {
-  //const _items = useSelector((state) => state._items);
+const Zamestnanci = () => {
+  const employees = useSelector((state) => state.zamestnanci);
   const dispatch = useDispatch();
 
-  return <div>Zaměstnanci</div>;
+  useEffect(() => {
+    dispatch(getEmployees());
+  }, [dispatch]);
+
+  return (
+    <div>
+      {employees.map((employee) => (
+        <li>{employee.Jmeno}</li>
+      ))}
+    </div>
+  );
 };
 
-export default _Items;
+export default Zamestnanci;

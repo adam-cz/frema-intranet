@@ -1,11 +1,10 @@
-//_items models import
 import Employees from '../models/zamestnanci.js';
 import sql, { pool } from '../utils/mssql.js';
 
 export const fetchEmployees = async (req, res) => {
   try {
-    const _result = await Employees.find();
-    res.status(200).json(_result);
+    const result = await Employees.find();
+    res.status(200).json(result);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -75,23 +74,19 @@ export const present = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
+    const employees = await Employees.find();
     const presence = await request.query(
       'SELECT RC, Pritomnost, DatumCasOperace FROM PuvDochProMonitorovani'
     );
-    for (let i = 0; i < presence.recordset.length; i++) {
-      console.log(presence.recordset[i].RC);
-      const employee = await Employees.findOne({
-        RC: presence.recordset[i].RC,
-      });
-      if (employee) {
-        console.log(employee);
-        employee.overwrite({
-          Pritomen: presence.recordset[i].Pritomnost,
-          CasOperace: presence.recordset[i].DatumCasOperace,
-        });
-        await employee.save();
-      }
-    }
+    const updatedEmployees = employees.map((employee) => {
+      const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
+        (el) => el.RC == employee.RC
+      );
+      console.log(employee);
+      Employees.updateOne({ RC: employee.RC }, { Pritomnost, DatumCasOperace });
+      //return { Pritomnost, DatumCasOperace, ...employee };
+    });
+    res.send(updatedEmployees);
   } catch (err) {
     res.send({ message: err.message });
   }

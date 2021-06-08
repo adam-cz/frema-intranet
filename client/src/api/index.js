@@ -2,4 +2,4 @@ import axios from 'axios';
 
 const url = 'http://localhost:3001/';
 
-export const getEmployees = () => axios.get(`${url}/zamestnanci`);
+export const fetchEmployees = () => axios.get(`${url}zamestnanci/`);
