@@ -59,6 +59,7 @@ export const updateEmployees = async (req, res) => {
         await Employees.deleteOne({ RC: dismissedEmployees[i].RC });
       }
     }
+    await Employees.updateMany({}, { Pritomnost: 0, DatumCasOperace: '' });
     res.status(200).send({
       message: 'Update Completed',
       added: newEmployees.length,
@@ -74,20 +75,22 @@ export const present = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
-    const employees = await Employees.find();
     const presence = await request.query(
       'SELECT RC, Pritomnost, DatumCasOperace FROM PuvDochProMonitorovani'
     );
-    const updatedEmployees = employees.map((employee) => {
-      const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
-        (el) => el.RC == employee.RC
-      );
-      console.log(employee);
-      Employees.updateOne({ RC: employee.RC }, { Pritomnost, DatumCasOperace });
-      //return { Pritomnost, DatumCasOperace, ...employee };
-    });
-    res.send(updatedEmployees);
+
+    await Employees.find()
+      .cursor()
+      .eachAsync(async (doc, i) => {
+        const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
+          (el) => el.RC == doc.RC
+        );
+        doc.Pritomen = Pritomnost;
+        doc.DatumCasOperace = new Date(DatumCasOperace);
+        await doc.save();
+      });
+    res.status(200).send({ Message: 'Docházka aktualizována' });
   } catch (err) {
-    res.send({ message: err.message });
+    res.status(400).send({ message: err.message });
   }
 };
