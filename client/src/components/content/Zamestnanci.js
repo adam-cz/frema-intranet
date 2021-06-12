@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { Table, Tag, Space } from 'antd';
+import { Table, Tag } from 'antd';
 
 //import actions
 import { getEmployees } from '../../actions/zamestnanci';
@@ -11,7 +11,6 @@ const columns = [
     title: 'Jméno',
     dataIndex: 'Jmeno',
     key: 'Jmeno',
-    render: (text) => <a>{text}</a>,
   },
   {
     title: 'Příjmení',
@@ -43,7 +42,12 @@ const Zamestnanci = () => {
     dispatch(getEmployees());
   }, [dispatch]);
 
-  return <Table columns={columns} dataSource={employees} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={employees.map((el) => ({ ...el, key: el._id }))}
+    />
+  );
 };
 
 export default Zamestnanci;

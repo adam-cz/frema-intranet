@@ -3,18 +3,12 @@ import './styles/index.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 //Antd
-import { Layout, Menu, Breadcrumb } from 'antd';
-import {
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-} from '@ant-design/icons';
+import { Layout } from 'antd';
 
 import HeaderNavigation from './components/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/Zamestnanci';
 
-const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
 function App() {
@@ -27,11 +21,6 @@ function App() {
             <Route path="/personalistika" component={Personalistika} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
             <Content
               className="site-layout-background"
               style={{

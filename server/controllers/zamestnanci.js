@@ -3,7 +3,10 @@ import sql, { pool } from '../utils/mssql.js';
 
 export const fetchEmployees = async (req, res) => {
   try {
-    const result = await Employees.find();
+    const result = await Employees.find(
+      {},
+      'Jmeno Prijmeni DatumCasOperace Pritomen'
+    );
     res.status(200).json(result);
   } catch (err) {
     res.status(404).json({ message: err.message });

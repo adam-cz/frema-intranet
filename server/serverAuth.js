@@ -3,18 +3,19 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
-//ROUTES IMPORT
-import zamestnanciRoutes from './routes/zamestnanci.js';
+//IMPORT ROUTES
+import userRouter from './routes/user.js';
 
 //INIT
 const app = express();
-const port = process.env.PORT_API || 3001;
+const port = process.env.PORT_AUTH || 3001;
 
 //MIDDLEWARE
 app.use(cors());
+app.use(express.json());
 
 //ROUTING
-app.use('/zamestnanci', zamestnanciRoutes);
+app.use('/user', userRouter);
 
 //DB AND SERVER
 const mongoConfig = {
@@ -27,7 +28,7 @@ mongoose
   .then(() =>
     app.listen(port, () =>
       console.log(
-        `Mongo database connected and API server running on port ${port}`
+        `Mongo database connected and AUTH server running on port ${port}`
       )
     )
   )

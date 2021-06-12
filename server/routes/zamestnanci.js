@@ -1,4 +1,5 @@
 import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
 
 //import controller functions
 import {
@@ -10,7 +11,7 @@ import {
 const router = express.Router();
 
 //all the routes that have to do something with _items
-router.get('/', fetchEmployees);
+router.post('/', authenticateToken, fetchEmployees);
 router.get('/load', updateEmployees);
 router.get('/present', present);
 

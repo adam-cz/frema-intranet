@@ -1,0 +1,31 @@
+GET http://localhost:3001/zamestnanci
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjIzNTI1NzcyLCJleHAiOjE2MjM1MjU3ODd9.Azj4FyTMV_tQ7yqDDncNZwW5_OgGqujLXrCeTkqXJaw
+
+###
+
+POST http://localhost:3002/user/signup
+Content-Type: application/json
+
+{
+    "email": "admin",
+    "heslo": "heslo"
+}
+
+###
+
+POST http://localhost:3002/user/signin
+Content-Type: application/json
+
+{
+    "email": "joura.adam@frema.cz",
+    "heslo": "heslo"
+}
+
+###
+
+POST http://localhost:4000/user/token
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBldHIiLCJpYXQiOjE2MjM0MDg3OTZ9.JG7wZSfmiq5xpaf3KX2a2KvM46MmqCIqkuBr1_gpaPI"
+}
