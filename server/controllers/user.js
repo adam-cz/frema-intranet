@@ -27,9 +27,19 @@ export const signUp = async (req, res) => {
     });
 
     const accessToken = generateAccessToken({ username: newUser.Email });
-    const refreshToken = jwt.sign(newUser, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(
+      { username: newUser.Email },
+      process.env.REFRESH_TOKEN_SECRET
+    );
     await RefreshTokens.create({ token: refreshToken });
-    res.status(201).json({ user: newUser, accessToken, refreshToken });
+    res
+      .status(201)
+      .cookie('jwt_token', accessToken, {
+        expires: new Date(Date.now() + 15000),
+        httpOnly: false,
+      })
+      .cookie('refresh_token', refreshToken, { httpOnly: true })
+      .json({ user: newUser, accessToken });
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -54,7 +64,14 @@ export const signIn = async (req, res) => {
     );
 
     await RefreshTokens.create({ token: refreshToken });
-    res.status(201).json({ user: userExists, accessToken, refreshToken });
+    res
+      .status(201)
+      .cookie('jwt_token', accessToken, {
+        expires: new Date(Date.now() + 15000),
+        httpOnly: false,
+      })
+      .cookie('refresh_token', refreshToken, { httpOnly: true })
+      .json({ user: userExists, accessToken });
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -72,13 +89,19 @@ export const signOut = async (req, res) => {
 
 //Refresh token function
 export const refreshToken = async (req, res) => {
-  const refreshToken = req.body.token;
+  const refreshToken = req.cookies.refresh_token;
   if (refreshToken == null) return res.sendStatus(401);
   if (!(await RefreshTokens.findOne({ token: refreshToken })))
     return res.sendStatus(403);
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     const accessToken = generateAccessToken({ username: user.username });
-    res.json({ accessToken });
+    res
+      .cookie('jwt_token', accessToken, {
+        expires: new Date(Date.now() + 15000),
+        httpOnly: false,
+      })
+      .json({ user, accessToken })
+      .status(201);
   });
 };

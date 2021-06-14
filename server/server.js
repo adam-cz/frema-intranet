@@ -1,6 +1,7 @@
 import 'dotenv/config.js';
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 
 //ROUTES IMPORT
@@ -11,7 +12,9 @@ const app = express();
 const port = process.env.PORT_API || 3001;
 
 //MIDDLEWARE
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cookieParser());
+app.use(express.json());
 
 //ROUTING
 app.use('/zamestnanci', employeesRouter);

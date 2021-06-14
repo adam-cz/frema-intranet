@@ -29,14 +29,14 @@ function Login() {
   };
 
   const submitHandler = async (event) => {
-    dispatch(await getUserData(email, heslo));
+    dispatch(getUserData(email, heslo));
 
     event.preventDefault();
   };
 
-  useEffect(() => {
-    if (userData) localStorage.setItem('token', userData.accessToken);
-  }, [userData]);
+  // useEffect(() => {
+  //   if (userData) localStorage.setItem('token', userData.accessToken);
+  // }, [userData]);
 
   return (
     <Layout id="login-layout">

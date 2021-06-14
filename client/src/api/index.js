@@ -3,17 +3,22 @@ import axios from 'axios';
 const urlApi = 'http://localhost:3001/';
 const urlAuth = 'http://localhost:3002/';
 
-axios.interceptors.request.use(
-  (config) => {
-    const { origin } = new URL(config.url);
-    const allowedOrigins = [urlApi];
-    const token = localStorage.getItem('token');
-    //if (allowedOrigins.includes(origin)) {
-    config.headers.authorization = `Bearer ${token}`;
-    //}
-    return config;
+axios.defaults.withCredentials = true;
+
+axios.interceptors.response.use(
+  (response) => {
+    return response;
   },
   (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      return axios.post(`${urlAuth}user/token`).then((res) => {
+        if (res.status === 201) {
+          return axios(originalRequest);
+        }
+      });
+    }
     return Promise.reject(error);
   }
 );
