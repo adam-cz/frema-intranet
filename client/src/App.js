@@ -1,6 +1,9 @@
 import 'antd/dist/antd.css';
 import './styles/index.css';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, useHistory } from 'react-router-dom';
+import ProtectedRoute from './components/login/ProtectedRoute';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 //Antd
 import { Layout } from 'antd';
@@ -12,13 +15,20 @@ import Zamestnanci from './components/content/Zamestnanci';
 const { Content, Sider } = Layout;
 
 function App() {
+  const user = useSelector((state) => state.user);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!user) history.push('/login');
+  }, [history, user]);
+
   return (
     <Layout>
       <Router>
         <HeaderNavigation />
         <Layout>
           <Sider width={200} className="site-layout-background">
-            <Route path="/personalistika" component={Personalistika} />
+            <ProtectedRoute path="/personalistika" component={Personalistika} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Content
@@ -29,7 +39,7 @@ function App() {
                 minHeight: 280,
               }}
             >
-              <Route
+              <ProtectedRoute
                 path="/personalistika/zamestnanci"
                 component={Zamestnanci}
               />

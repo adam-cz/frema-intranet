@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import Login from './components/login/Login';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import ProtectedRoute from './components/login/ProtectedRoute';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
@@ -15,8 +17,12 @@ const store = createStore(rootReducer, composeEnhancer(applyMiddleware(thunk)));
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Login />
-      <App />
+      <Router>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <ProtectedRoute exact path="/" component={App} />
+        </Switch>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

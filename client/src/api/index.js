@@ -13,7 +13,8 @@ axios.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      return axios.post(`${urlAuth}user/token`).then((res) => {
+      return axios.post(`${urlAuth}user/token`).then((req, res) => {
+        console.log(req, res);
         if (res.status === 201) {
           return axios(originalRequest);
         }
@@ -23,7 +24,7 @@ axios.interceptors.response.use(
   }
 );
 
-export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);
+export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`); //.then((req, res) => console.log(req, res));
 
 export const login = (email, heslo) =>
   axios.post(`${urlAuth}user/signin`, { email, heslo });

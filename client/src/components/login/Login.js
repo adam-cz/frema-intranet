@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Form, Input, Button, Checkbox, Card } from 'antd';
+import { useHistory } from 'react-router-dom';
 import '../../styles/index.css';
 
 import { getUserData } from '../../actions/user';
@@ -14,11 +15,12 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-function Login() {
+function Login(props) {
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [heslo, setHeslo] = useState('');
+  const history = useHistory();
 
   const onFinish = (values) => {
     //console.log('Success:', values);
@@ -29,14 +31,13 @@ function Login() {
   };
 
   const submitHandler = async (event) => {
-    dispatch(getUserData(email, heslo));
-
     event.preventDefault();
+    dispatch(getUserData(email, heslo));
   };
 
-  // useEffect(() => {
-  //   if (userData) localStorage.setItem('token', userData.accessToken);
-  // }, [userData]);
+  useEffect(() => {
+    if (userData) history.push('/');
+  }, [userData, history]);
 
   return (
     <Layout id="login-layout">
