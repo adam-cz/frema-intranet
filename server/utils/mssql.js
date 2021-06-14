@@ -1,7 +1,5 @@
+import 'dotenv/config.js';
 import sql from 'mssql';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const config = {
   server: process.env.MSSQL_DATABASE_SERVER,

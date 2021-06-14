@@ -2,7 +2,7 @@ import 'dotenv/config.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import Users from '../models/zamestnanci.js';
+import User from '../models/user.js';
 import RefreshTokens from '../models/refreshToken.js';
 
 const generateAccessToken = (user) => {
@@ -16,12 +16,12 @@ export const signUp = async (req, res) => {
   //Vyndat vše co bude potřeba z req.body
   const { email, heslo } = req.body;
   try {
-    const userExists = await Users.findOne({ Email: email });
+    const userExists = await User.findOne({ Email: email });
     if (userExists)
       return res.status(400).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(heslo, 10);
-    const newUser = await Users.create({
+    const newUser = await User.create({
       Email: email,
       Heslo: hashedPassword,
     });
@@ -40,7 +40,7 @@ export const signIn = async (req, res) => {
   //Vyndat vše co bude potřeba z req.body
   const { email, heslo } = req.body;
   try {
-    const userExists = await Users.findOne({ Email: email });
+    const userExists = await User.findOne({ Email: email });
     if (!userExists)
       return res.status(400).json({ message: 'User doesnt exists' });
     const isPasswordCorrect = await bcrypt.compare(heslo, userExists.Heslo);
@@ -63,7 +63,7 @@ export const signIn = async (req, res) => {
 //SIGN OUT function
 export const signOut = async (req, res) => {
   try {
-    await Users.deleteOne({ token: req.body.token });
+    await User.deleteOne({ token: req.body.token });
     res.sendStatus(204);
   } catch (err) {
     res.json({ message: err });

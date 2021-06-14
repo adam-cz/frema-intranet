@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
 //import all the reducers
-import zamestnanci from './zamestnanci';
+import employees from './employees';
 import user from './user';
 
 const rootReducer = combineReducers({
-  zamestnanci,
+  employees,
   user,
 });
 

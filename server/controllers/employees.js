@@ -1,9 +1,9 @@
-import Employees from '../models/zamestnanci.js';
+import User from '../models/user.js';
 import sql, { pool } from '../utils/mssql.js';
 
 export const fetchEmployees = async (req, res) => {
   try {
-    const result = await Employees.find(
+    const result = await User.find(
       {},
       'Jmeno Prijmeni DatumCasOperace Pritomen'
     );
@@ -53,16 +53,16 @@ const compareLists = (list1, list2) => {
 export const updateEmployees = async (req, res) => {
   try {
     const MSSQLemployees = await loadEmployees();
-    const MongoEmployees = await Employees.find();
+    const MongoEmployees = await User.find();
     const newEmployees = compareLists(MongoEmployees, MSSQLemployees);
     const dismissedEmployees = compareLists(MSSQLemployees, MongoEmployees);
-    if (newEmployees) await Employees.insertMany(newEmployees);
+    if (newEmployees) await User.insertMany(newEmployees);
     if (dismissedEmployees) {
       for (let i = 0; i < dismissedEmployees.length; i++) {
-        await Employees.deleteOne({ RC: dismissedEmployees[i].RC });
+        await User.deleteOne({ RC: dismissedEmployees[i].RC });
       }
     }
-    await Employees.updateMany({}, { Pritomnost: 0, DatumCasOperace: '' });
+    await User.updateMany({}, { Pritomnost: 0, DatumCasOperace: '' });
     res.status(200).send({
       message: 'Update Completed',
       added: newEmployees.length,
@@ -82,7 +82,7 @@ export const present = async (req, res) => {
       'SELECT RC, Pritomnost, DatumCasOperace FROM PuvDochProMonitorovani'
     );
 
-    await Employees.find()
+    await User.find()
       .cursor()
       .eachAsync(async (doc, i) => {
         const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(

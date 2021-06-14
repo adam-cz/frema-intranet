@@ -4,7 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 
 //ROUTES IMPORT
-import zamestnanciRoutes from './routes/zamestnanci.js';
+import employeesRouter from './routes/employees.js';
 
 //INIT
 const app = express();
@@ -14,7 +14,7 @@ const port = process.env.PORT_API || 3001;
 app.use(cors());
 
 //ROUTING
-app.use('/zamestnanci', zamestnanciRoutes);
+app.use('/zamestnanci', employeesRouter);
 
 //DB AND SERVER
 const mongoConfig = {

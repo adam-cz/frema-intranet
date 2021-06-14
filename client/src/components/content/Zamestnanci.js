@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Table, Tag } from 'antd';
 
 //import actions
-import { getEmployees } from '../../actions/zamestnanci';
+import { getEmployees } from '../../actions/employees';
 
 const columns = [
   {
@@ -35,7 +35,7 @@ const columns = [
 ];
 
 const Zamestnanci = () => {
-  const employees = useSelector((state) => state.zamestnanci);
+  const employees = useSelector((state) => state.employees);
   const dispatch = useDispatch();
 
   useEffect(() => {

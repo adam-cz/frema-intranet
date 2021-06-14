@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const employeesSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   Jmeno: String,
   Prijmeni: String,
   Email: String,
@@ -10,6 +10,6 @@ const employeesSchema = mongoose.Schema({
   RC: Number,
 });
 
-const Employees = mongoose.model('Employee', employeesSchema);
+const User = mongoose.model('User', userSchema);
 
-export default Employees;
+export default User;
