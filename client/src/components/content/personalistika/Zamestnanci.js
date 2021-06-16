@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Table, Tag } from 'antd';
 
 //import actions
-import { getEmployees } from '../../actions/employees';
+import { getEmployees } from '../../../actions/employees';
 
 const columns = [
   {

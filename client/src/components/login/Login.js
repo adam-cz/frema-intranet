@@ -4,6 +4,7 @@ import { Layout, Form, Input, Button, Checkbox, Card } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../styles/index.css';
 
+import { silentRefresh } from '../../api';
 import { getUserData } from '../../actions/user';
 
 const { Content } = Layout;
@@ -15,7 +16,7 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-function Login(props) {
+function Login() {
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
@@ -33,6 +34,7 @@ function Login(props) {
   const submitHandler = async (event) => {
     event.preventDefault();
     dispatch(getUserData(email, heslo));
+    silentRefresh(5000);
   };
 
   useEffect(() => {

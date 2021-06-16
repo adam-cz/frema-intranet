@@ -17,7 +17,7 @@ const Personalistika = () => {
         </Menu.Item>
         <Menu.Item key="2">
           <span>Stravování</span>
-          <Link to="/personalistika/stravování" />
+          <Link to="/personalistika/stravovani" />
         </Menu.Item>
       </Menu>
     </Sider>

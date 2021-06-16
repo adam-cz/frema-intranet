@@ -1,9 +1,11 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Login from './Login';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const user = useSelector((state) => state.user);
+  const history = useHistory();
   return (
     <Route
       {...rest}
@@ -11,16 +13,8 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
         if (user) {
           return <Component {...props} />;
         } else {
-          return (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          );
+          console.log('ahoj');
+          return <Route path="/login" component={Login} />;
         }
       }}
     />

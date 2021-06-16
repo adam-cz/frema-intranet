@@ -10,9 +10,9 @@ import { Layout } from 'antd';
 
 import HeaderNavigation from './components/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
-import Zamestnanci from './components/content/Zamestnanci';
+import Zamestnanci from './components/content/personalistika/Zamestnanci';
 import Obchod from './components/siderMenu/Obchod';
-import CRM from './components/content/CRM';
+import CRM from './components/content/obchod/CRM';
 
 const { Content, Sider } = Layout;
 
