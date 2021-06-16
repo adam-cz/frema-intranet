@@ -24,7 +24,9 @@ axios.interceptors.response.use(
   }
 );
 
-export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`); //.then((req, res) => console.log(req, res));
+export const fertchCrmRecords = () => axios.get(`${urlApi}/crm`);
+
+export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);
 
 export const login = (email, heslo) =>
   axios.post(`${urlAuth}user/signin`, { email, heslo });

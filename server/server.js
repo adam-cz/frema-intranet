@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 
 //ROUTES IMPORT
 import employeesRouter from './routes/employees.js';
+import crmRouter from './routes/crm.js';
 
 //INIT
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 //ROUTING
 app.use('/zamestnanci', employeesRouter);
+app.use('/crm', crmRouter);
 
 //DB AND SERVER
 const mongoConfig = {

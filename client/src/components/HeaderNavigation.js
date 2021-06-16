@@ -14,13 +14,13 @@ const HeaderNavigation = () => {
         </Menu.Item>
 
         <Menu.Item key="2">
-          <span>Option 2</span>
-          <Link to="/option2" />
+          <span>Obchod</span>
+          <Link to="/obchod" />
         </Menu.Item>
 
         <Menu.Item key="3">
-          <span>Option 3</span>
-          <Link to="/option3" />
+          <span>Výroba</span>
+          <Link to="/vyroba" />
         </Menu.Item>
       </Menu>
     </Header>

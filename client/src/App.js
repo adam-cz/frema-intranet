@@ -11,6 +11,8 @@ import { Layout } from 'antd';
 import HeaderNavigation from './components/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/Zamestnanci';
+import Obchod from './components/siderMenu/Obchod';
+import CRM from './components/content/CRM';
 
 const { Content, Sider } = Layout;
 
@@ -29,6 +31,7 @@ function App() {
         <Layout>
           <Sider width={200} className="site-layout-background">
             <ProtectedRoute path="/personalistika" component={Personalistika} />
+            <ProtectedRoute path="/obchod" component={Obchod} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Content
@@ -43,6 +46,7 @@ function App() {
                 path="/personalistika/zamestnanci"
                 component={Zamestnanci}
               />
+              <ProtectedRoute path="/obchod/crm" component={CRM} />
             </Content>
           </Layout>
         </Layout>
