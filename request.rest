@@ -26,3 +26,7 @@ Content-Type: application/json
 POST http://localhost:3002/user/token
 Content-Type: application/json
 Cookie: refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvdXJhLmFkYW1AZnJlbWEuY3oiLCJpYXQiOjE2MjM2NzEwODl9.OXJxWFQfRRxJrKJGrDMN1_f93GplaKaa7GVKZb5XMl8
+
+###
+GET https://api.merk.cz/subscriptions/
+Authorization: Token ClWRCkJSKZQLYXMmDBW2nW0jGpeuO0bw
