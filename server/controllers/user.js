@@ -5,9 +5,11 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import RefreshTokens from '../models/refreshToken.js';
 
+const expiresIn = 5000;
+
 const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '15s',
+    expiresIn,
   });
 };
 
@@ -35,7 +37,7 @@ export const signUp = async (req, res) => {
     res
       .status(201)
       .cookie('jwt_token', accessToken, {
-        expires: new Date(Date.now() + 15000),
+        expires: new Date(Date.now() + expiresIn),
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
@@ -67,7 +69,7 @@ export const signIn = async (req, res) => {
     res
       .status(201)
       .cookie('jwt_token', accessToken, {
-        expires: new Date(Date.now() + 15000),
+        expires: new Date(Date.now() + expiresIn),
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
@@ -98,10 +100,10 @@ export const refreshToken = async (req, res) => {
     const accessToken = generateAccessToken({ username: user.username });
     res
       .cookie('jwt_token', accessToken, {
-        expires: new Date(Date.now() + 15000),
+        expires: new Date(Date.now() + expiresIn),
         httpOnly: false,
       })
-      .json({ user, accessToken })
+      .json({ user, accessToken, expiresIn: expiresIn - 1000 })
       .status(201);
   });
 };
