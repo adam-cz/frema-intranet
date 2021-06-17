@@ -10,11 +10,13 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
+        //console.log(user);
         if (user) {
+          //console.log(user);
           return <Component {...props} />;
         } else {
-          console.log('ahoj');
-          return <Route path="/login" component={Login} />;
+          //console.log(user);
+          return <Login />;
         }
       }}
     />

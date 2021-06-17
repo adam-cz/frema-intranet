@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import RefreshTokens from '../models/refreshToken.js';
 
-const expiresIn = 5000;
+const expiresIn = 1000 * 60 * 5;
 
 const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -41,7 +41,7 @@ export const signUp = async (req, res) => {
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
-      .json({ user: newUser, accessToken });
+      .json({ user: newUser, accessToken, expiresIn: expiresIn - 1000 });
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -73,7 +73,7 @@ export const signIn = async (req, res) => {
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
-      .json({ user: userExists, accessToken });
+      .json({ user: userExists, accessToken, expiresIn: expiresIn - 1000 });
   } catch (err) {
     res.status(500).json({ message: err });
   }

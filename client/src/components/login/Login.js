@@ -34,7 +34,7 @@ function Login() {
   const submitHandler = async (event) => {
     event.preventDefault();
     dispatch(getUserData(email, heslo));
-    silentRefresh(5000);
+    silentRefresh();
   };
 
   useEffect(() => {

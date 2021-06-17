@@ -26,10 +26,11 @@ axios.defaults.withCredentials = true;
 
 //User calls
 
-export const silentRefresh = async (time) => {
+export const silentRefresh = async (time = 5000) => {
   setTimeout(() => {
     axios.post(`${urlAuth}user/token`).then((res) => {
-      if (res.status === 200) silentRefresh(time);
+      console.log(res);
+      if (res.status === 200) silentRefresh(res.data.expiresIn);
     });
   }, time);
 };
@@ -39,6 +40,6 @@ export const login = (email, heslo) =>
 
 //API calls
 
-export const fertchCrmRecords = () => axios.get(`${urlApi}/crm`);
+export const fetchCrmRecords = () => axios.get(`${urlApi}/crm`);
 
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);
