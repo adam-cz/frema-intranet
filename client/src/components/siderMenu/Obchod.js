@@ -19,7 +19,7 @@ const Obchod = () => {
           </Menu.Item>
           <Menu.Item key="2">
             <span>Seznam firem</span>
-            <Link to="/obchod/firmy" />
+            <Link to="/obchod/zakaznici" />
           </Menu.Item>
         </SubMenu>
       </Menu>

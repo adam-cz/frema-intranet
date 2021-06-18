@@ -10,27 +10,24 @@ import {
   Space,
 } from 'antd';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
 
 const { Panel } = Collapse;
 const { TextArea, Search } = Input;
-const client = { client: { ico: '', person_id: '' }, records: [] };
-
-const submitHandler = (event) => {
-  event.preventDefault();
-};
 
 const CRM = () => {
-  const [formData, setFormData] = useState(client);
-
+  const onFinish = (values) => {
+    console.log(values);
+  };
   return (
     <Collapse>
       <Panel header="Přidat nový záznam" key="1">
         <Form
-        //labelCol={{ span: 8 }}
-        //wrapperCol={{ span: 18 }}
-        //layout="horizontal"
-        //onValuesChange={onFormLayoutChange}
+          name="add-crm-record"
+          onFinish={onFinish}
+          //labelCol={{ span: 8 }}
+          //wrapperCol={{ span: 18 }}
+          //layout="horizontal"
+          //onValuesChange={onFormLayoutChange}
         >
           <Divider orientation="left" plain>
             Informace o firmě
@@ -41,15 +38,8 @@ const CRM = () => {
                 <Search
                   className="crm-input-ico"
                   type="number"
-                  value={formData.client.ico}
                   //onSearch={onSearch}
                   enterButton
-                  onChange={(event) => {
-                    setFormData((prevState) => ({
-                      ...prevState,
-                      client: { ico: event.target.value },
-                    }));
-                  }}
                 />
               </Form.Item>
 
@@ -81,7 +71,7 @@ const CRM = () => {
             Detail záznamu
           </Divider>
           <Row justify="space-between" align="top">
-            <Space size="large" wrap>
+            <Space size="large" className="space-crm-detail" wrap>
               <Col>
                 <Form.Item label="Předmět nabídky" name="predmetNabidky">
                   <Input className="crm-input" />
@@ -95,54 +85,41 @@ const CRM = () => {
                 </Form.Item>
               </Col>
               <Col>
-                <TextArea
-                  className="crm-textarea"
-                  placeholder="Zadejte doplňující informace"
-                  autoSize={{ minRows: 4, maxRows: 6 }}
-                />
+                <Form.Item name="recordText">
+                  <TextArea
+                    className="crm-textarea"
+                    placeholder="Zadejte doplňující informace"
+                    autoSize={{ minRows: 4, maxRows: 6 }}
+                  />
+                </Form.Item>
               </Col>
               <Col>
-                <Form.Item name="coms">
-                  <Row>
-                    <Checkbox
-                      value="phone"
-                      style={{
-                        lineHeight: '32px',
-                      }}
-                    >
-                      Telefonický kontakt
-                    </Checkbox>
-                  </Row>
-                  <Row>
-                    <Checkbox
-                      value="email"
-                      style={{
-                        lineHeight: '32px',
-                      }}
-                    >
-                      Mailová komunikace
-                    </Checkbox>
-                  </Row>
-                  <Row>
-                    <Checkbox
-                      value="visit"
-                      style={{
-                        lineHeight: '32px',
-                      }}
-                    >
-                      Proběhla schůzka
-                    </Checkbox>
-                  </Row>
-                  <Row>
-                    <Checkbox
-                      value="order"
-                      style={{
-                        lineHeight: '32px',
-                      }}
-                    >
-                      Zákazník objednal
-                    </Checkbox>
-                  </Row>
+                <Form.Item
+                  name="comsPhone"
+                  className="crm-checkbox"
+                  valuePropName="checked"
+                >
+                  <Checkbox>Telefonický kontakt</Checkbox>
+                </Form.Item>
+
+                <Form.Item
+                  name="comsEmail"
+                  className="crm-checkbox"
+                  valuePropName="checked"
+                >
+                  <Checkbox>Mailová komunikace</Checkbox>
+                </Form.Item>
+
+                <Form.Item
+                  name="comsVisit"
+                  className="crm-checkbox"
+                  valuePropName="checked"
+                >
+                  <Checkbox>Proběhla schůzka</Checkbox>
+                </Form.Item>
+
+                <Form.Item name="order" valuePropName="checked">
+                  <Checkbox>Zákazník objednal</Checkbox>
                 </Form.Item>
               </Col>
             </Space>
@@ -150,7 +127,7 @@ const CRM = () => {
           <Divider orientation="left" plain />
 
           <Row>
-            <Button type="primary" onClick={submitHandler}>
+            <Button type="primary" htmlType="submit">
               Uložit záznam
             </Button>
           </Row>

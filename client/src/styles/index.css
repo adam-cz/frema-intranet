@@ -48,7 +48,11 @@
   margin: 0;
 }
 
-.ant-space {
+.space-crm-detail {
   display: flex;
   align-items: flex-start;
+}
+
+.crm-checkbox {
+  margin-bottom: 0px;
 }

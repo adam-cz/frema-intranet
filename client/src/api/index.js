@@ -38,7 +38,10 @@ export const login = (email, heslo) =>
   axios.post(`${urlAuth}user/signin`, { email, heslo });
 
 //API calls
-
-export const fetchCrmRecords = () => axios.get(`${urlApi}/crm`);
-
+//CRM
+export const fetchCrmRecords = () => axios.get(`${urlApi}crm/`);
+export const fetchCustomers = () => axios.get(`${urlApi}crm/customers/`);
+export const addCustomer = (values) =>
+  axios.post(`${urlApi}crm/customers/add/`, values);
+//Employees
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);

@@ -13,6 +13,7 @@ import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/personalistika/Zamestnanci';
 import Obchod from './components/siderMenu/Obchod';
 import CRM from './components/content/obchod/crm/CRM';
+import Zakaznici from './components/content/obchod/zakaznici/Zakaznici';
 
 const { Content, Sider } = Layout;
 
@@ -47,6 +48,7 @@ function App() {
                 component={Zamestnanci}
               />
               <ProtectedRoute path="/obchod/crm" component={CRM} />
+              <ProtectedRoute path="/obchod/zakaznici" component={Zakaznici} />
             </Content>
           </Layout>
         </Layout>
