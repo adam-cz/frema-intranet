@@ -6,9 +6,12 @@ const CRM = () => {
   return (
     <div>
       <AddCrmRecord />
-      {crmRecords.map((record) => (
-        <li>{record.klient.firma}</li>
-      ))}
+      {console.log(crmRecords)}
+      {typeof crmRecords !== 'undefined' ? (
+        crmRecords.map((record) => <li>{console.log(record.klient.firma)}</li>)
+      ) : (
+        <p>Načítám...</p>
+      )}
     </div>
   );
 };

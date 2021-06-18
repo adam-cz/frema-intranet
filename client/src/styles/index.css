@@ -26,3 +26,29 @@
 .site-layout-background {
   background: #fff;
 }
+
+.crm-input,
+.crm-input-value {
+  width: 200px;
+}
+
+.crm-input-ico {
+  width: 200px;
+}
+
+.crm-textarea {
+  width: 400px;
+}
+
+.crm-input-ico::-webkit-inner-spin-button,
+.crm-input-ico::-webkit-outer-spin-button,
+.crm-input-value::-webkit-inner-spin-button,
+.crm-input-value::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ant-space {
+  display: flex;
+  align-items: flex-start;
+}

@@ -1,22 +1,29 @@
 import mongoose from 'mongoose';
 
 const crmSchema = mongoose.Schema({
-  oc: Number,
-  datum: { type: String, default: new Date(Date.now()) },
-  klient: {
-    ico: String,
-    firma: String,
-    osoba: String,
-    tel: String,
-    email: String,
+  client: {
+    ico: Number,
+    person_id: String,
   },
-  zaznamy: [
+  records: [
     {
-      datum: Date,
-      oc: Number,
+      created: {
+        date: { type: Date, default: new Date(Date.now()) },
+        id: Number,
+      },
+      coms: {
+        phone: Boolean,
+        email: Boolean,
+        visit: Boolean,
+        order: Boolean,
+      },
       text: String,
     },
   ],
+  created: {
+    date: { type: Date, default: new Date(Date.now()) },
+    id: Number,
+  },
 });
 
 const CRM = mongoose.model('crm', crmSchema);
