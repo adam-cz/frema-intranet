@@ -9,7 +9,6 @@ import {
   Button,
   Space,
 } from 'antd';
-import { useSelector } from 'react-redux';
 
 const { Panel } = Collapse;
 const { TextArea, Search } = Input;
@@ -21,25 +20,17 @@ const CRM = () => {
   return (
     <Collapse>
       <Panel header="Přidat nový záznam" key="1">
-        <Form
-          name="add-crm-record"
-          onFinish={onFinish}
-          //labelCol={{ span: 8 }}
-          //wrapperCol={{ span: 18 }}
-          //layout="horizontal"
-          //onValuesChange={onFormLayoutChange}
-        >
+        <Form name="add-crm-record" onFinish={onFinish}>
           <Divider orientation="left" plain>
             Informace o firmě
           </Divider>
           <Row>
             <Space size="large" wrap>
               <Form.Item label="IČO" name="ico">
-                <Search
+                <Input
                   className="crm-input-ico"
                   type="number"
                   //onSearch={onSearch}
-                  enterButton
                 />
               </Form.Item>
 

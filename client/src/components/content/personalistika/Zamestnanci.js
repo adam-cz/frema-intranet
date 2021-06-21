@@ -21,6 +21,7 @@ const columns = [
     title: 'Čas poslední operace',
     dataIndex: 'DatumCasOperace',
     key: 'DatumCasOperace',
+    render: (date) => new Date(date).toLocaleString(),
   },
   {
     title: 'Přítomnost',

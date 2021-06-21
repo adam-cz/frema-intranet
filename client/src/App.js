@@ -1,13 +1,14 @@
-import 'antd/dist/antd.css';
-import './styles/index.css';
 import { BrowserRouter as Router, useHistory } from 'react-router-dom';
 import ProtectedRoute from './components/login/ProtectedRoute';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-//Antd
+//Antd and styles
+import 'antd/dist/antd.css';
+import './styles/index.css';
 import { Layout } from 'antd';
 
+//Components
 import HeaderNavigation from './components/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/personalistika/Zamestnanci';

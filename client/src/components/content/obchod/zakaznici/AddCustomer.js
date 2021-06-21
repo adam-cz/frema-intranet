@@ -1,16 +1,13 @@
 import * as api from '../../../../api/index';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-
 import { Collapse, Divider, Row, Form, Input, Button, Space } from 'antd';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
 
 const { Panel } = Collapse;
-const { Search } = Input;
 
-const Zakaznici = () => {
+const Zakaznici = (props) => {
   const onFinish = async (values) => {
     const result = await api.addCustomer(values);
+    props.setCounter(props.counter + 1);
     console.log(result);
   };
 
@@ -23,14 +20,16 @@ const Zakaznici = () => {
           </Divider>
           <Row>
             <Space size="large" wrap>
-              <Form.Item label="IČO" name="ico">
-                <Search
-                  rules={[{ required: true, message: 'Zadejte IČO' }]}
+              <Form.Item
+                label="IČO"
+                name="ico"
+                rules={[{ required: true, message: 'Zadejte IČO' }]}
+              >
+                <Input
                   className="crm-input-ico"
                   type="number"
                   //value={formData.client.ico}
                   //onSearch={onSearch}
-                  enterButton
                 />
               </Form.Item>
 

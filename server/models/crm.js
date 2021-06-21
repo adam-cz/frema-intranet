@@ -5,18 +5,33 @@ const crmSchema = mongoose.Schema({
     ico: Number,
     person_id: String,
   },
+  subject: String,
+  value: Number,
+  coms: {
+    phone: {
+      done: Boolean,
+      date: { type: Date, default: new Date(Date.now()) },
+    },
+    email: {
+      done: Boolean,
+      date: { type: Date, default: new Date(Date.now()) },
+    },
+    visit: {
+      done: Boolean,
+      date: { type: Date, default: new Date(Date.now()) },
+    },
+    order: {
+      done: Boolean,
+      date: { type: Date, default: new Date(Date.now()) },
+    },
+  },
   records: [
     {
       created: {
         date: { type: Date, default: new Date(Date.now()) },
         id: Number,
       },
-      coms: {
-        phone: Boolean,
-        email: Boolean,
-        visit: Boolean,
-        order: Boolean,
-      },
+
       text: String,
     },
   ],
