@@ -4,16 +4,18 @@ const customerSchema = mongoose.Schema({
   ico: Number,
   name: String,
   created: {
-    by: Number,
+    by: String,
     date: { type: Date, default: new Date(Date.now()) },
   },
   persons: [
     {
       name: String,
+      surname: String,
+      job: String,
       tel: String,
       mail: String,
       created: {
-        by: Number,
+        by: String,
         date: { type: Date, default: new Date(Date.now()) },
       },
     },

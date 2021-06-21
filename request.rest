@@ -30,3 +30,4 @@ Cookie: refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvd
 ###
 GET https://api.merk.cz/subscriptions/
 Authorization: Token ClWRCkJSKZQLYXMmDBW2nW0jGpeuO0bw
+
