@@ -27,7 +27,7 @@ function App() {
   }, [history, user]);
 
   return (
-    <Layout>
+    <Layout className="canvas">
       <Router>
         <HeaderNavigation />
         <Layout>

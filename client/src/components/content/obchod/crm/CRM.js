@@ -1,6 +1,7 @@
 import { Table, Input, Button, Space, Divider } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { getCrmRecords } from '../../../../actions/crm';
 import { getCustomers } from '../../../../actions/customers';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
@@ -8,6 +9,7 @@ import AddCrmRecord from './AddCrmRecord';
 
 const CRM = () => {
   const crmRecords = useSelector((state) => state.crm);
+  const customers = useSelector((state) => state.customers);
   const dispatch = useDispatch();
   const [counter, setCounter] = useState(crmRecords.length);
   const [state, setState] = useState({
@@ -113,10 +115,10 @@ const CRM = () => {
   const columns = [
     {
       title: 'Firma',
-      dataIndex: 'name',
+      dataIndex: ['client', 'ico'],
       key: 'name',
       width: '30%',
-      ...getColumnSearchProps('name'),
+      ...getColumnSearchProps('ico'),
     },
     {
       title: 'IČO',
@@ -137,6 +139,7 @@ const CRM = () => {
   ];
 
   useEffect(() => {
+    dispatch(getCrmRecords());
     dispatch(getCustomers());
   }, [dispatch, counter]);
 

@@ -9,11 +9,15 @@ import {
   Button,
   Space,
 } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 const { Panel } = Collapse;
 const { TextArea, Search } = Input;
 
 const CRM = () => {
+  const [ico, setIco] = useState('');
+
   const onFinish = (values) => {
     console.log(values);
   };
@@ -26,11 +30,22 @@ const CRM = () => {
           </Divider>
           <Row>
             <Space size="large" wrap>
-              <Form.Item label="IČO" name="ico">
+              <Form.Item
+                label="IČO"
+                name="ico"
+                rules={[{ required: true, message: 'Zadejte IČO' }]}
+              >
                 <Input
                   className="crm-input-ico"
                   type="number"
                   //onSearch={onSearch}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="default"
+                  htmlType="button"
+                  icon={<EyeOutlined />}
                 />
               </Form.Item>
 

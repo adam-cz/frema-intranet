@@ -56,3 +56,11 @@
 .crm-checkbox {
   margin-bottom: 0px;
 }
+
+.canvas {
+  height: 100vh;
+}
+
+.ant-layout-sider-children {
+  background-color: #fff;
+}
