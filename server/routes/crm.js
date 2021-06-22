@@ -9,7 +9,7 @@ const router = express.Router();
 
 //all the routes that have to do something with crm
 router.get('/', authenticateToken, fetchCrmRecords);
-router.post('/add', addCrmRecord);
+router.post('/add', authenticateToken, addCrmRecord);
 router.get('/customers', authenticateToken, fetchCustomers);
 router.post('/customers/add', authenticateToken, addCustomer);
 

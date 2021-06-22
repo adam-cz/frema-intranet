@@ -115,17 +115,17 @@ const CRM = () => {
   const columns = [
     {
       title: 'Firma',
-      dataIndex: ['client', 'ico'],
+      dataIndex: ['client', 'company_name'],
       key: 'name',
-      width: '30%',
-      ...getColumnSearchProps('ico'),
+      width: '15%',
+      ...getColumnSearchProps(['client', 'company_name']),
     },
     {
-      title: 'IČO',
-      dataIndex: 'ico',
-      key: 'ico',
+      title: 'Předmět',
+      dataIndex: 'subject',
+      key: 'subject',
       width: '20%',
-      ...getColumnSearchProps('ico'),
+      ...getColumnSearchProps('subject'),
     },
     {
       title: 'Datum zápisu',
@@ -139,13 +139,14 @@ const CRM = () => {
   ];
 
   useEffect(() => {
-    dispatch(getCrmRecords());
     dispatch(getCustomers());
+    dispatch(getCrmRecords());
+    console.log(counter);
   }, [dispatch, counter]);
 
   return (
     <div>
-      <AddCrmRecord />
+      <AddCrmRecord setCounter={setCounter} counter={counter} />
       <Divider orientation="left" plain />
       <Table columns={columns} dataSource={crmRecords} />
     </div>

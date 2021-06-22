@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, useHistory } from 'react-router-dom';
 import ProtectedRoute from './components/login/ProtectedRoute';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 //Antd and styles
 import 'antd/dist/antd.css';
 import './styles/index.css';
-import { Layout } from 'antd';
+import { Layout, Alert, Space, Row } from 'antd';
 
 //Components
 import HeaderNavigation from './components/HeaderNavigation';
@@ -15,15 +15,18 @@ import Zamestnanci from './components/content/personalistika/Zamestnanci';
 import Obchod from './components/siderMenu/Obchod';
 import CRM from './components/content/obchod/crm/CRM';
 import Zakaznici from './components/content/obchod/zakaznici/Zakaznici';
+import { getEmployees } from './actions/employees';
 
 const { Content, Sider } = Layout;
 
 function App() {
   const user = useSelector((state) => state.user);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!user) history.push('/login');
+    dispatch(getEmployees());
   }, [history, user]);
 
   return (

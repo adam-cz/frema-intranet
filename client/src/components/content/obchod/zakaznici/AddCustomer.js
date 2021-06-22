@@ -6,9 +6,8 @@ const { Panel } = Collapse;
 
 const Zakaznici = (props) => {
   const onFinish = async (values) => {
-    const result = await api.addCustomer(values);
+    await api.addCustomer(values);
     props.setCounter(props.counter + 1);
-    console.log(result);
   };
 
   return (
@@ -28,6 +27,7 @@ const Zakaznici = (props) => {
                 <Input
                   className="crm-input-ico"
                   type="number"
+
                   //value={formData.client.ico}
                   //onSearch={onSearch}
                 />

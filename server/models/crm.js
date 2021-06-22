@@ -2,26 +2,27 @@ import mongoose from 'mongoose';
 
 const crmSchema = mongoose.Schema({
   client: {
-    ico: Number,
+    company_id: String,
+    company_name: String,
     person_id: String,
   },
   subject: String,
   value: Number,
   coms: {
     phone: {
-      done: Boolean,
+      done: { type: Boolean, default: false },
       date: { type: Date, default: new Date(Date.now()) },
     },
     email: {
-      done: Boolean,
+      done: { type: Boolean, default: false },
       date: { type: Date, default: new Date(Date.now()) },
     },
     visit: {
-      done: Boolean,
+      done: { type: Boolean, default: false },
       date: { type: Date, default: new Date(Date.now()) },
     },
     order: {
-      done: Boolean,
+      done: { type: Boolean, default: false },
       date: { type: Date, default: new Date(Date.now()) },
     },
   },
@@ -29,7 +30,7 @@ const crmSchema = mongoose.Schema({
     {
       created: {
         date: { type: Date, default: new Date(Date.now()) },
-        id: Number,
+        id: String,
       },
 
       text: String,
@@ -37,7 +38,7 @@ const crmSchema = mongoose.Schema({
   ],
   created: {
     date: { type: Date, default: new Date(Date.now()) },
-    id: Number,
+    id: String,
   },
 });
 

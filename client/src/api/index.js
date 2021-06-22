@@ -43,5 +43,6 @@ export const fetchCrmRecords = () => axios.get(`${urlApi}crm/`);
 export const fetchCustomers = () => axios.get(`${urlApi}crm/customers/`);
 export const addCustomer = (values) =>
   axios.post(`${urlApi}crm/customers/add/`, values);
+export const addCrmRecord = (values) => axios.post(`${urlApi}crm/add`, values);
 //Employees
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);

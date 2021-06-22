@@ -8,49 +8,88 @@ import {
   Checkbox,
   Button,
   Space,
+  Select,
 } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { addCrmRecord } from '../../../../api/index';
 
 const { Panel } = Collapse;
-const { TextArea, Search } = Input;
+const { TextArea } = Input;
+const { Option } = Select;
 
-const CRM = () => {
-  const [ico, setIco] = useState('');
+const CRM = (props) => {
+  const [customer, setCustomer] = useState('');
+  const customers = useSelector((state) => state.customers);
 
   const onFinish = (values) => {
-    console.log(values);
+    addCrmRecord({
+      client: {
+        company_id: values.company,
+        company_name: customers.find((el) => el._id === values.company).name,
+        person_id: values.contact,
+      },
+      subject: values.predmetNabidky,
+      value: values.hodnotaNabidky,
+      coms: {
+        phone: { done: values.comsPhone },
+        email: { done: values.comsEmail },
+        visit: { done: values.comsVisit },
+        order: { done: values.comsOrder },
+      },
+      records: [{ text: values.recordText, created: { id: '' } }],
+      created: { id: '' },
+    });
+    props.setCounter(props.counter + 1);
   };
   return (
     <Collapse>
       <Panel header="Přidat nový záznam" key="1">
-        <Form name="add-crm-record" onFinish={onFinish}>
+        <Form
+          name="add-crm-record"
+          onFinish={onFinish}
+          fields={[
+            {
+              name: ['ico'],
+              value: customer.ico,
+            },
+          ]}
+        >
           <Divider orientation="left" plain>
             Informace o firmě
           </Divider>
           <Row>
             <Space size="large" wrap>
               <Form.Item
-                label="IČO"
-                name="ico"
-                rules={[{ required: true, message: 'Zadejte IČO' }]}
+                label="Vyberte firmu"
+                name="company"
+                rules={[{ required: true, message: 'Zadejte firmu' }]}
               >
-                <Input
-                  className="crm-input-ico"
-                  type="number"
-                  //onSearch={onSearch}
-                />
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="Vyberte firmu"
+                  optionFilterProp="value"
+                  onChange={(value) =>
+                    setCustomer(
+                      customers.find((customer) => customer._id === value)
+                    )
+                  }
+                  filterOption={(input, option) =>
+                    customers
+                      .find((el) => el._id === option.value)
+                      .name.toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {customers &&
+                    customers.map((element) => (
+                      <Option value={element._id}>{element.name}</Option>
+                    ))}
+                </Select>
               </Form.Item>
-              <Form.Item>
-                <Button
-                  type="default"
-                  htmlType="button"
-                  icon={<EyeOutlined />}
-                />
-              </Form.Item>
-
-              <Form.Item label="Jméno firmy" name="jmenoFirmy">
-                <Input className="crm-input" />
+              <Form.Item label="IČO" name="ico">
+                <Input disabled className="crm-input-ico" type="number" />
               </Form.Item>
             </Space>
           </Row>
@@ -60,16 +99,30 @@ const CRM = () => {
           </Divider>
           <Row>
             <Space size="large" wrap>
-              <Form.Item label="Jméno" name="jmenoKontaktu">
-                <Input className="crm-input" />
-              </Form.Item>
-
-              <Form.Item label="Tel. číslo" name="cisloKontaktu">
-                <Input className="crm-input" type="tel" />
-              </Form.Item>
-
-              <Form.Item label="Email" name="emailKontaktu">
-                <Input className="crm-input" type="email" />
+              <Form.Item
+                label="Vyberte kontaktní osobu"
+                name="contact"
+                rules={[{ required: true, message: 'Vyberte kontaktní osobu' }]}
+              >
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="Vyberte kontakt"
+                  optionFilterProp="value"
+                  filterOption={(input, option) =>
+                    customer.persons
+                      .find((el) => el._id === option.value)
+                      .name.toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {customer.persons &&
+                    customer.persons.map((element) => (
+                      <Option
+                        value={element._id}
+                      >{`${element.name} ${element.surname}`}</Option>
+                    ))}
+                </Select>
               </Form.Item>
             </Space>
           </Row>
@@ -79,7 +132,11 @@ const CRM = () => {
           <Row justify="space-between" align="top">
             <Space size="large" className="space-crm-detail" wrap>
               <Col>
-                <Form.Item label="Předmět nabídky" name="predmetNabidky">
+                <Form.Item
+                  label="Předmět nabídky"
+                  name="predmetNabidky"
+                  rules={[{ required: true, message: 'Vyplňte předmět' }]}
+                >
                   <Input className="crm-input" />
                 </Form.Item>
                 <Form.Item label="Hodnota zakázky" name="hodnotaZakazky">
@@ -124,7 +181,7 @@ const CRM = () => {
                   <Checkbox>Proběhla schůzka</Checkbox>
                 </Form.Item>
 
-                <Form.Item name="order" valuePropName="checked">
+                <Form.Item name="comsOrder" valuePropName="checked">
                   <Checkbox>Zákazník objednal</Checkbox>
                 </Form.Item>
               </Col>
