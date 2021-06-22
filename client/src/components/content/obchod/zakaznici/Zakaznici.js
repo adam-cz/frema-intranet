@@ -144,7 +144,16 @@ const Customer = () => {
     <div>
       <AddCustomer setCounter={setCounter} counter={counter} />
       <Divider orientation="left" plain />
-      <Table columns={columns} dataSource={customers} />
+      <Table
+        columns={columns}
+        dataSource={customers}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p style={{ margin: 0 }}>{record.name}</p>
+          ),
+          rowExpandable: (record) => record.name !== 'Not Expandable',
+        }}
+      />
     </div>
   );
 };

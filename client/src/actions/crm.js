@@ -4,7 +4,8 @@ import * as api from '../api';
 export const getCrmRecords = () => async (dispatch) => {
   try {
     const { data } = await api.fetchCrmRecords();
-    dispatch({ type: 'FETCH_ALL_RECORDS', payload: data });
+    const newData = data.map((item) => ({ ...item, key: item._id }));
+    dispatch({ type: 'FETCH_ALL_RECORDS', payload: newData });
   } catch (error) {
     console.log(error.message);
   }

@@ -6,6 +6,7 @@ import { getCustomers } from '../../../../actions/customers';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import AddCrmRecord from './AddCrmRecord';
+import { isEqual, get } from 'lodash';
 
 const CRM = () => {
   const crmRecords = useSelector((state) => state.crm);
@@ -75,8 +76,8 @@ const CRM = () => {
       <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
+      get(record, dataIndex)
+        ? get(record, dataIndex)
             .toString()
             .toLowerCase()
             .includes(value.toLowerCase())
@@ -87,7 +88,7 @@ const CRM = () => {
       }
     },
     render: (text) =>
-      state.searchedColumn === dataIndex ? (
+      isEqual(state.searchedColumn, dataIndex) ? (
         <Highlighter
           highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[state.searchText]}
@@ -148,7 +149,19 @@ const CRM = () => {
     <div>
       <AddCrmRecord setCounter={setCounter} counter={counter} />
       <Divider orientation="left" plain />
-      <Table columns={columns} dataSource={crmRecords} />
+      <Table
+        columns={columns}
+        dataSource={crmRecords}
+        expandable={{
+          expandedRowRender: (record) =>
+            record.records.map((el) => (
+              <p style={{ margin: 0 }}>
+                {el.text} - {el.created.date} - {el.created.id}
+              </p>
+            )),
+          rowExpandable: (record) => record.name !== 'Not Expandable',
+        }}
+      />
     </div>
   );
 };

@@ -23,6 +23,6 @@ export const pool = new sql.ConnectionPool(config)
     console.log('Connected to MSSQL');
     return pool;
   })
-  .catch((err) => console.log('Database Connection Failed! Bad Config: ', err));
+  .catch((err) => console.log('MSSQL database connection failed!'));
 
 export default sql;

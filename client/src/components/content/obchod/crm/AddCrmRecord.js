@@ -91,14 +91,7 @@ const CRM = (props) => {
               <Form.Item label="IČO" name="ico">
                 <Input disabled className="crm-input-ico" type="number" />
               </Form.Item>
-            </Space>
-          </Row>
 
-          <Divider orientation="left" plain>
-            Kontaktní osoba
-          </Divider>
-          <Row>
-            <Space size="large" wrap>
               <Form.Item
                 label="Vyberte kontaktní osobu"
                 name="contact"
