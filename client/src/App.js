@@ -9,7 +9,7 @@ import { Layout, Alert } from 'antd';
 
 //Components
 import ProtectedRoute from './components/login/ProtectedRoute';
-import HeaderNavigation from './components/HeaderNavigation';
+import HeaderNavigation from './components/header/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/humanresources/Employees';
 import Obchod from './components/siderMenu/Obchod';

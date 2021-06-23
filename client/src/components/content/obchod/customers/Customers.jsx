@@ -1,4 +1,4 @@
-import { Divider } from 'antd';
+import { Divider, Table } from 'antd';
 import AddCustomer from './AddCustomer';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -8,10 +8,9 @@ import TableSearch from '../../ui/TableSearch';
 const Customers = () => {
   const customers = useSelector((state) => state.customers);
   const dispatch = useDispatch();
-  const [customerCount, setCustomerCount] = useState(customers.length);
+  const [customerCount, setCustomerCount] = useState(customers.data.length);
 
   useEffect(() => {
-    console.log(customerCount);
     dispatch(loadCustomers());
   }, [dispatch, customerCount]);
 
@@ -48,7 +47,6 @@ const Customers = () => {
         customerCount={customerCount}
       />
       <Divider orientation="left" plain />
-
       <TableSearch
         columns={columns}
         dataSource={customers.data}

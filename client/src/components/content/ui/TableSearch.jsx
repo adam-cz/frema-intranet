@@ -5,11 +5,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import { isEqual, get } from 'lodash';
 
 class TableSearch extends React.Component {
-  state = {
-    searchText: '',
-    searchedColumn: '',
-  };
-
   constructor(props) {
     super(props);
     this.columns = props.columns.map((column) =>
@@ -17,7 +12,17 @@ class TableSearch extends React.Component {
         ? { ...column, ...this.getColumnSearchProps(column.searchIndex) }
         : { ...column }
     );
-    this.dataSource = props.dataSource;
+    this.state = {
+      searchText: '',
+      searchedColumn: '',
+      dataSource: props.dataSource,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.dataSource !== this.props.dataSource) {
+      this.setState({ ...this.state, dataSource: this.props.dataSource });
+    }
   }
 
   getColumnSearchProps = (dataIndex) => ({
@@ -93,7 +98,7 @@ class TableSearch extends React.Component {
     render: (text) =>
       isEqual(this.state.searchedColumn, dataIndex) ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          highlightStyle={{ backgroundColor: '#E6F7FF', padding: 0 }}
           searchWords={[this.state.searchText]}
           autoEscape
           textToHighlight={text ? text.toString() : ''}
@@ -121,7 +126,7 @@ class TableSearch extends React.Component {
       <Table
         {...this.props}
         columns={this.columns}
-        dataSource={this.dataSource}
+        dataSource={this.state.dataSource}
       />
     );
   }
