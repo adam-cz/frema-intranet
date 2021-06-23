@@ -7,7 +7,7 @@ const { Panel } = Collapse;
 const Zakaznici = (props) => {
   const onFinish = async (values) => {
     await api.addCustomer(values);
-    props.setCounter(props.counter + 1);
+    props.setCustomerCount(props.customerCount + 1);
   };
 
   return (
@@ -24,13 +24,7 @@ const Zakaznici = (props) => {
                 name="ico"
                 rules={[{ required: true, message: 'Zadejte IČO' }]}
               >
-                <Input
-                  className="crm-input-ico"
-                  type="number"
-
-                  //value={formData.client.ico}
-                  //onSearch={onSearch}
-                />
+                <Input className="crm-input-ico" type="number" />
               </Form.Item>
 
               <Form.Item label="Jméno firmy" name="jmenoFirmy">
@@ -111,13 +105,11 @@ const Zakaznici = (props) => {
 
           <Divider orientation="left" plain />
 
-          <Row>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Uložit záznam
-              </Button>
-            </Form.Item>
-          </Row>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Uložit záznam
+            </Button>
+          </Form.Item>
         </Form>
       </Panel>
     </Collapse>

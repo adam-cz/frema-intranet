@@ -10,7 +10,7 @@ import {
   Space,
   Select,
 } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { addCrmRecord } from '../../../../api/index';
 
@@ -26,7 +26,8 @@ const CRM = (props) => {
     addCrmRecord({
       client: {
         company_id: values.company,
-        company_name: customers.find((el) => el._id === values.company).name,
+        company_name: customers.data.find((el) => el._id === values.company)
+          .name,
         person_id: values.contact,
       },
       subject: values.predmetNabidky,
@@ -72,18 +73,18 @@ const CRM = (props) => {
                   optionFilterProp="value"
                   onChange={(value) =>
                     setCustomer(
-                      customers.find((customer) => customer._id === value)
+                      customers.data.find((customer) => customer._id === value)
                     )
                   }
                   filterOption={(input, option) =>
-                    customers
+                    customers.data
                       .find((el) => el._id === option.value)
                       .name.toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {customers &&
-                    customers.map((element) => (
+                  {customers.data &&
+                    customers.data.map((element) => (
                       <Option value={element._id}>{element.name}</Option>
                     ))}
                 </Select>

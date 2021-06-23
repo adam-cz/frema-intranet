@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, useHistory } from 'react-router-dom';
-import ProtectedRoute from './components/login/ProtectedRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 //Antd and styles
 import 'antd/dist/antd.css';
 import './styles/index.css';
-import { Layout, Alert, Space, Row } from 'antd';
+import { Layout, Alert } from 'antd';
 
 //Components
+import ProtectedRoute from './components/login/ProtectedRoute';
 import HeaderNavigation from './components/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
-import Zamestnanci from './components/content/personalistika/Zamestnanci';
+import Zamestnanci from './components/content/humanresources/Employees';
 import Obchod from './components/siderMenu/Obchod';
 import CRM from './components/content/obchod/crm/CRM';
-import Zakaznici from './components/content/obchod/zakaznici/Zakaznici';
+import Customers from './components/content/obchod/customers/Customers';
 import { getEmployees } from './actions/employees';
 
 const { Content, Sider } = Layout;
@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     if (!user) history.push('/login');
     dispatch(getEmployees());
-  }, [history, user]);
+  }, [dispatch, history, user]);
 
   return (
     <Layout className="canvas">
@@ -52,7 +52,7 @@ function App() {
                 component={Zamestnanci}
               />
               <ProtectedRoute path="/obchod/crm" component={CRM} />
-              <ProtectedRoute path="/obchod/zakaznici" component={Zakaznici} />
+              <ProtectedRoute path="/obchod/zakaznici" component={Customers} />
             </Content>
           </Layout>
         </Layout>
