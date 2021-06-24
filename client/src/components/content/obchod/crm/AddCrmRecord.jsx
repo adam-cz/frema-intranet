@@ -23,25 +23,8 @@ const CRM = (props) => {
   const customers = useSelector((state) => state.customers);
 
   const onFinish = (values) => {
-    addCrmRecord({
-      client: {
-        company_id: values.company,
-        company_name: customers.data.find((el) => el._id === values.company)
-          .name,
-        person_id: values.contact,
-      },
-      subject: values.predmetNabidky,
-      value: values.hodnotaNabidky,
-      coms: {
-        phone: { done: values.comsPhone },
-        email: { done: values.comsEmail },
-        visit: { done: values.comsVisit },
-        order: { done: values.comsOrder },
-      },
-      records: [{ text: values.recordText, created: { id: '' } }],
-      created: { id: '' },
-    });
-    props.setCounter(props.counter + 1);
+    addCrmRecord(values);
+    props.setRefresh(!props.refresh);
   };
   return (
     <Collapse>

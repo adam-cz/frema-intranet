@@ -37,7 +37,7 @@ class TableSearch extends React.Component {
           ref={(node) => {
             this.searchInput = node;
           }}
-          placeholder={`Search ${dataIndex}`}
+          placeholder="Hledat..."
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -55,7 +55,7 @@ class TableSearch extends React.Component {
             size="small"
             style={{ width: 90 }}
           >
-            Search
+            Hledej
           </Button>
           <Button
             onClick={() => this.handleReset(clearFilters)}
@@ -75,7 +75,7 @@ class TableSearch extends React.Component {
               });
             }}
           >
-            Filter
+            Filtruj
           </Button>
         </Space>
       </div>

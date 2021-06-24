@@ -46,7 +46,8 @@ const Zamestnanci = () => {
   return (
     <Table
       columns={columns}
-      dataSource={employees.map((el) => ({ ...el, key: el._id }))}
+      dataSource={employees.data.map((el) => ({ ...el, key: el._id }))}
+      loading={employees.loading}
     />
   );
 };

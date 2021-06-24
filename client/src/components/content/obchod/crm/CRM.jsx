@@ -7,11 +7,13 @@ import { loadCustomers } from '../../../../actions/customers';
 import AddCrmRecord from './AddCrmRecord';
 import TableSearch from '../../ui/TableSearch';
 import RecordTextList from './RecordTextList';
+import CrmProgressBar from './CrmProgressBar';
+import AddTextRecord from './AddTextRecord';
 
 const CRM = () => {
   const crmRecords = useSelector((state) => state.crm);
   const dispatch = useDispatch();
-  const [recordCount, setRecordCount] = useState(crmRecords.length);
+  const [refresh, setRefresh] = useState('false');
 
   const columns = [
     {
@@ -32,28 +34,51 @@ const CRM = () => {
       title: 'Datum zápisu',
       dataIndex: ['created', 'date'],
       key: 'date',
+      width: '15%',
       sorter: (a, b) => new Date(a.created.date) - new Date(b.created.date),
       sortDirections: ['descend', 'ascend'],
       showSorterTooltip: false,
       render: (date) => new Date(date).toLocaleString(),
+    },
+    {
+      title: 'Obchodník',
+      dataIndex: ['created', 'name'],
+      key: 'created',
+      width: '15%',
+      searchIndex: ['created', 'name'],
+    },
+    {
+      title: 'Stav',
+      dataIndex: 'coms',
+      key: 'status',
+      render: (coms) => <CrmProgressBar coms={coms} />,
     },
   ];
 
   useEffect(() => {
     dispatch(loadCustomers());
     dispatch(getCrmRecords());
-  }, [dispatch, recordCount]);
+  }, [dispatch, refresh]);
 
   return (
     <div>
-      <AddCrmRecord setCounter={setRecordCount} counter={recordCount} />
+      <AddCrmRecord refresh={refresh} setRefresh={setRefresh} />
       <Divider orientation="left" plain />
       <TableSearch
         columns={columns}
-        dataSource={crmRecords}
+        dataSource={crmRecords.data}
+        loading={crmRecords.loading}
         expandable={{
           expandedRowRender: (record) => (
-            <RecordTextList record={record.records} />
+            <div>
+              <RecordTextList record={record.records} />
+              <Divider orientation="left" plain />
+              <AddTextRecord
+                record={record}
+                refresh={refresh}
+                setRefresh={setRefresh}
+              />
+            </div>
           ),
           rowExpandable: (record) => record.name !== 'Not Expandable',
         }}

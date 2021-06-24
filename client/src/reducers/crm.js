@@ -1,13 +1,31 @@
-const reducer = (record = [], action) => {
+const initialState = {
+  data: [],
+  loading: false,
+  error: '',
+};
+
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'FETCH_ALL_RECORDS':
-      return action.payload;
-    case 'POST_RECORD':
-      return action.payload;
-    case 'DELETE_RECORD':
-      return action.payload;
+    case 'LOAD_CRM_LOADING':
+      return {
+        ...state,
+        loading: true,
+        error: '',
+      };
+    case 'LOAD_CRM_SUCCESS':
+      return {
+        ...state,
+        data: action.data,
+        loading: false,
+      };
+    case 'LOAD_CRM_ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
     default:
-      return record;
+      return state;
   }
 };
 

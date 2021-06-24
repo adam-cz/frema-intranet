@@ -13,12 +13,14 @@ const RecordTextList = ({ record }) => {
             title={
               <span>
                 {
-                  employees.find((employee) => employee._id === item.created.id)
-                    .Jmeno
+                  employees.data.find(
+                    (employee) => employee._id === item.created.id
+                  ).Jmeno
                 }{' '}
                 {
-                  employees.find((employee) => employee._id === item.created.id)
-                    .Prijmeni
+                  employees.data.find(
+                    (employee) => employee._id === item.created.id
+                  ).Prijmeni
                 }{' '}
                 - <i>{new Date(item.created.date).toLocaleString()}</i>
               </span>
