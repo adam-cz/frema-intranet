@@ -68,3 +68,8 @@
 .ant-alert {
   margin-bottom: 20px;
 }
+
+.loading {
+  margin-left: auto;
+  text-align: center;
+}

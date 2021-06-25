@@ -92,7 +92,6 @@ export const signOut = async (req, res) => {
 //Refresh token function
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
-  console.log(refreshToken);
   if (refreshToken == null) return res.sendStatus(401);
   if (!(await RefreshTokens.findOne({ token: refreshToken })))
     return res.sendStatus(403);

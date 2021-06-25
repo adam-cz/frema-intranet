@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { Spin } from 'antd';
 
 import { silentRefresh } from '../../api';
 import { getUserData } from '../../actions/user';
-import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }) => {
       ) : user.error ? (
         history.push('/login')
       ) : (
-        <p>Loading</p>
+        <Spin size="large" className="loading" />
       )}
     </>
   );
