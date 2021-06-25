@@ -19,7 +19,7 @@ const CRM = () => {
     {
       title: 'Firma',
       dataIndex: ['client', 'company_name'],
-      key: 'name',
+      key: ['client', 'company_name'],
       width: '15%',
       searchIndex: ['client', 'company_name'],
     },
@@ -33,7 +33,7 @@ const CRM = () => {
     {
       title: 'Datum zápisu',
       dataIndex: ['created', 'date'],
-      key: 'date',
+      key: ['created', 'date'],
       width: '15%',
       sorter: (a, b) => new Date(a.created.date) - new Date(b.created.date),
       sortDirections: ['descend', 'ascend'],
@@ -43,14 +43,14 @@ const CRM = () => {
     {
       title: 'Obchodník',
       dataIndex: ['created', 'name'],
-      key: 'created',
+      key: ['created', 'name'],
       width: '15%',
       searchIndex: ['created', 'name'],
     },
     {
       title: 'Stav',
       dataIndex: 'coms',
-      key: 'status',
+      key: 'coms',
       render: (coms) => <CrmProgressBar coms={coms} />,
     },
   ];

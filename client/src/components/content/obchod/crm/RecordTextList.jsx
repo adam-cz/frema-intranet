@@ -7,6 +7,7 @@ const RecordTextList = ({ record }) => {
     <List
       itemLayout="horizontal"
       dataSource={record}
+      rowKey="_id"
       renderItem={(item) => (
         <List.Item>
           <List.Item.Meta

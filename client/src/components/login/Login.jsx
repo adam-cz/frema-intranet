@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import '../../styles/index.css';
 
 import { silentRefresh } from '../../api';
-import { getUserData } from '../../actions/user';
+import { getUserData, getUserDataWithRefreshToken } from '../../actions/user';
 
 const { Content } = Layout;
 const layout = {
@@ -16,28 +16,21 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-function Login() {
+const Login = () => {
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [heslo, setHeslo] = useState('');
   const history = useHistory();
+  dispatch(getUserDataWithRefreshToken());
 
   const onFinish = (values) => {
-    //console.log('Success:', values);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const submitHandler = async (event) => {
-    event.preventDefault();
-    dispatch(getUserData(email, heslo));
+    dispatch(getUserData(values.email, values.heslo));
     silentRefresh();
   };
 
   useEffect(() => {
+    //console.log(props.history.location);
+    //if (userData) props.history.goBack();
+
     if (userData) history.push('/');
   }, [userData, history]);
 
@@ -50,10 +43,9 @@ function Login() {
         >
           <Form
             {...layout}
-            name="basic"
+            name="login-form"
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
           >
             <Form.Item
               label="E-mail"
@@ -62,10 +54,7 @@ function Login() {
                 { required: true, message: 'Zadejte svůj firemní mail!' },
               ]}
             >
-              <Input
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
+              <Input />
             </Form.Item>
 
             <Form.Item
@@ -73,10 +62,7 @@ function Login() {
               name="heslo"
               rules={[{ required: true, message: 'Zadejte heslo!' }]}
             >
-              <Input.Password
-                value={heslo}
-                onChange={(event) => setHeslo(event.target.value)}
-              />
+              <Input.Password />
             </Form.Item>
 
             <Form.Item {...tailLayout} name="remember" valuePropName="checked">
@@ -84,7 +70,7 @@ function Login() {
             </Form.Item>
 
             <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit" onClick={submitHandler}>
+              <Button type="primary" htmlType="submit">
                 Přihlásit
               </Button>
             </Form.Item>
@@ -93,6 +79,6 @@ function Login() {
       </Content>
     </Layout>
   );
-}
+};
 
 export default Login;

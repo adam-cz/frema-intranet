@@ -1,14 +1,13 @@
-import { BrowserRouter as Router, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
 //Antd and styles
 import 'antd/dist/antd.css';
 import './styles/index.css';
-import { Layout, Alert } from 'antd';
+import { Layout } from 'antd';
 
 //Components
-import ProtectedRoute from './components/login/ProtectedRoute';
 import HeaderNavigation from './components/header/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/humanresources/Employees';
@@ -20,14 +19,11 @@ import { getEmployees } from './actions/employees';
 const { Content, Sider } = Layout;
 
 function App() {
-  const user = useSelector((state) => state.user);
-  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!user) history.push('/login');
     dispatch(getEmployees());
-  }, [dispatch, history, user]);
+  }, [dispatch]);
 
   return (
     <Layout className="canvas">
@@ -35,8 +31,8 @@ function App() {
         <HeaderNavigation />
         <Layout>
           <Sider width={200} className="site-layout-background">
-            <ProtectedRoute path="/personalistika" component={Personalistika} />
-            <ProtectedRoute path="/obchod" component={Obchod} />
+            <Route path="/personalistika" component={Personalistika} />
+            <Route path="/obchod" component={Obchod} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Content
@@ -47,12 +43,12 @@ function App() {
                 minHeight: 280,
               }}
             >
-              <ProtectedRoute
+              <Route
                 path="/personalistika/zamestnanci"
                 component={Zamestnanci}
               />
-              <ProtectedRoute path="/obchod/crm" component={CRM} />
-              <ProtectedRoute path="/obchod/zakaznici" component={Customers} />
+              <Route path="/obchod/crm" component={CRM} />
+              <Route path="/obchod/zakaznici" component={Customers} />
             </Content>
           </Layout>
         </Layout>

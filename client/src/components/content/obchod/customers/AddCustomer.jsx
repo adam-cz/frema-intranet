@@ -5,15 +5,18 @@ import { Collapse, Divider, Row, Form, Input, Button, Space } from 'antd';
 const { Panel } = Collapse;
 
 const Zakaznici = (props) => {
+  const [form] = Form.useForm();
+
   const onFinish = async (values) => {
     await api.addCustomer(values);
+    form.resetFields();
     props.setCustomerCount(props.customerCount + 1);
   };
 
   return (
     <Collapse>
       <Panel header="Přidat zákazníka" key="1">
-        <Form name="add-customer" onFinish={onFinish}>
+        <Form form={form} name="add-customer" onFinish={onFinish}>
           <Divider orientation="left" plain>
             Informace o firmě
           </Divider>
@@ -105,11 +108,20 @@ const Zakaznici = (props) => {
 
           <Divider orientation="left" plain />
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Uložit záznam
-            </Button>
-          </Form.Item>
+          <Button type="primary" htmlType="submit">
+            Uložit záznam
+          </Button>
+
+          <Button
+            style={{
+              margin: '0 8px',
+            }}
+            onClick={() => {
+              form.resetFields();
+            }}
+          >
+            Smazat zadání
+          </Button>
         </Form>
       </Panel>
     </Collapse>

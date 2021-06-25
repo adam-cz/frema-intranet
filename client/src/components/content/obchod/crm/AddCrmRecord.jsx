@@ -20,16 +20,19 @@ const { Option } = Select;
 
 const CRM = (props) => {
   const [customer, setCustomer] = useState('');
+  const [form] = Form.useForm();
   const customers = useSelector((state) => state.customers);
 
   const onFinish = (values) => {
     addCrmRecord(values);
+    form.resetFields();
     props.setRefresh(!props.refresh);
   };
   return (
     <Collapse>
       <Panel header="Přidat nový záznam" key="1">
         <Form
+          form={form}
           name="add-crm-record"
           onFinish={onFinish}
           fields={[
@@ -68,7 +71,9 @@ const CRM = (props) => {
                 >
                   {customers.data &&
                     customers.data.map((element) => (
-                      <Option value={element._id}>{element.name}</Option>
+                      <Option key={element._id} value={element._id}>
+                        {element.name}
+                      </Option>
                     ))}
                 </Select>
               </Form.Item>
@@ -96,6 +101,7 @@ const CRM = (props) => {
                   {customer.persons &&
                     customer.persons.map((element) => (
                       <Option
+                        key={element._id}
                         value={element._id}
                       >{`${element.name} ${element.surname}`}</Option>
                     ))}
@@ -169,6 +175,16 @@ const CRM = (props) => {
           <Row>
             <Button type="primary" htmlType="submit">
               Uložit záznam
+            </Button>
+            <Button
+              style={{
+                margin: '0 8px',
+              }}
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              Smazat zadání
             </Button>
           </Row>
         </Form>

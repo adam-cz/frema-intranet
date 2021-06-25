@@ -9,3 +9,13 @@ export const getUserData = (email, heslo) => async (dispatch) => {
     console.log(error.message);
   }
 };
+
+export const getUserDataWithRefreshToken = () => async (dispatch) => {
+  try {
+    const data = await api.silentLogin();
+    console.log(data);
+    dispatch({ type: 'FETCH_USER', payload: data.data });
+  } catch (error) {
+    console.log(error.message);
+  }
+};

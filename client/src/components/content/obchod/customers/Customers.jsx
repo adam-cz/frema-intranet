@@ -1,4 +1,4 @@
-import { Divider, Table } from 'antd';
+import { Divider } from 'antd';
 import AddCustomer from './AddCustomer';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';

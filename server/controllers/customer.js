@@ -1,9 +1,10 @@
 import Customer from '../models/customer.js';
 
 export const fetchCustomers = async (req, res) => {
-  const data = await Customer.find();
+  const data = await Customer.find().lean();
+  const newData = data.map((item) => ({ ...item, key: item._id }));
   try {
-    res.json(data).status(200);
+    res.json(newData).status(200);
   } catch (err) {
     res.json({ message: err }).status(401);
   }

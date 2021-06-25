@@ -4,9 +4,9 @@ import Customers from '../models/customer.js';
 
 export const fetchCrmRecords = async (req, res) => {
   try {
-    let data = await CRM.find();
-    const newData = data.map((record) => (record.key = record._id));
-    res.json(data).status(200);
+    const data = await CRM.find().lean();
+    const newData = data.map((item) => ({ ...item, key: item._id }));
+    res.json(newData).status(200);
   } catch (err) {
     res.json({ message: err }).status(401);
   }
@@ -54,12 +54,10 @@ export const addCrmRecord = async (req, res) => {
       _id: req.body.company,
     });
     const employee = await Employees.findOne({ Email: req.user.username });
-    console.log(record);
     record.client.company_name = customer.name;
     record.records[0].created.id = employee._id;
     record.created.name = `${employee.Jmeno} ${employee.Prijmeni}`;
     record.created.id = employee._id;
-    console.log(record);
     CRM.create(record);
     res.status(200).json({ message: 'Záznam byl vytvořen' });
   } catch (err) {

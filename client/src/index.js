@@ -20,7 +20,9 @@ ReactDOM.render(
       <Router>
         <Switch>
           <Route path="/login" component={Login} />
-          <ProtectedRoute exact path="/" component={App} />
+          <ProtectedRoute>
+            <App />
+          </ProtectedRoute>
         </Switch>
       </Router>
     </Provider>
