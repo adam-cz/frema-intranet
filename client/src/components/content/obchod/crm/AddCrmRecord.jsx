@@ -23,8 +23,8 @@ const CRM = (props) => {
   const [form] = Form.useForm();
   const customers = useSelector((state) => state.customers);
 
-  const onFinish = (values) => {
-    addCrmRecord(values);
+  const onFinish = async (values) => {
+    await addCrmRecord(values);
     form.resetFields();
     props.setRefresh(!props.refresh);
   };

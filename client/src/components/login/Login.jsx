@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import '../../styles/index.css';
 
 import { silentRefresh } from '../../api';
-import { getUserData, getUserDataWithRefreshToken } from '../../actions/user';
+import { getUserData } from '../../actions/user';
 
 const { Content } = Layout;
 const layout = {
@@ -20,19 +20,19 @@ const Login = () => {
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const history = useHistory();
-  dispatch(getUserDataWithRefreshToken());
 
   const onFinish = (values) => {
     dispatch(getUserData(values.email, values.heslo));
     silentRefresh();
+    history.push('/');
   };
 
   useEffect(() => {
+    //dispatch(getUserData());
     //console.log(props.history.location);
     //if (userData) props.history.goBack();
-
-    if (userData) history.push('/');
-  }, [userData, history]);
+    // if (userData) history.push('/');
+  }, [dispatch]);
 
   return (
     <Layout id="login-layout">

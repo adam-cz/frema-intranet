@@ -6,9 +6,9 @@ const { TextArea } = Input;
 const AddTextRecord = (props) => {
   const coms = props.record.coms;
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     const data = { ...values, id: props.record._id };
-    addCrmText(data);
+    await addCrmText(data);
     props.setRefresh(!props.refresh);
   };
 

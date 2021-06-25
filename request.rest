@@ -3,13 +3,8 @@ Cookie: jwt_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvdXJhL
 
 ###
 
-POST http://localhost:3002/user/signup
-Content-Type: application/json
-
-{
-    "email": "admin",
-    "heslo": "heslo"
-}
+POST http://localhost:3002/user/token
+Cookie: refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvdXJhLmFkYW1AZnJlbWEuY3oiLCJpYXQiOjE2MjQ2MzU1OTF9.eeZ9gBj5koPut2QzBiCwp_-esAgLH_vm4Dv1KDAXl98       
 
 ###
 
