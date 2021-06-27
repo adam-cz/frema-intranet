@@ -13,20 +13,14 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     dispatch(getUserData());
-    silentRefresh();
+    //silentRefresh();
   }, [dispatch]);
 
-  return (
-    <>
-      {user.data ? (
-        <>{children}</>
-      ) : user.error ? (
-        history.push('/login')
-      ) : (
-        <Spin size="large" className="loading" />
-      )}
-    </>
-  );
+  useEffect(() => {
+    if (user.error) history.push('/login');
+  }, [user, history]);
+
+  return <> {children} </>;
 };
 
 export default ProtectedRoute;

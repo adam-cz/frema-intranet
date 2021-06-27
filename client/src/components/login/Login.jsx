@@ -27,13 +27,6 @@ const Login = () => {
     history.push('/');
   };
 
-  useEffect(() => {
-    //dispatch(getUserData());
-    //console.log(props.history.location);
-    //if (userData) props.history.goBack();
-    // if (userData) history.push('/');
-  }, [dispatch]);
-
   return (
     <Layout id="login-layout">
       <Content>
