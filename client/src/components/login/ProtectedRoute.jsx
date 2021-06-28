@@ -1,26 +1,29 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Spin } from 'antd';
+import { Redirect } from 'react-router-dom';
 
-import { silentRefresh } from '../../api';
 import { getUserData } from '../../actions/user';
 
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const history = useHistory();
 
   useEffect(() => {
-    dispatch(getUserData());
-    //silentRefresh();
-  }, [dispatch]);
+    if (!user.data) dispatch(getUserData());
+  }, [dispatch, user.data]);
 
-  useEffect(() => {
-    if (user.error) history.push('/login');
-  }, [user, history]);
-
-  return <> {children} </>;
+  return (
+    <>
+      {user.data ? (
+        <>{children}</>
+      ) : user.error ? (
+        <Redirect to="/login" />
+      ) : (
+        <Spin />
+      )}
+    </>
+  );
 };
 
 export default ProtectedRoute;

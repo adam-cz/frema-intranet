@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Form, Input, Button, Checkbox, Card } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../styles/index.css';
 
-import { silentRefresh } from '../../api';
 import { getUserData } from '../../actions/user';
 
 const { Content } = Layout;
@@ -17,22 +16,29 @@ const tailLayout = {
 };
 
 const Login = () => {
-  const userData = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const history = useHistory();
 
   const onFinish = (values) => {
     dispatch(getUserData(values.email, values.heslo));
-    silentRefresh();
-    history.push('/');
   };
+
+  useEffect(() => {
+    if (user.data) history.push('/');
+  }, [user, history]);
 
   return (
     <Layout id="login-layout">
       <Content>
         <Card
           id="login"
-          title={<img src="frema_logo.svg" alt="Logo Frema a.s."></img>}
+          title={
+            <img
+              src={process.env.PUBLIC_URL + 'frema_logo.svg'}
+              alt="Logo Frema a.s."
+            ></img>
+          }
         >
           <Form
             {...layout}

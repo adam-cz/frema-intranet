@@ -26,7 +26,7 @@ axios.defaults.withCredentials = true;
 
 //User calls
 
-export const silentRefresh = async (time = 5000) => {
+export const silentRefresh = async (time) => {
   setTimeout(() => {
     axios.post(`${urlAuth}user/token`).then((res) => {
       if (res.status === 200) silentRefresh(res.data.expiresIn);

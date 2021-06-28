@@ -9,6 +9,7 @@ export const getUserData =
       const { data } = !email
         ? await api.silentLogin()
         : await api.login(email, heslo);
+      api.silentRefresh(data.user.expiresIn);
       console.log(data);
       dispatch({ type: 'LOGIN_USER_SUCCESS', data });
     } catch (error) {
