@@ -73,3 +73,22 @@
   margin-left: auto;
   text-align: center;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-menu {
+  display: flex;
+  justify-content: start;
+}
+
+.logo-svg {
+  width: 150px;
+  margin-right: 50px;
+}
+
+.user-status-name {
+  color: white;
+}

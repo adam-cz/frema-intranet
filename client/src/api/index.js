@@ -26,14 +26,14 @@ axios.defaults.withCredentials = true;
 
 //User calls
 
-export const silentRefresh = async (time) => {
+export const silentRefresh = (time) => {
   setTimeout(() => {
     axios.post(`${urlAuth}user/token`).then((res) => {
       if (res.status === 200) silentRefresh(res.data.expiresIn);
     });
   }, time);
 };
-export const silentLogin = async () => axios.post(`${urlAuth}user/token`);
+export const silentLogin = () => axios.post(`${urlAuth}user/token`);
 export const login = (email, heslo) =>
   axios.post(`${urlAuth}user/signin`, { email, heslo });
 
