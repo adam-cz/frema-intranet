@@ -20,7 +20,7 @@ const isExpired = (SQLdate) => {
   return date > new Date();
 };
 
-//Load actual employees from MSSQL attendance
+//Load every employee from MSSQL attendance
 const loadEmployees = async () => {
   const poolConnection = await pool;
   const request = new sql.Request(poolConnection);
@@ -38,10 +38,19 @@ const loadEmployees = async () => {
       }).DatumUkonceni
     );
   });
+  const convertedEmployees = filteredEmployees.map((employee) => ({
+    name: employee.Jmeno,
+    surname: employee.Prijmeni,
+    email: employee.Email,
+
+    _id: employee.RC,
+  }));
+  console.log(convertedEmployees);
+  console.log(filteredEmployees);
   return filteredEmployees;
 };
 
-//Get back differential of two lists
+//Get back differential of two lists - used for filter employees who are still employed
 const compareLists = (list1, list2) => {
   const newEmployees = list2.filter((e) => {
     return !list1.map((el) => parseInt(el.RC)).includes(parseInt(e.RC));

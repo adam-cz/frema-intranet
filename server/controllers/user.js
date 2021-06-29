@@ -49,19 +49,18 @@ export const signUp = async (req, res) => {
 
 //LOGIN function
 export const signIn = async (req, res) => {
-  //Vyndat vše co bude potřeba z req.body
   const { email, heslo } = req.body;
   try {
-    const userExists = await User.findOne({ Email: email });
-    if (!userExists)
-      return res.status(400).json({ message: 'User doesnt exists' });
-    const isPasswordCorrect = await bcrypt.compare(heslo, userExists.Heslo);
+    const user = await User.findOne({ Email: email });
+    console.log(user);
+    if (!user) return res.status(400).json({ message: 'User doesnt exists' });
+    const isPasswordCorrect = await bcrypt.compare(heslo, user.Heslo);
     if (!isPasswordCorrect)
       return res.status(400).json({ message: 'Invalid credentials' });
 
-    const accessToken = generateAccessToken({ username: userExists.Email });
+    const accessToken = generateAccessToken({ username: user.Email });
     const refreshToken = jwt.sign(
-      { username: userExists.Email },
+      { username: user.Email },
       process.env.REFRESH_TOKEN_SECRET
     );
 
@@ -73,7 +72,7 @@ export const signIn = async (req, res) => {
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
-      .json({ user: userExists, accessToken, expiresIn: expiresIn - 1000 });
+      .json({ user, accessToken, expiresIn: expiresIn - 1000 });
   } catch (err) {
     res.status(500).json({ message: err });
   }

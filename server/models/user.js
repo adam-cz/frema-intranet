@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema({
-  Jmeno: String,
-  Prijmeni: String,
-  Email: String,
-  Heslo: String,
-  Pritomen: Boolean,
-  DatumCasOperace: Date,
-  RC: Number,
+  name: String,
+  surname: String,
+  email: String,
+  password: String,
+  isPresent: Boolean,
+  lastOperation: Date,
+  _id: Number,
 });
 
 const User = mongoose.model('User', userSchema);
