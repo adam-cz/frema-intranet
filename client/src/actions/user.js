@@ -18,3 +18,5 @@ export const getUserData =
       });
     }
   };
+
+export const logout = () => {};
