@@ -14,7 +14,7 @@ export const addCustomer = async (req, res) => {
   let customer = {
     ico: req.body.ico,
     name: req.body.jmenoFirmy,
-    created: { by: req.user.username },
+    created: { by: req.user._id },
     persons: [],
   };
   if (req.body.persons)
@@ -25,7 +25,7 @@ export const addCustomer = async (req, res) => {
         job: el.funkce,
         tel: el.tel,
         mail: el.tel,
-        created: { by: req.user.username },
+        created: { by: req.user._id },
       };
 
       customer.persons.push(contact);

@@ -16,12 +16,12 @@ const RecordTextList = ({ record }) => {
                 {
                   employees.data.find(
                     (employee) => employee._id === item.created.id
-                  ).Jmeno
+                  ).name
                 }{' '}
                 {
                   employees.data.find(
                     (employee) => employee._id === item.created.id
-                  ).Prijmeni
+                  ).surname
                 }{' '}
                 - <i>{new Date(item.created.date).toLocaleString()}</i>
               </span>

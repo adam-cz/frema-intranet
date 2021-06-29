@@ -9,27 +9,34 @@ import { getEmployees } from '../../../actions/employees';
 const columns = [
   {
     title: 'Jméno',
-    dataIndex: 'Jmeno',
-    key: 'Jmeno',
+    dataIndex: 'name',
+    key: 'name',
+    width: '10%',
   },
   {
     title: 'Příjmení',
-    dataIndex: 'Prijmeni',
-    key: 'Prijmeni',
+    dataIndex: 'surname',
+    key: 'surname',
+    width: '10%',
+  },
+  {
+    title: 'E-mail',
+    dataIndex: 'email',
+    key: 'email',
   },
   {
     title: 'Čas poslední operace',
-    dataIndex: 'DatumCasOperace',
-    key: 'DatumCasOperace',
+    dataIndex: 'lastOperation',
+    key: 'lastOperation',
     render: (date) => new Date(date).toLocaleString(),
   },
   {
     title: 'Přítomnost',
-    key: 'Pritomen',
-    dataIndex: 'Pritomen',
-    render: (Pritomen) => (
-      <Tag color={Pritomen ? 'green' : 'volcano'} key={Pritomen}>
-        {Pritomen ? 'V práci' : 'Nepřítomen'}
+    key: 'isPresent',
+    dataIndex: 'isPresent',
+    render: (isPresent) => (
+      <Tag color={isPresent ? 'green' : 'volcano'} key={isPresent}>
+        {isPresent ? 'V práci' : 'Nepřítomen'}
       </Tag>
     ),
   },

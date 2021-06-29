@@ -9,6 +9,7 @@ const Personalistika = () => {
       <Menu
         mode="inline"
         defaultSelectedKeys={['1']}
+        defaultOpenKeys={['1']}
         style={{ height: '100%', borderRight: 0 }}
       >
         <Menu.Item key="1">

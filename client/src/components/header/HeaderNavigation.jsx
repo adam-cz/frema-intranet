@@ -9,7 +9,12 @@ const HeaderNavigation = () => {
     <Header className="header">
       <div className="header-menu">
         <img src={'/frema_logo.svg'} className="logo-svg" alt="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['sub1']}
+        >
           <Menu.Item key="1">
             <span>Personalistika</span>
             <Link to="/personalistika" />

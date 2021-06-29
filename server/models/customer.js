@@ -4,7 +4,7 @@ const customerSchema = mongoose.Schema({
   ico: Number,
   name: String,
   created: {
-    by: String,
+    by: Number,
     date: { type: Date, default: new Date(Date.now()) },
   },
   persons: [
@@ -15,7 +15,7 @@ const customerSchema = mongoose.Schema({
       tel: String,
       mail: String,
       created: {
-        by: String,
+        by: Number,
         date: { type: Date, default: new Date(Date.now()) },
       },
     },

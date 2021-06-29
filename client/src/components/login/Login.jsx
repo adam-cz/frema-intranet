@@ -20,8 +20,8 @@ const Login = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const onFinish = (values) => {
-    dispatch(getUserData(values.email, values.heslo));
+  const onFinish = ({ email, password }) => {
+    dispatch(getUserData(email, password));
   };
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const Login = () => {
 
             <Form.Item
               label="Heslo"
-              name="heslo"
+              name="password"
               rules={[{ required: true, message: 'Zadejte heslo!' }]}
             >
               <Input.Password />

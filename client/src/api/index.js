@@ -34,8 +34,8 @@ export const silentRefresh = (time) => {
   }, time);
 };
 export const silentLogin = () => axios.post(`${urlAuth}user/token`);
-export const login = (email, heslo) =>
-  axios.post(`${urlAuth}user/signin`, { email, heslo });
+export const login = (email, password) =>
+  axios.post(`${urlAuth}user/signin`, { email, password });
 
 //API calls
 //CRM

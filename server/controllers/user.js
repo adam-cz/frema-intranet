@@ -7,8 +7,8 @@ import RefreshTokens from '../models/refreshToken.js';
 
 const expiresIn = 1000 * 60 * 5;
 
-const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+const generateAccessToken = (userData) => {
+  return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn,
   });
 };
@@ -49,21 +49,21 @@ export const signUp = async (req, res) => {
 
 //LOGIN function
 export const signIn = async (req, res) => {
-  const { email, heslo } = req.body;
+  const { email, password } = req.body;
   try {
-    const user = await User.findOne({ Email: email });
-    console.log(user);
+    let user = await User.findOne({ email }).lean();
     if (!user) return res.status(400).json({ message: 'User doesnt exists' });
-    const isPasswordCorrect = await bcrypt.compare(heslo, user.Heslo);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect)
       return res.status(400).json({ message: 'Invalid credentials' });
 
-    const accessToken = generateAccessToken({ username: user.Email });
+    const accessToken = generateAccessToken({ _id: user._id });
     const refreshToken = jwt.sign(
-      { username: user.Email },
+      { _id: user._id },
       process.env.REFRESH_TOKEN_SECRET
     );
-
+    delete user.password;
+    user = { ...user, accessToken, expiresIn: expiresIn - 1000 };
     await RefreshTokens.create({ token: refreshToken });
     res
       .status(201)
@@ -72,7 +72,7 @@ export const signIn = async (req, res) => {
         httpOnly: false,
       })
       .cookie('refresh_token', refreshToken, { httpOnly: true })
-      .json({ user, accessToken, expiresIn: expiresIn - 1000 });
+      .json(user);
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -94,15 +94,27 @@ export const refreshToken = async (req, res) => {
   if (refreshToken == null) return res.sendStatus(401);
   if (!(await RefreshTokens.findOne({ token: refreshToken })))
     return res.sendStatus(403);
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    const accessToken = generateAccessToken({ username: user.username });
-    res
-      .cookie('jwt_token', accessToken, {
-        expires: new Date(Date.now() + expiresIn),
-        httpOnly: false,
-      })
-      .json({ user, accessToken, expiresIn: expiresIn - 1000 })
-      .status(201);
-  });
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) return res.sendStatus(403);
+      let user;
+      try {
+        user = await User.findOne({ _id: decoded._id }).lean();
+      } catch {
+        return res.sendStatus(403);
+      }
+      const accessToken = generateAccessToken({ _id: user._id });
+      delete user.password;
+      user = { ...user, accessToken, expiresIn: expiresIn - 1000 };
+      res
+        .cookie('jwt_token', accessToken, {
+          expires: new Date(Date.now() + expiresIn),
+          httpOnly: false,
+        })
+        .json(user)
+        .status(201);
+    }
+  );
 };

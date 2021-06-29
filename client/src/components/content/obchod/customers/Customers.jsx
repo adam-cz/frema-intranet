@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { loadCustomers } from '../../../../actions/customers';
 import TableSearch from '../../ui/TableSearch';
+import RecordTextList from './RecordTextList';
 
 const Customers = () => {
   const customers = useSelector((state) => state.customers);
@@ -52,10 +53,7 @@ const Customers = () => {
         dataSource={customers.data}
         loading={customers.loading}
         expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.name}</p>
-          ),
-          rowExpandable: (record) => record.name !== 'Not Expandable',
+          expandedRowRender: (record) => <RecordTextList record={record} />,
         }}
       />
     </div>

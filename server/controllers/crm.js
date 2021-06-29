@@ -14,7 +14,7 @@ export const fetchCrmRecords = async (req, res) => {
 
 export const addCrmText = async (req, res) => {
   try {
-    const employee = await Employees.findOne({ Email: req.user.username });
+    const employee = await Employees.findOne({ _id: req.user._id });
     const crmRecord = await CRM.findOne({ _id: req.body.id });
     crmRecord.coms.phone.done = req.body.phone;
     crmRecord.coms.email.done = req.body.email;
@@ -53,7 +53,7 @@ export const addCrmRecord = async (req, res) => {
     const customer = await Customers.findOne({
       _id: req.body.company,
     });
-    const employee = await Employees.findOne({ Email: req.user.username });
+    const employee = await Employees.findOne({ _id: req.user._id });
     record.client.company_name = customer.name;
     record.records[0].created.id = employee._id;
     record.created.name = `${employee.Jmeno} ${employee.Prijmeni}`;

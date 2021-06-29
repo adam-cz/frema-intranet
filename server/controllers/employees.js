@@ -5,7 +5,7 @@ export const fetchEmployees = async (req, res) => {
   try {
     const result = await User.find(
       {},
-      'Jmeno Prijmeni DatumCasOperace Pritomen'
+      'name surname lastOperation isPresent email'
     );
     res.status(200).json(result);
   } catch (err) {
@@ -38,16 +38,14 @@ const loadEmployees = async () => {
       }).DatumUkonceni
     );
   });
-  const convertedEmployees = filteredEmployees.map((employee) => ({
-    name: employee.Jmeno,
-    surname: employee.Prijmeni,
-    email: employee.Email,
-
-    _id: employee.RC,
-  }));
-  console.log(convertedEmployees);
-  console.log(filteredEmployees);
-  return filteredEmployees;
+  const convertedEmployees = filteredEmployees.map(
+    ({ Jmeno, Prijmeni, RC }) => ({
+      name: Jmeno,
+      surname: Prijmeni,
+      _id: RC,
+    })
+  );
+  return convertedEmployees;
 };
 
 //Get back differential of two lists - used for filter employees who are still employed
@@ -68,10 +66,10 @@ export const updateEmployees = async (req, res) => {
     if (newEmployees) await User.insertMany(newEmployees);
     if (dismissedEmployees) {
       for (let i = 0; i < dismissedEmployees.length; i++) {
-        await User.deleteOne({ RC: dismissedEmployees[i].RC });
+        await User.deleteOne({ _id: dismissedEmployees[i]._id });
       }
     }
-    await User.updateMany({}, { Pritomnost: 0, DatumCasOperace: '' });
+    await User.updateMany({}, { isPresent: 0, lastOperation: '' });
     res.status(200).send({
       message: 'Update Completed',
       added: newEmployees.length,
@@ -95,10 +93,10 @@ export const present = async (req, res) => {
       .cursor()
       .eachAsync(async (doc, i) => {
         const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
-          (el) => el.RC == doc.RC
+          (el) => el.RC == doc._id
         );
-        doc.Pritomen = Pritomnost;
-        doc.DatumCasOperace = new Date(DatumCasOperace);
+        doc.isPresent = Pritomnost;
+        doc.lastOperation = new Date(DatumCasOperace);
         await doc.save();
       });
     res.status(200).send({ Message: 'Docházka aktualizována' });
