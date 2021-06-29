@@ -74,11 +74,6 @@
   text-align: center;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
 .header-menu {
   display: flex;
   justify-content: start;
@@ -92,4 +87,13 @@
 .user-status-name {
   margin-left: 10px;
   color: white;
+}
+
+.user-info-box {
+  padding: 0px 10px;
+  text-align: center;
+}
+.user-info-box:hover {
+  background-color: #1890ff;
+  cursor: pointer;
 }
