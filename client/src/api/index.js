@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const urlApi = 'http://localhost:3001/';
-const urlAuth = 'http://localhost:3002/';
+const appSite = 'http://pc128';
+const urlApi = `${appSite}:3001`;
+const urlAuth = `${appSite}:3002`;
 
 axios.defaults.withCredentials = true;
 
