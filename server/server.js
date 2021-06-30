@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import { appSite } from './config/server.js';
 
 //CRONE IMPORT
 import './utils/cron.js';
@@ -16,7 +17,7 @@ const app = express();
 const port = process.env.PORT_API || 3001;
 
 //MIDDLEWARE
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: `${appSite}:3000` }));
 app.use(cookieParser());
 app.use(express.json());
 
