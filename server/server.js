@@ -25,6 +25,8 @@ app.use('/crm', crmRouter);
 const mongoConfig = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
 };
 
 mongoose

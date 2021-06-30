@@ -11,11 +11,13 @@ import { fetchCustomers, addCustomer } from '../controllers/customer.js';
 
 const router = express.Router();
 
+router.use(authenticateToken);
+
 //all the routes that have to do something with crm
-router.get('/', authenticateToken, fetchCrmRecords);
-router.post('/add', authenticateToken, addCrmRecord);
-router.post('/addtext', authenticateToken, addCrmText);
-router.get('/customers', authenticateToken, fetchCustomers);
-router.post('/customers/add', authenticateToken, addCustomer);
+router.get('/', fetchCrmRecords);
+router.post('/add', addCrmRecord);
+router.post('/addtext', addCrmText);
+router.get('/customers', fetchCustomers);
+router.post('/customers/add', addCustomer);
 
 export default router;
