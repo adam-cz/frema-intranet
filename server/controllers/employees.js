@@ -99,8 +99,8 @@ export const updateEmployees = async (req, res) => {
   }
 };
 
-//Update presence of Employees (3. table)
-export const present = async (req, res) => {
+//Update presence of Employees (3. table) - used by cron job
+export const present = async () => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
@@ -119,9 +119,7 @@ export const present = async (req, res) => {
         doc.lastOperation = new Date(DatumCasOperace);
         await doc.save();
       });
-
-    res.status(200).send({ Message: 'Docházka aktualizována' });
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    console.log(err.message);
   }
 };

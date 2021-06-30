@@ -4,6 +4,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 
+//CRONE IMPORT
+import './utils/cron.js';
+
 //ROUTES IMPORT
 import employeesRouter from './routes/employees.js';
 import crmRouter from './routes/crm.js';
