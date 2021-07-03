@@ -76,7 +76,7 @@
 
 .header-menu {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .logo-svg {

@@ -1,31 +1,10 @@
 import axios from 'axios';
 
-const appSite = 'http://pc128';
-const urlApi = `${appSite}:3001`;
-const urlAuth = `${appSite}:3002`;
+const appSite = 'http://localhost';
+const urlApi = `${appSite}:3001/`;
+const urlAuth = `${appSite}:3002/`;
 
 axios.defaults.withCredentials = true;
-
-// axios.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       return axios.post(`${urlAuth}user/token`).then((req, res) => {
-//         console.log(req, res);
-//         if (res.status === 201) {
-//           return axios(originalRequest);
-//         }
-//       });
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-//User calls
 
 export const silentRefresh = (time) => {
   setTimeout(() => {

@@ -12,8 +12,8 @@ import HeaderNavigation from './components/header/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/humanresources/Employees';
 import Obchod from './components/siderMenu/Obchod';
-import CRM from './components/content/obchod/crm/CRM';
-import Customers from './components/content/obchod/customers/Customers';
+import CRM from './components/content/sales/crm/CRM';
+import Customers from './components/content/sales/customers/Customers';
 import { getEmployees } from './actions/employees';
 
 const { Content, Sider } = Layout;
