@@ -1,3 +1,5 @@
-export const ADMIN = 'ADMIN';
-export const MANAGER = 'MANAGER';
-export const SALES = 'SALES';
+export const ROLE = {
+  ADMIN: 'admin',
+  MANAGER: 'manager',
+  SALES: 'sales',
+};
