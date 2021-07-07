@@ -20,14 +20,19 @@ export const logout = () => axios.delete(`${urlAuth}user/signout`);
 
 //API calls
 //CRM
-export const fetchCrmRecords = () => axios.get(`${urlApi}crm/`);
-export const addCrmRecord = (values) => axios.post(`${urlApi}crm/add`, values);
+export const fetchCrmRecords = () => axios.get(`${urlApi}obchod/crm/`);
+export const addCrmRecord = (values) =>
+  axios.post(`${urlApi}obchod/crm/`, values);
+export const deleteCrmRecord = (recordID) =>
+  axios.delete(`${urlApi}obchod/crm/${recordID}`, recordID);
+
 export const addCrmText = (values) =>
-  axios.post(`${urlApi}crm/addtext`, values);
+  axios.post(`${urlApi}obchod/crm/text`, values);
+
 //Customers
-export const fetchCustomers = () => axios.get(`${urlApi}crm/customers/`);
+export const fetchCustomers = () => axios.get(`${urlApi}obchod/customers/`);
 export const addCustomer = (values) =>
-  axios.post(`${urlApi}crm/customers/add/`, values);
+  axios.post(`${urlApi}obchod/customers/obchod`, values);
 
 //Employees
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);

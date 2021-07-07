@@ -12,3 +12,13 @@ export const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+export function authenticateRole(role) {
+  return (req, res, next) => {
+    if (!req.user.role.includes(role)) {
+      res.status(401);
+      return res.send('Not allowed');
+    }
+    next();
+  };
+}

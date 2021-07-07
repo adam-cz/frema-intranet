@@ -1,18 +1,20 @@
-import { ROLE } from '../config/roles';
+import { ROLE } from '../config/roles.js';
 
-export function canViewRecord(user, project) {
-  return (
-    user.role === (ROLE.ADMIN || ROLE.MANAGER || ROLE.SALES) ||
-    project.userId === user._id
-  );
+export function canViewRecords(user) {
+  return user.role.includes(ROLE.ADMIN || ROLE.MANAGER || ROLE.SALES);
 }
 
-export function canDeleteRecord(user, record) {
-  user.role === ROLE.ADMIN || record.created.id === user._id;
+export function canCreateRecord(user) {
+  return user.role.includes(ROLE.ADMIN || ROLE.MANAGER || ROLE.SALES);
 }
 
 export function canEditRecord(user, record) {
   return (
-    user.role === (ROLE.ADMIN || ROLE.MANAGER) || record.created.id === user._id
+    user.role.includes(ROLE.ADMIN || ROLE.MANAGER) ||
+    record.created.id === user._id
   );
+}
+
+export function canDeleteRecord(user, record) {
+  return user.role.includes(ROLE.ADMIN) || record.created.id === user._id;
 }

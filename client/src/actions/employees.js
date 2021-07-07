@@ -5,7 +5,6 @@ export const getEmployees = () => async (dispatch) => {
   dispatch({ type: 'LOAD_EMPLOYEES_LOADING' });
   try {
     const { data } = await api.fetchEmployees();
-    console.log(data);
     dispatch({ type: 'LOAD_EMPLOYEES_SUCCESS', data });
   } catch (error) {
     dispatch({

@@ -10,7 +10,7 @@ import './utils/cron.js';
 
 //ROUTES IMPORT
 import employeesRouter from './routes/employees.js';
-import crmRouter from './routes/crm.js';
+import salesRouter from './routes/sales.js';
 
 //INIT
 const app = express();
@@ -23,7 +23,7 @@ app.use(express.json());
 
 //ROUTING
 app.use('/zamestnanci', employeesRouter);
-app.use('/crm', crmRouter);
+app.use('/obchod', salesRouter);
 
 //DB AND SERVER
 const mongoConfig = {

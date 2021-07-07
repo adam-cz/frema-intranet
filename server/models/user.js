@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   password: String,
   isPresent: Boolean,
   lastOperation: Date,
-  role: String,
+  role: [{ type: String }],
   _id: Number,
 });
 

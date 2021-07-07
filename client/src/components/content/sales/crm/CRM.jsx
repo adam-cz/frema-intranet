@@ -1,8 +1,9 @@
-import { Divider } from 'antd';
+import { Divider, Space, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getCrmRecords } from '../../../../actions/crm';
 import { loadCustomers } from '../../../../actions/customers';
+import { deleteCrmRecord } from '../../../../api/index';
 
 import AddCrmRecord from './AddCrmRecord';
 import TableSearch from '../../ui/TableSearch';
@@ -52,6 +53,21 @@ const CRM = () => {
       dataIndex: 'coms',
       key: 'coms',
       render: (coms) => <CrmProgressBar coms={coms} />,
+    },
+    {
+      title: 'Akce',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button>Upravit</Button>
+          <Button
+            onClick={() => deleteCrmRecord(record.id) && setRefresh(!refresh)}
+            danger
+          >
+            X
+          </Button>
+        </Space>
+      ),
     },
   ];
 

@@ -56,11 +56,15 @@ export const addCrmRecord = async (req, res) => {
     const employee = await Employees.findOne({ _id: req.user._id });
     record.client.company_name = customer.name;
     record.records[0].created.id = employee._id;
-    record.created.name = `${employee.Jmeno} ${employee.Prijmeni}`;
+    record.created.name = `${employee.name} ${employee.surname}`;
     record.created.id = employee._id;
     CRM.create(record);
     res.status(200).json({ message: 'Záznam byl vytvořen' });
   } catch (err) {
     res.json({ message: err }).status(401);
   }
+};
+
+export const deleteCrmRecord = async (req, res) => {
+  console.log(req.params);
 };

@@ -34,9 +34,12 @@ export const signUp = async (req, res) => {
     });
 
     //Generate access and refresh token, save refresh token in database
-    const accessToken = _generateAccessToken({ username: user.email });
+    const accessToken = _generateAccessToken({
+      username: user.email,
+      role: user.role,
+    });
     const refreshToken = jwt.sign(
-      { username: user.email },
+      { username: user.email, role: user.role },
       process.env.REFRESH_TOKEN_SECRET
     );
     await RefreshTokens.create({
@@ -78,11 +81,14 @@ export const signIn = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
 
     //generate access token with user ID
-    const accessToken = _generateAccessToken({ _id: user._id });
+    const accessToken = _generateAccessToken({
+      _id: user._id,
+      role: user.role,
+    });
 
     //generate refresh token. Expiration date is set automaticly
     const refreshToken = jwt.sign(
-      { _id: user._id },
+      { _id: user._id, role: user.role },
       process.env.REFRESH_TOKEN_SECRET
     );
     await RefreshTokens.create({
@@ -159,7 +165,10 @@ export const refreshToken = async (req, res) => {
       } catch (err) {
         return res.sendStatus(401);
       }
-      const accessToken = _generateAccessToken({ _id: user._id });
+      const accessToken = _generateAccessToken({
+        _id: user._id,
+        role: user.role,
+      });
 
       //delete password form user data and add access token expiration
       delete user.password;
