@@ -24,7 +24,7 @@ router.use(authenticateToken);
 router.get('/crm', authGetRecords, fetchCrmRecords);
 router.post('/crm', authCreateRecord, addCrmRecord);
 //router.put('/crm/:recordID', authEditRecord, editCrmRecord);
-router.delete('/crm:recordID', authDeleteRecord, deleteCrmRecord);
+router.delete('/crm/:recordID', authDeleteRecord, deleteCrmRecord);
 
 router.post('/crm/text', addCrmText);
 

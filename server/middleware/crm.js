@@ -30,7 +30,6 @@ export function authEditRecord(req, res, next) {
 }
 
 export function authDeleteRecord(req, res, next) {
-  console.log(req.params);
   if (!canDeleteRecord(req.user, req.params.recordID)) {
     res.status(403);
     return res.send('Not Allowed');

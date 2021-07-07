@@ -24,7 +24,7 @@ export const fetchCrmRecords = () => axios.get(`${urlApi}obchod/crm/`);
 export const addCrmRecord = (values) =>
   axios.post(`${urlApi}obchod/crm/`, values);
 export const deleteCrmRecord = (recordID) =>
-  axios.delete(`${urlApi}obchod/crm/${recordID}`, recordID);
+  axios.delete(`${urlApi}obchod/crm/${recordID}`);
 
 export const addCrmText = (values) =>
   axios.post(`${urlApi}obchod/crm/text`, values);

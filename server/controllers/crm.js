@@ -66,5 +66,10 @@ export const addCrmRecord = async (req, res) => {
 };
 
 export const deleteCrmRecord = async (req, res) => {
-  console.log(req.params);
+  try {
+    await CRM.deleteOne({ _id: req.params.recordID });
+    res.status(204).json({ message: 'Záznam byl smazán' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
 };

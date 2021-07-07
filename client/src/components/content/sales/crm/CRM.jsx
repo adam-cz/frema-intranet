@@ -16,6 +16,11 @@ const CRM = () => {
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState('false');
 
+  const deleteRecord = async (id) => {
+    await deleteCrmRecord(id);
+    setRefresh(!refresh);
+  };
+
   const columns = [
     {
       title: 'Firma',
@@ -60,10 +65,7 @@ const CRM = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button>Upravit</Button>
-          <Button
-            onClick={() => deleteCrmRecord(record.id) && setRefresh(!refresh)}
-            danger
-          >
+          <Button onClick={() => deleteRecord(record._id)} danger>
             X
           </Button>
         </Space>
