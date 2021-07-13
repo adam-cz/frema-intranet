@@ -15,6 +15,8 @@ import Obchod from './components/siderMenu/Obchod';
 import CRM from './components/content/sales/crm/CRM';
 import Customers from './components/content/sales/customers/Customers';
 import { getEmployees } from './actions/employees';
+import Admin from './components/siderMenu/Admin';
+import NewUser from './components/admin/NewUser';
 
 const { Content, Sider } = Layout;
 
@@ -33,6 +35,7 @@ function App() {
           <Sider width={200} className="site-layout-background">
             <Route path="/personalistika" component={Personalistika} />
             <Route path="/obchod" component={Obchod} />
+            <Route path="/admin" component={Admin} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Content
@@ -49,6 +52,7 @@ function App() {
               />
               <Route path="/obchod/crm" component={CRM} />
               <Route path="/obchod/zakaznici" component={Customers} />
+              <Route path="/admin/pridat-uzivatele" component={NewUser} />
             </Content>
           </Layout>
         </Layout>

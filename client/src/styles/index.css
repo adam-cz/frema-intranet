@@ -97,3 +97,9 @@
   background-color: #1890ff;
   cursor: pointer;
 }
+
+#contact-list-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

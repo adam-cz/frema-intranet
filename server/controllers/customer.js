@@ -41,3 +41,12 @@ export const addCustomer = async (req, res) => {
     console.log(err);
   }
 };
+
+export const deleteCustomer = async (req, res) => {
+  try {
+    await Customer.deleteOne({ _id: req.params.customerID });
+    res.status(204).json({ message: 'Zákazník byl smazán' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
+};

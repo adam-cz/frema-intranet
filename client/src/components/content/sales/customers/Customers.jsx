@@ -1,15 +1,22 @@
-import { Divider } from 'antd';
+import { Divider, Space, Button } from 'antd';
 import AddCustomer from './AddCustomer';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { loadCustomers } from '../../../../actions/customers';
 import TableSearch from '../../ui/TableSearch';
-import RecordTextList from './RecordTextList';
+import ContactList from './ContactList';
+import { deleteCustomer } from '../../../../api/index';
 
 const Customers = () => {
   const customers = useSelector((state) => state.customers);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [customerCount, setCustomerCount] = useState(customers.data.length);
+
+  const deleteHandler = async (id) => {
+    await deleteCustomer(id);
+    dispatch(loadCustomers());
+  };
 
   useEffect(() => {
     dispatch(loadCustomers());
@@ -39,6 +46,26 @@ const Customers = () => {
       showSorterTooltip: false,
       render: (date) => new Date(date).toLocaleString(),
     },
+    {
+      title: 'Akce',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button>Upravit</Button>
+          <Button
+            disabled={
+              user.data.role.includes('admin')
+                ? false
+                : record.created.by !== user.data._id
+            }
+            onClick={() => deleteHandler(record._id)}
+            danger
+          >
+            X
+          </Button>
+        </Space>
+      ),
+    },
   ];
 
   return (
@@ -53,7 +80,7 @@ const Customers = () => {
         dataSource={customers.data}
         loading={customers.loading}
         expandable={{
-          expandedRowRender: (record) => <RecordTextList record={record} />,
+          expandedRowRender: (record) => <ContactList record={record} />,
         }}
       />
     </div>

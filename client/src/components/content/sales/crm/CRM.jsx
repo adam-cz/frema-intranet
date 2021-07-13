@@ -13,12 +13,13 @@ import AddTextRecord from './AddTextRecord';
 
 const CRM = () => {
   const crmRecords = useSelector((state) => state.crm);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState('false');
 
   const deleteRecord = async (id) => {
     await deleteCrmRecord(id);
-    setRefresh(!refresh);
+    dispatch(getCrmRecords());
   };
 
   const columns = [
@@ -65,7 +66,15 @@ const CRM = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button>Upravit</Button>
-          <Button onClick={() => deleteRecord(record._id)} danger>
+          <Button
+            disabled={
+              user.data.role.includes('admin')
+                ? false
+                : record.created.id !== user.data._id
+            }
+            onClick={() => deleteRecord(record._id)}
+            danger
+          >
             X
           </Button>
         </Space>

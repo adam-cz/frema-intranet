@@ -6,6 +6,12 @@ import {
   authEditRecord,
   authDeleteRecord,
 } from '../middleware/crm.js';
+import {
+  authGetCustomers,
+  authCreateCustomer,
+  authEditCustomer,
+  authDeleteCustomer,
+} from '../middleware/customer.js';
 
 //import controller functions
 import {
@@ -14,7 +20,11 @@ import {
   addCrmRecord,
   addCrmText,
 } from '../controllers/crm.js';
-import { fetchCustomers, addCustomer } from '../controllers/customer.js';
+import {
+  fetchCustomers,
+  addCustomer,
+  deleteCustomer,
+} from '../controllers/customer.js';
 
 const router = express.Router();
 
@@ -28,7 +38,8 @@ router.delete('/crm/:recordID', authDeleteRecord, deleteCrmRecord);
 
 router.post('/crm/text', addCrmText);
 
-router.get('/customers', fetchCustomers);
-router.post('/customers', addCustomer);
+router.get('/customers', authGetCustomers, fetchCustomers);
+router.post('/customers', authCreateCustomer, addCustomer);
+router.delete('/cusotmers/:customerID', authDeleteCustomer, deleteCustomer);
 
 export default router;

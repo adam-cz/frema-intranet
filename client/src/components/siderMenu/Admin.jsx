@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
-const Obchod = () => {
+const Admin = () => {
   return (
     <Sider width={200} className="site-layout-background">
       <Menu
@@ -12,14 +12,10 @@ const Obchod = () => {
         defaultSelectedKeys={['1']}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <SubMenu key="obchod" title="Obchod">
+        <SubMenu key="uzivatele" title="Uživatelé">
           <Menu.Item key="1">
-            <span>CRM záznamy</span>
-            <Link to="/obchod/crm" />
-          </Menu.Item>
-          <Menu.Item key="2">
-            <span>Seznam firem</span>
-            <Link to="/obchod/zakaznici" />
+            <span>Přidat uživatele</span>
+            <Link to="/admin/pridat-uzivatele" />
           </Menu.Item>
         </SubMenu>
       </Menu>
@@ -27,4 +23,4 @@ const Obchod = () => {
   );
 };
 
-export default Obchod;
+export default Admin;

@@ -17,6 +17,8 @@ export const silentLogin = () => axios.post(`${urlAuth}user/token`);
 export const login = (email, password) =>
   axios.post(`${urlAuth}user/signin`, { email, password });
 export const logout = () => axios.delete(`${urlAuth}user/signout`);
+export const signUp = (id, email, password) =>
+  axios.post(`${urlAuth}user/signup`, id, email, password);
 
 //API calls
 //CRM
@@ -32,7 +34,9 @@ export const addCrmText = (values) =>
 //Customers
 export const fetchCustomers = () => axios.get(`${urlApi}obchod/customers/`);
 export const addCustomer = (values) =>
-  axios.post(`${urlApi}obchod/customers/obchod`, values);
+  axios.post(`${urlApi}obchod/customers/`, values);
+export const deleteCustomer = (id) =>
+  axios.delete(`${urlApi}obchod/customers/${id}`);
 
 //Employees
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);

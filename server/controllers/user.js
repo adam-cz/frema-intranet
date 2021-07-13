@@ -18,47 +18,26 @@ const _generateAccessToken = (userData) => {
 */
 
 export const signUp = async (req, res) => {
-  const { email, heslo } = req.body;
-
+  const { id, email, password } = req.body;
   //Check if user doesnt exists
   try {
-    const userExists = await User.findOne({ email });
-    if (userExists)
-      return res.status(401).json({ message: 'User already exists' });
+    const user = await User.findOne({ _id: id });
+
+    if (!user)
+      return res
+        .status(401)
+        .json({ message: 'User hasnt been created at attendance yet' });
 
     //Create user and hash password
-    const hashedPassword = await bcrypt.hash(heslo, 10);
-    const user = await User.create({
-      email,
-      password: hashedPassword,
-    });
 
-    //Generate access and refresh token, save refresh token in database
-    const accessToken = _generateAccessToken({
-      username: user.email,
-      role: user.role,
-    });
-    const refreshToken = jwt.sign(
-      { username: user.email, role: user.role },
-      process.env.REFRESH_TOKEN_SECRET
-    );
-    await RefreshTokens.create({
-      token: refreshToken,
-      user: user._id,
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.email = email;
 
-    //Response - set credentials in httponly cookies and send user details
-    res
-      .status(201)
-      .cookie('jwt_token', accessToken, {
-        expires: new Date(Date.now() + config.ACCESS_TOKEN_EXPIRE),
-        httpOnly: true,
-      })
-      .cookie('refresh_token', refreshToken, { httpOnly: true })
-      .json({
-        user,
-        expiresIn: config.ACCESS_TOKEN_EXPIRE - 1000,
-      });
+    const result = await user.save();
+    console.log(result);
+
+    res.status(201).json({ message: 'user registered' });
   } catch (err) {
     res.status(500).json({ message: err });
   }
