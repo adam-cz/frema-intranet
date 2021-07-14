@@ -1,7 +1,6 @@
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 
-const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 const Obchod = () => {
@@ -12,16 +11,14 @@ const Obchod = () => {
         defaultSelectedKeys={['1']}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <SubMenu key="obchod" title="Obchod">
-          <Menu.Item key="1">
-            <span>CRM záznamy</span>
-            <Link to="/obchod/crm" />
-          </Menu.Item>
-          <Menu.Item key="2">
-            <span>Seznam firem</span>
-            <Link to="/obchod/zakaznici" />
-          </Menu.Item>
-        </SubMenu>
+        <Menu.Item key="1">
+          <span>Záznamy z jednání</span>
+          <Link to="/obchod/crm" />
+        </Menu.Item>
+        <Menu.Item key="2">
+          <span>Firmy</span>
+          <Link to="/obchod/zakaznici" />
+        </Menu.Item>
       </Menu>
     </Sider>
   );
