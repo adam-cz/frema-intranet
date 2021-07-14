@@ -24,7 +24,7 @@ export const addCustomer = async (req, res) => {
         surname: el.prijmeni,
         job: el.funkce,
         tel: el.tel,
-        mail: el.tel,
+        mail: el.mail,
         created: { by: req.user._id },
       };
 

@@ -1,19 +1,29 @@
 import { List, Input, Table, Space, Button, AutoComplete } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 const ContactList = ({ record }) => {
   const user = useSelector((state) => state.user);
-  const [edit, setEdit] = useState(false);
   const [editPerson, setEditPerson] = useState([]);
-  const [person, setPerson] = useState({});
+  const [person, setPerson] = useState([]);
+
+  useEffect(() => {
+    console.log(editPerson);
+  }, [editPerson]);
+
+  const allowEdit = (id) => {
+    const pos = editPerson.indexOf(id);
+    pos < 0
+      ? setEditPerson(editPerson.concat([id]))
+      : setEditPerson(editPerson.filter((record) => record !== id));
+  };
 
   const columns = [
     {
       title: 'Jméno',
       dataIndex: 'name',
       key: 'name',
-      width: 150,
+      width: 100,
       render: (text, record) =>
         editPerson.includes(record._id) ? (
           <Input defaultValue={record.name} size="small"></Input>
@@ -25,9 +35,9 @@ const ContactList = ({ record }) => {
       title: 'Příjmení',
       dataIndex: 'surname',
       key: 'surname',
-      width: 150,
+      width: 100,
       render: (text, record) =>
-        editPerson ? (
+        editPerson.includes(record._id) ? (
           <Input defaultValue={record.surname} size="small"></Input>
         ) : (
           record.surname
@@ -39,7 +49,7 @@ const ContactList = ({ record }) => {
       key: 'job',
       width: 150,
       render: (text, record) =>
-        editPerson ? (
+        editPerson.includes(record._id) ? (
           <Input defaultValue={record.job} size="small"></Input>
         ) : (
           record.job
@@ -51,7 +61,7 @@ const ContactList = ({ record }) => {
       key: 'tel',
       width: 150,
       render: (text, record) =>
-        editPerson ? (
+        editPerson.includes(record._id) ? (
           <Input defaultValue={record.tel} size="small"></Input>
         ) : (
           record.tel
@@ -63,7 +73,7 @@ const ContactList = ({ record }) => {
       key: 'mail',
       width: 150,
       render: (text, record) =>
-        editPerson ? (
+        editPerson.includes(record._id) ? (
           <Input defaultValue={record.mail} size="small"></Input>
         ) : (
           record.mail
@@ -73,20 +83,24 @@ const ContactList = ({ record }) => {
       title: 'Akce',
       render: (text, record) => (
         <Space>
-          <Button size="small" onClick={() => editPerson.indexOf(record._id) < 0 ?   }>
-            upravit
-          </Button>
+          <Button size="small">vytvořit záznam</Button>
+          {editPerson.includes(record._id) ? (
+            <Button size="small" onClick={() => allowEdit(record._id)}>
+              uložit
+            </Button>
+          ) : (
+            <Button size="small" onClick={() => allowEdit(record._id)}>
+              upravit
+            </Button>
+          )}
           <Button size="small" danger>
-            X
+            Smazat
           </Button>
         </Space>
       ),
     },
   ];
 
-  const saveHandle = () => {
-    setEdit(!edit);
-  };
   return (
     <div>
       <Table pagination={false} columns={columns} dataSource={record.persons} />
