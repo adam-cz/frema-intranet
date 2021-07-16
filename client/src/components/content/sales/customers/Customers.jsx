@@ -80,7 +80,12 @@ const Customers = () => {
         dataSource={customers.data}
         loading={customers.loading}
         expandable={{
-          expandedRowRender: (record) => <ContactList record={record} />,
+          expandedRowRender: (record) => (
+            <ContactList
+              record={record}
+              reload={() => dispatch(loadCustomers())}
+            />
+          ),
         }}
       />
     </div>

@@ -1,21 +1,31 @@
 import { List, Input, Table, Space, Button, AutoComplete } from 'antd';
+import { findIndex } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import * as api from '../../../../api';
 
-const ContactList = ({ record }) => {
+const ContactList = (props) => {
   const user = useSelector((state) => state.user);
   const [editPerson, setEditPerson] = useState([]);
-  const [person, setPerson] = useState([]);
+  const [person, setPerson] = useState('');
 
-  useEffect(() => {
-    console.log(editPerson);
-  }, [editPerson]);
+  const savePerson = async () => {
+    if (person) await api.editPerson(person, props.record._id);
+    setPerson('');
+    setEditPerson('');
+    props.reload();
+  };
 
-  const allowEdit = (id) => {
-    const pos = editPerson.indexOf(id);
-    pos < 0
-      ? setEditPerson(editPerson.concat([id]))
-      : setEditPerson(editPerson.filter((record) => record !== id));
+  const deletePerson = async (personID, recordID) => {
+    console.log(personID, recordID);
+    await api.deletePerson(personID, recordID);
+    props.reload();
+  };
+
+  const inputHandler = (event, record, key) => {
+    let data = { ...record };
+    data[key] = event.target.value;
+    setPerson(data);
   };
 
   const columns = [
@@ -25,8 +35,12 @@ const ContactList = ({ record }) => {
       key: 'name',
       width: 100,
       render: (text, record) =>
-        editPerson.includes(record._id) ? (
-          <Input defaultValue={record.name} size="small"></Input>
+        editPerson === record._id ? (
+          <Input
+            defaultValue={record.name}
+            onChange={(event) => inputHandler(event, record, 'name')}
+            size="small"
+          ></Input>
         ) : (
           record.name
         ),
@@ -37,8 +51,12 @@ const ContactList = ({ record }) => {
       key: 'surname',
       width: 100,
       render: (text, record) =>
-        editPerson.includes(record._id) ? (
-          <Input defaultValue={record.surname} size="small"></Input>
+        editPerson === record._id ? (
+          <Input
+            defaultValue={record.surname}
+            onChange={(event) => inputHandler(event, record, 'surname')}
+            size="small"
+          ></Input>
         ) : (
           record.surname
         ),
@@ -49,8 +67,12 @@ const ContactList = ({ record }) => {
       key: 'job',
       width: 150,
       render: (text, record) =>
-        editPerson.includes(record._id) ? (
-          <Input defaultValue={record.job} size="small"></Input>
+        editPerson === record._id ? (
+          <Input
+            defaultValue={record.job}
+            onChange={(event) => inputHandler(event, record, 'job')}
+            size="small"
+          ></Input>
         ) : (
           record.job
         ),
@@ -61,8 +83,12 @@ const ContactList = ({ record }) => {
       key: 'tel',
       width: 150,
       render: (text, record) =>
-        editPerson.includes(record._id) ? (
-          <Input defaultValue={record.tel} size="small"></Input>
+        editPerson === record._id ? (
+          <Input
+            defaultValue={record.tel}
+            onChange={(event) => inputHandler(event, record, 'tel')}
+            size="small"
+          ></Input>
         ) : (
           record.tel
         ),
@@ -73,8 +99,12 @@ const ContactList = ({ record }) => {
       key: 'mail',
       width: 150,
       render: (text, record) =>
-        editPerson.includes(record._id) ? (
-          <Input defaultValue={record.mail} size="small"></Input>
+        editPerson === record._id ? (
+          <Input
+            defaultValue={record.mail}
+            onChange={(event) => inputHandler(event, record, 'mail')}
+            size="small"
+          ></Input>
         ) : (
           record.mail
         ),
@@ -84,16 +114,20 @@ const ContactList = ({ record }) => {
       render: (text, record) => (
         <Space>
           <Button size="small">vytvořit záznam</Button>
-          {editPerson.includes(record._id) ? (
-            <Button size="small" onClick={() => allowEdit(record._id)}>
+          {editPerson === record._id ? (
+            <Button size="small" onClick={savePerson}>
               uložit
             </Button>
           ) : (
-            <Button size="small" onClick={() => allowEdit(record._id)}>
+            <Button size="small" onClick={() => setEditPerson(record._id)}>
               upravit
             </Button>
           )}
-          <Button size="small" danger>
+          <Button
+            size="small"
+            danger
+            onClick={() => deletePerson(record._id, props.record._id)}
+          >
             Smazat
           </Button>
         </Space>
@@ -103,7 +137,11 @@ const ContactList = ({ record }) => {
 
   return (
     <div>
-      <Table pagination={false} columns={columns} dataSource={record.persons} />
+      <Table
+        pagination={false}
+        columns={columns}
+        dataSource={props.record.persons}
+      />
     </div>
   );
 };

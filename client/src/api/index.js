@@ -28,6 +28,7 @@ export const addCrmRecord = (values) =>
 export const deleteCrmRecord = (recordID) =>
   axios.delete(`${urlApi}obchod/crm/${recordID}`);
 
+//CRM record texts
 export const addCrmText = (values) =>
   axios.post(`${urlApi}obchod/crm/text`, values);
 
@@ -37,6 +38,14 @@ export const addCustomer = (values) =>
   axios.post(`${urlApi}obchod/customers/`, values);
 export const deleteCustomer = (id) =>
   axios.delete(`${urlApi}obchod/customers/${id}`);
+
+//Customer contacts
+export const editPerson = (person, customerID) =>
+  axios.put(`${urlApi}obchod/customers/person`, { person, customerID });
+export const deletePerson = (personID, customerID) =>
+  axios.delete(`${urlApi}obchod/customers/person`, {
+    data: { personID, customerID },
+  });
 
 //Employees
 export const fetchEmployees = () => axios.get(`${urlApi}zamestnanci/`);

@@ -50,3 +50,29 @@ export const deleteCustomer = async (req, res) => {
     res.json({ message: err }).status(404);
   }
 };
+
+export const editCustomerPerson = async (req, res) => {
+  try {
+    console.log(req.body);
+    const customer = await Customer.findOneAndUpdate(
+      { _id: req.body.customerID, 'persons._id': req.body.person._id },
+      { $set: { 'persons.$': req.body.person } }
+    );
+    customer.save();
+    res.status(201).json({ message: 'Kontakt byl změněn' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
+};
+
+export const deleteCustomerPerson = async (req, res) => {
+  try {
+    const customer = await Customer.findOne({ _id: req.body.customerID });
+    await customer.persons.pull({ _id: req.body.personID });
+    await customer.save();
+    console.log(customer);
+    res.status(204).json({ message: 'Zákazník byl smazán' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
+};
