@@ -38,6 +38,13 @@ const CRM = () => {
       searchIndex: 'subject',
     },
     {
+      title: 'Hodnota',
+      dataIndex: 'value',
+      key: 'value',
+      width: '20%',
+      render: (value) => (value ? `${value} Kč` : 'Nezadáno'),
+    },
+    {
       title: 'Datum zápisu',
       dataIndex: ['created', 'date'],
       key: ['created', 'date'],

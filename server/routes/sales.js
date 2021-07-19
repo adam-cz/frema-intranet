@@ -24,6 +24,7 @@ import {
   fetchCustomers,
   addCustomer,
   deleteCustomer,
+  editCustomer,
 } from '../controllers/customer.js';
 import {
   editCustomerPerson,
@@ -46,9 +47,9 @@ router.post('/crm/text', addCrmText);
 
 //customers
 router.get('/customers', authGetCustomers, fetchCustomers);
-//router.put('/customers', editCustomer);
+router.put('/customers', editCustomer);
 router.post('/customers', authCreateCustomer, addCustomer);
-router.delete('/cusotmers/:customerID', authDeleteCustomer, deleteCustomer);
+router.delete('/customers/:customerID', authDeleteCustomer, deleteCustomer);
 
 //customer contacts
 router.post('/customers/person', createCustomerPerson);

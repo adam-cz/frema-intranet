@@ -12,11 +12,17 @@ const Customers = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [customerCount, setCustomerCount] = useState(customers.data.length);
+  const [activeKey, setActiveKey] = useState(['']);
   const [edit, setEdit] = useState('');
 
   const deleteHandler = async (id) => {
     await deleteCustomer(id);
     dispatch(loadCustomers());
+  };
+
+  const editHandler = (record) => {
+    setEdit(record);
+    setActiveKey(['1']);
   };
 
   useEffect(() => {
@@ -52,7 +58,7 @@ const Customers = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => setEdit(record)}>Upravit</Button>
+          <Button onClick={() => editHandler(record)}>Upravit</Button>
           <Button
             disabled={
               user.data.role.includes('admin')
@@ -76,6 +82,8 @@ const Customers = () => {
         customerCount={customerCount}
         edit={edit}
         setEdit={setEdit}
+        activeKey={activeKey}
+        setActiveKey={setActiveKey}
       />
       <Divider orientation="left" plain />
       <TableSearch

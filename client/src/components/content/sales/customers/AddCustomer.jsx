@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as api from '../../../../api/index';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Collapse, Divider, Row, Form, Input, Button, Space } from 'antd';
@@ -9,26 +9,33 @@ const Zakaznici = (props) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    await api.addCustomer(values);
+    props.edit
+      ? await api.editCustomer({ ...values, _id: props.edit._id })
+      : await api.addCustomer(values);
     form.resetFields();
+    props.setActiveKey('');
     props.setCustomerCount(props.customerCount + 1);
   };
 
   useEffect(() => {
     if (props.edit) {
-      const fields = form.getFieldsValue;
-      console.log(props.edit);
       form.setFieldsValue({
-        ['ico']: props.edit.ico,
+        ico: props.edit.ico,
+        name: props.edit.name,
+        persons: props.edit.persons,
       });
     }
   }, [props.edit, form]);
 
   return (
-    <Collapse>
+    <Collapse
+      activeKey={props.activeKey}
+      onChange={(key) => props.setActiveKey(key)}
+    >
       <Panel
         header={props.edit ? 'Upravit zákazníka' : 'Přidat zákazníka'}
         key="1"
+        onClick={() => props.setActiveKey(!props.activeKey)}
       >
         <Form form={form} name="add-customer" onFinish={onFinish}>
           <Divider orientation="left" plain>
@@ -44,7 +51,7 @@ const Zakaznici = (props) => {
                 <Input className="crm-input-ico" type="number" />
               </Form.Item>
 
-              <Form.Item label="Jméno firmy" name="jmenoFirmy">
+              <Form.Item label="Jméno firmy" name="name">
                 <Input className="crm-input" />
               </Form.Item>
             </Space>
@@ -65,24 +72,24 @@ const Zakaznici = (props) => {
                   >
                     <Form.Item
                       {...restField}
-                      name={[name, 'jmeno']}
-                      fieldKey={[fieldKey, 'jmeno']}
+                      name={[name, 'name']}
+                      fieldKey={[fieldKey, 'name']}
                       rules={[{ required: true, message: 'Vyplňte jméno' }]}
                     >
                       <Input placeholder="Jméno" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, 'prijmeni']}
-                      fieldKey={[fieldKey, 'prijmeni']}
+                      name={[name, 'surname']}
+                      fieldKey={[fieldKey, 'surname']}
                       rules={[{ required: true, message: 'Vyplňte příjmení' }]}
                     >
                       <Input placeholder="Příjmení" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, 'funkce']}
-                      fieldKey={[fieldKey, 'funkce']}
+                      name={[name, 'job']}
+                      fieldKey={[fieldKey, 'job']}
                       rules={[{ required: true, message: 'Vyplňte funkci' }]}
                     >
                       <Input placeholder="Funkce" />
@@ -123,7 +130,7 @@ const Zakaznici = (props) => {
           <Divider orientation="left" plain />
 
           <Button type="primary" htmlType="submit">
-            Uložit záznam
+            {props.edit ? 'Upravit záznam' : 'Uložit záznam'}
           </Button>
 
           <Button
@@ -132,9 +139,11 @@ const Zakaznici = (props) => {
             }}
             onClick={() => {
               form.resetFields();
+              props.setEdit('');
+              props.setActiveKey('');
             }}
           >
-            Smazat zadání
+            Storno
           </Button>
         </Form>
       </Panel>

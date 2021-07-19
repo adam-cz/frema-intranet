@@ -38,7 +38,7 @@ export const addCrmRecord = async (req, res) => {
       person_id: req.body.contact,
     },
     subject: req.body.predmetNabidky,
-    value: req.body.hodnotaNabidky,
+    value: req.body.hodnotaZakazky,
     coms: {
       phone: { done: req.body.comsPhone },
       email: { done: req.body.comsEmail },

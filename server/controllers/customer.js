@@ -10,19 +10,32 @@ export const fetchCustomers = async (req, res) => {
   }
 };
 
+export const editCustomer = async (req, res) => {
+  try {
+    const customer = await Customer.findOne({ _id: req.body._id });
+    customer.name = req.body.name;
+    customer.ico = req.body.ico;
+    customer.persons = req.body.persons;
+    await customer.save();
+    res.status(201).json({ message: 'Zákazník byl vytvořen' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
+};
+
 export const addCustomer = async (req, res) => {
   let customer = {
     ico: req.body.ico,
-    name: req.body.jmenoFirmy,
+    name: req.body.name,
     created: { by: req.user._id },
     persons: [],
   };
   if (req.body.persons)
     req.body.persons.forEach((el) => {
       const contact = {
-        name: el.jmeno,
-        surname: el.prijmeni,
-        job: el.funkce,
+        name: el.name,
+        surname: el.surname,
+        job: el.job,
         tel: el.tel,
         mail: el.mail,
         created: { by: req.user._id },
@@ -43,6 +56,7 @@ export const addCustomer = async (req, res) => {
 };
 
 export const deleteCustomer = async (req, res) => {
+  console.log(req.params.customerID);
   try {
     await Customer.deleteOne({ _id: req.params.customerID });
     res.status(204).json({ message: 'Zákazník byl smazán' });
