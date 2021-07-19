@@ -1,11 +1,10 @@
-import { List, Input, Table, Space, Button, AutoComplete } from 'antd';
-import { findIndex } from 'lodash';
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { Input, Table, Space, Button } from 'antd';
+import { useState } from 'react';
+//import { useSelector } from 'react-redux';
 import * as api from '../../../../api';
 
 const ContactList = (props) => {
-  const user = useSelector((state) => state.user);
+  //const user = useSelector((state) => state.user);
   const [editPerson, setEditPerson] = useState([]);
   const [person, setPerson] = useState('');
 

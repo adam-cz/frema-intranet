@@ -71,7 +71,18 @@ export const deleteCustomerPerson = async (req, res) => {
     await customer.persons.pull({ _id: req.body.personID });
     await customer.save();
     console.log(customer);
-    res.status(204).json({ message: 'Zákazník byl smazán' });
+    res.status(204).json({ message: 'Osoba byla smazána' });
+  } catch (err) {
+    res.json({ message: err }).status(404);
+  }
+};
+
+export const createCustomerPerson = async (req, res) => {
+  try {
+    const person = req.body.person;
+    const customer = await Customer.findOne({ _id: req.body.customerID });
+    console.log(person, customer);
+    res.status(201).json({ message: 'Zákazník byl Osoba byla přidána' });
   } catch (err) {
     res.json({ message: err }).status(404);
   }

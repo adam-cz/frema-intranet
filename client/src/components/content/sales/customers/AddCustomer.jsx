@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import * as api from '../../../../api/index';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Collapse, Divider, Row, Form, Input, Button, Space } from 'antd';
@@ -13,9 +14,22 @@ const Zakaznici = (props) => {
     props.setCustomerCount(props.customerCount + 1);
   };
 
+  useEffect(() => {
+    if (props.edit) {
+      const fields = form.getFieldsValue;
+      console.log(props.edit);
+      form.setFieldsValue({
+        ['ico']: props.edit.ico,
+      });
+    }
+  }, [props.edit, form]);
+
   return (
     <Collapse>
-      <Panel header="Přidat zákazníka" key="1">
+      <Panel
+        header={props.edit ? 'Upravit zákazníka' : 'Přidat zákazníka'}
+        key="1"
+      >
         <Form form={form} name="add-customer" onFinish={onFinish}>
           <Divider orientation="left" plain>
             Informace o firmě

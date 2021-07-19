@@ -12,6 +12,7 @@ const Customers = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [customerCount, setCustomerCount] = useState(customers.data.length);
+  const [edit, setEdit] = useState('');
 
   const deleteHandler = async (id) => {
     await deleteCustomer(id);
@@ -51,7 +52,7 @@ const Customers = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button>Upravit</Button>
+          <Button onClick={() => setEdit(record)}>Upravit</Button>
           <Button
             disabled={
               user.data.role.includes('admin')
@@ -73,6 +74,8 @@ const Customers = () => {
       <AddCustomer
         setCustomerCount={setCustomerCount}
         customerCount={customerCount}
+        edit={edit}
+        setEdit={setEdit}
       />
       <Divider orientation="left" plain />
       <TableSearch
