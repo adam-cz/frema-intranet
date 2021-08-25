@@ -11,6 +11,7 @@ import './utils/cron.js';
 //ROUTES IMPORT
 import employeesRouter from './routes/employees.js';
 import salesRouter from './routes/sales.js';
+import userRouter from './routes/user.js';
 
 //INIT
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 //ROUTING
 app.use('/zamestnanci', employeesRouter);
 app.use('/obchod', salesRouter);
+app.use('/user', userRouter);
 
 //DB AND SERVER
 const mongoConfig = {
@@ -43,5 +45,3 @@ mongoose
     )
   )
   .catch((err) => console.log(err.message));
-
-mongoose.set('useFindAndModify', false);

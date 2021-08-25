@@ -12,6 +12,7 @@ import HeaderNavigation from './components/header/HeaderNavigation';
 import Personalistika from './components/siderMenu/Personalistika';
 import Zamestnanci from './components/content/humanresources/Employees';
 import Obchod from './components/siderMenu/Obchod';
+import Vyroba from './components/siderMenu/Vyroba';
 import CRM from './components/content/sales/crm/CRM';
 import Customers from './components/content/sales/customers/Customers';
 import { getEmployees } from './actions/employees';
@@ -35,6 +36,7 @@ function App() {
           <Sider width={200} className="site-layout-background">
             <Route path="/personalistika" component={Personalistika} />
             <Route path="/obchod" component={Obchod} />
+            <Route path="/vyroba" component={Vyroba} />
             <Route path="/admin" component={Admin} />
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>

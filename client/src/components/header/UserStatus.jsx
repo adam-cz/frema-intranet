@@ -25,7 +25,7 @@ const UserStatus = () => {
   return (
     <Dropdown overlay={menu} placement="bottomLeft">
       <div className="user-info-box">
-        <Badge count={1}>
+        <Badge count={0}>
           <Avatar shape="circle" icon={<UserOutlined />} />
         </Badge>
         <span className="user-status-name">

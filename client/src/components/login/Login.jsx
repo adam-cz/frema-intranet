@@ -25,7 +25,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user.data) history.push('/');
+    if (user.data) history.push('/personalistika/zamestnanci');
   }, [user, history]);
 
   return (

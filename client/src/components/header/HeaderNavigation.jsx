@@ -18,12 +18,12 @@ const HeaderNavigation = () => {
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
               <span>Personalistika</span>
-              <Link to="/personalistika" />
+              <Link to="/personalistika/zamestnanci" />
             </Menu.Item>
 
             <Menu.Item key="2">
               <span>Obchod</span>
-              <Link to="/obchod" />
+              <Link to="/obchod/crm" />
             </Menu.Item>
 
             <Menu.Item key="3">
@@ -34,7 +34,7 @@ const HeaderNavigation = () => {
             {user.data.role.includes('admin') ? (
               <Menu.Item key="4">
                 <span>Admin</span>
-                <Link to="/admin" />
+                <Link to="/admin/pridat-uzivatele" />
               </Menu.Item>
             ) : (
               ''
