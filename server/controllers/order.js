@@ -12,3 +12,20 @@ export const fetchOrders = async (req, res) => {
     res.status(404).json({ error: err });
   }
 };
+
+export const fetchProcedures = async (req, res) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: procedures } = await request.query(
+      `SELECT [opv], [nazev] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
+    );
+    if (procedures.length === 0) res.status(200).json(procedures);
+    const data = procedures.map((procedure => {
+      
+    })
+    res.status(200).json(procedures);
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};

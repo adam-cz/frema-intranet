@@ -20,9 +20,9 @@ const config = {
 export const pool = new sql.ConnectionPool(config)
   .connect()
   .then((pool) => {
-    console.log('Connected to MSSQL');
+    console.log('Connected to MSSQL attendance');
     return pool;
   })
-  .catch((err) => console.log('MSSQL database connection failed!'));
+  .catch((err) => console.log('MSSQL attendane database connection failed!'));
 
 export default sql;

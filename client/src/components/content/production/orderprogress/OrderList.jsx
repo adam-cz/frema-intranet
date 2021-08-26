@@ -1,30 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Table } from 'antd';
-import * as api from '../../../../api/index';
+import { Table, Button } from 'antd';
+
 import { DateTime } from 'luxon';
-import { Link } from 'react-router-dom';
 
-const OrderList = ({ setOrder }) => {
-  const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState('');
-  useEffect(() => {
-    const loadOrders = async () => {
-      const { data } = await api.fetchOrders();
-      setOrders(data);
-      setLoading(false);
-    };
-    if (loading) loadOrders();
-  }, [loading]);
-
+const OrderList = ({ setOrder, orders, loading }) => {
   const columns = [
     {
       title: 'Objednávka',
       dataIndex: 'doklad',
       key: 'doklad',
       render: (value) => (
-        <Link to={'zakazky/' + value} onClick={setOrder(value)}>
+        <Button type="link" onClick={() => setOrder(value)}>
           {value}
-        </Link>
+        </Button>
       ),
     },
     {
