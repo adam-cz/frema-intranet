@@ -49,3 +49,6 @@ export const deletePerson = (personID, customerID) =>
 
 //Employees
 export const fetchEmployees = () => axios.get(`${api}zamestnanci/`);
+
+//Orders
+export const fetchOrders = () => axios.get(`${api}order/`);

@@ -18,6 +18,7 @@ import Customers from './components/content/sales/customers/Customers';
 import { getEmployees } from './actions/employees';
 import Admin from './components/siderMenu/Admin';
 import NewUser from './components/admin/NewUser';
+import OrderProgress from './components/content/production/orderprogress/OrderProgress';
 
 const { Content, Sider } = Layout;
 
@@ -55,6 +56,7 @@ function App() {
               <Route path="/obchod/crm" component={CRM} />
               <Route path="/obchod/zakaznici" component={Customers} />
               <Route path="/admin/pridat-uzivatele" component={NewUser} />
+              <Route path="/vyroba/zakazky" component={OrderProgress} />
             </Content>
           </Layout>
         </Layout>

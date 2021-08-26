@@ -1,5 +1,5 @@
 import User from '../models/user.js';
-import sql, { pool } from '../utils/mssql.js';
+import sql, { pool } from '../utils/dochazka.js';
 
 //fetch only necessary attendance data
 export const fetchEmployees = async (req, res) => {

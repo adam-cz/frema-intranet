@@ -12,6 +12,7 @@ import './utils/cron.js';
 import employeesRouter from './routes/employees.js';
 import salesRouter from './routes/sales.js';
 import userRouter from './routes/user.js';
+import orderRouter from './routes/order.js';
 
 //INIT
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/zamestnanci', employeesRouter);
 app.use('/obchod', salesRouter);
 app.use('/user', userRouter);
+app.use('/order', orderRouter);
 
 //DB AND SERVER
 const mongoConfig = {
