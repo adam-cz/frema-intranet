@@ -1,4 +1,5 @@
-import { Table, Button } from 'antd';
+import { Button } from 'antd';
+import TableSearch from '../../ui/TableSearch';
 
 import { DateTime } from 'luxon';
 
@@ -8,11 +9,7 @@ const OrderList = ({ setOrder, orders, loading }) => {
       title: 'Objednávka',
       dataIndex: 'doklad',
       key: 'doklad',
-      render: (value) => (
-        <Button type="link" onClick={() => setOrder(value)}>
-          {value}
-        </Button>
-      ),
+      searchIndex: 'doklad',
     },
     {
       title: 'Poznámka',
@@ -46,11 +43,18 @@ const OrderList = ({ setOrder, orders, loading }) => {
 
   return (
     <div>
-      <Table
+      <TableSearch
         dataSource={orders}
         columns={columns}
         loading={loading}
         rowKey="doklad"
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              setOrder(record.doklad);
+            },
+          };
+        }}
       />
     </div>
   );
