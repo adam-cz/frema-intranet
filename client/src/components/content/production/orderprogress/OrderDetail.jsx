@@ -76,6 +76,7 @@ const OrderDetail = ({ order }) => {
     <div>
       <Divider>Detail zakázky</Divider>
       <div id="leftChart">
+        <h3>Plánované náklady</h3>
         {procedures ? <PlanGraf procedures={procedures} /> : 'Nic'}
       </div>
       <Divider>Plánovaná kalkulace zakázky</Divider>
