@@ -5,7 +5,12 @@ export const fetchOrders = async (req, res) => {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     const { recordset } = await request.query(
-      'SELECT TOP (600) [doklad], [poznamka], [zkraceny_nazev], [dat_por], [dat_dodani], [dat_expedice] FROM dba.op_zahlavi ORDER BY dat_por DESC;'
+      `SELECT TOP (500) [doklad], 
+      [poznamka], 
+      [zkraceny_nazev], 
+      [dat_por], 
+      [dat_dodani], 
+      [dat_expedice] FROM dba.op_zahlavi WHERE denik = 'OP' ORDER BY dat_por DESC;`
     );
     res.status(200).json(recordset);
   } catch (err) {
@@ -22,9 +27,10 @@ export const fetchProcedures = async (req, res) => {
       `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
     );
 
-    const procedures = await Promise.all(
+    const postupy = [];
+    await Promise.all(
       opvFinals.map(async (opvFinal) => {
-        const { recordset: polotovar } = await request.query(
+        const { recordset: polotovary } = await request.query(
           `SELECT [opv], 
           [opvfinal],
           [popis], 
@@ -39,11 +45,11 @@ export const fetchProcedures = async (req, res) => {
           [rn1],
           [cena] FROM dba.v_opvvyrza WHERE opvfinal = '${opvFinal.opv}' ORDER BY opv;`
         );
-        return polotovar;
+        polotovary.map((polotovar) => postupy.push(polotovar));
       })
     );
 
-    res.status(200).json(procedures);
+    res.status(200).json(postupy);
   } catch (err) {
     res.status(404).json({ error: err });
   }

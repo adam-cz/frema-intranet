@@ -1,6 +1,6 @@
 import OrderList from './OrderList';
 import OrderDetail from './OrderDetail';
-import { Breadcrumb, Divider } from 'antd';
+import { Breadcrumb } from 'antd';
 import { useState, useEffect } from 'react';
 import * as api from '../../../../api/index';
 
@@ -30,7 +30,6 @@ const OrderProgress = () => {
             </Breadcrumb.Item>
             <Breadcrumb.Item>{order}</Breadcrumb.Item>
           </Breadcrumb>
-          <Divider />
         </>
       )}
 

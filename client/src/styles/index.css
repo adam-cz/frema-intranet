@@ -103,3 +103,8 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+#leftChart,
+#rightChart {
+  width: 50%;
+}
