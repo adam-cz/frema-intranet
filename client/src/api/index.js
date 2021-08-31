@@ -53,3 +53,5 @@ export const fetchEmployees = () => axios.get(`${api}zamestnanci/`);
 //Orders
 export const fetchOrders = () => axios.get(`${api}order/`);
 export const fetchProcedures = (order) => axios.get(`${api}order/${order}`);
+export const createProcedure = (procedures) =>
+  axios.post(`${api}order/create`, procedures);

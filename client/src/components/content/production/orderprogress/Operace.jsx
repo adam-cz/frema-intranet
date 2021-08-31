@@ -1,7 +1,9 @@
+import { ApiTwoTone } from '@ant-design/icons';
 import { Table, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import NewWindow from 'react-new-window';
 import { Barcodes } from './Barcodes';
+import * as api from '../../../../api';
 
 const columns = [
   {
@@ -71,6 +73,11 @@ const Operace = ({ procedures, loading }) => {
   const [data, setData] = useState([]);
   const [mountBarcodePage, setMountBarcodePage] = useState(false);
 
+  const clickHandler = () => {
+    setMountBarcodePage(!mountBarcodePage);
+    api.createProcedure(data);
+  };
+
   useEffect(() => {
     if (!loading) {
       const count = [];
@@ -81,15 +88,12 @@ const Operace = ({ procedures, loading }) => {
 
   return (
     <div>
-      <Button
-        type="primary"
-        onClick={() => setMountBarcodePage(!mountBarcodePage)}
-      >
+      <Button type="primary" onClick={clickHandler}>
         Generovat čárové kódy
       </Button>
       {mountBarcodePage && (
-        <NewWindow>
-          <Barcodes procedures={procedures} />
+        <NewWindow features={{ width: 1200, height: 1000 }}>
+          <Barcodes data={data} />
         </NewWindow>
       )}
       <Table dataSource={data} columns={columns} loading={loading} />

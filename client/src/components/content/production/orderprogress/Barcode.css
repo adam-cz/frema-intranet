@@ -1,0 +1,61 @@
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  margin: 10mm auto;
+  border: 1px #d3d3d3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.kod {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+.popis {
+  width: 10cm;
+}
+
+.operace {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 0.5cm 0;
+  border-bottom: 1px solid gray;
+  border-bottom-style: dashed;
+}
+
+.barcode {
+  width: 10cm;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .page {
+    margin: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  }
+}

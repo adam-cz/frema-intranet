@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
 
 const orderSchema = mongoose.Schema({
-  id: { type: String, unique: true },
-  desc: String,
-  createdAt: Date,
-  done: Boolean,
-  doneAt: Date,
-  canceled: Boolean,
-  partner: String,
-  createdBy: String,
+  opv: { type: String, unique: true },
+  operace: [
+    {
+      cislo: Number,
+      timeStamps: [Date],
+    },
+  ],
 });
 
 const Order = mongoose.model('Order', orderSchema);

@@ -72,3 +72,7 @@ export const fetchProcedures = async (req, res) => {
     res.status(404).json({ error: err });
   }
 };
+
+export const createProcedure = (req, res) => {
+  console.log(req.body);
+};
