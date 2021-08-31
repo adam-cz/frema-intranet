@@ -4,33 +4,39 @@ const PlanGraf = ({ procedures }) => {
   const data = [
     {
       type: 'Mzdy',
-      value: procedures.reduce(
-        (total, current) => total + current.jedn_mzdy,
-        0
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.jedn_mzdy, 0)
       ),
     },
     {
       type: 'Socální a zdravotní',
-      value: procedures.reduce((total, current) => total + current.rn1, 0),
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.rn1, 0)
+      ),
     },
     {
       type: 'Materiál',
-      value: procedures.reduce((total, current) => total + current.material, 0),
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.material, 0)
+      ),
     },
     {
       type: 'Polotovary',
-      value: procedures.reduce(
-        (total, current) => total + current.polotovar,
-        0
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.polotovar, 0)
       ),
     },
     {
       type: 'Kooperace',
-      value: procedures.reduce((total, current) => total + current.kooper, 0),
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.kooper, 0)
+      ),
     },
     {
       type: 'Strojní náklady',
-      value: procedures.reduce((total, current) => total + current.strnakl, 0),
+      value: Math.round(
+        procedures.reduce((total, current) => total + current.strnakl, 0)
+      ),
     },
   ];
   const config = {
@@ -42,7 +48,7 @@ const PlanGraf = ({ procedures }) => {
     label: {
       type: 'spider',
       labelHeight: 28,
-      content: '{name}\n{percentage} Kč',
+      content: '{name}\n{percentage}\n{value} Kč',
     },
   };
   return <Pie {...config} />;
