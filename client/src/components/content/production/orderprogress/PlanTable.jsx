@@ -1,5 +1,6 @@
-import { Table } from 'antd';
+import { Table, Typography } from 'antd';
 
+const { Text } = Typography;
 const columns = [
   { title: 'OPV', dataIndex: 'opv', key: 'opv' },
   {
@@ -65,15 +66,15 @@ const PlanTable = ({ procedures, loading }) => {
       rowKey="opv"
       pagination={false}
       summary={(data) => {
-        console.log(data);
         const planvyroba =
-          data && data.reduce((total, current) => total + current.jedn_mzdy, 0);
+          data &&
+          data.reduce((total, current) => total + current.planvyroba, 0);
         const vevyrobe =
-          data && data.reduce((total, current) => total + current.jedn_mzdy, 0);
+          data && data.reduce((total, current) => total + current.vevyrobe, 0);
         const odvedeno =
-          data && data.reduce((total, current) => total + current.jedn_mzdy, 0);
+          data && data.reduce((total, current) => total + current.odvedeno, 0);
 
-        const mzdy =
+        const jedn_mzdy =
           Math.round(
             data &&
               data.reduce((total, current) => total + current.jedn_mzdy, 0) *
@@ -110,6 +111,44 @@ const PlanTable = ({ procedures, loading }) => {
             data &&
               data.reduce((total, current) => total + current.cena, 0) * 100
           ) / 100;
+
+        return (
+          <>
+            <Table.Summary.Row>
+              <Table.Summary.Cell colSpan={2}>Celkem</Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{planvyroba}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{vevyrobe}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{odvedeno}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{jedn_mzdy}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{rn1}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{material}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{polotovar}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{kooper}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{strnakl}</Text>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell>
+                <Text type="danger">{cena}</Text>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </>
+        );
       }}
     />
   );

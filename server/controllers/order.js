@@ -45,10 +45,28 @@ export const fetchProcedures = async (req, res) => {
           [rn1],
           [cena] FROM dba.v_opvvyrza WHERE opvfinal = '${opvFinal.opv}' ORDER BY opv;`
         );
-        polotovary.map((polotovar) => postupy.push(polotovar));
+        await Promise.all(
+          polotovary.map(async (polotovar) => {
+            const { recordset: operace } = await request.query(
+              `SELECT [opv],
+            [polozka],
+            [planvyroba],
+            [vevyrobe],
+            [odvedeno],
+            [popis],
+            [zdroj],          
+            [minut_nor],
+            [naklady],
+            [nakl_stn],
+            [nakl_mzd],
+            [nakl_r1] FROM dba.v_opvoper WHERE opv = '${polotovar.opv}' ORDER BY 'polozka';`
+            );
+            polotovar.operace = operace;
+            postupy.push(polotovar);
+          })
+        );
       })
     );
-
     res.status(200).json(postupy);
   } catch (err) {
     res.status(404).json({ error: err });
