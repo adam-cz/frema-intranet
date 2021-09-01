@@ -1,0 +1,18 @@
+html body {
+  background-color: #f0f2f5;
+}
+
+.site-layout-content {
+  min-height: 80vh;
+  padding: 24px;
+  background: #fff;
+}
+
+.logo-svg {
+  width: 150px;
+  margin-right: 50px;
+}
+
+.steper {
+  margin: 50px 300px;
+}

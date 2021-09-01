@@ -13,6 +13,7 @@ import employeesRouter from './routes/employees.js';
 import salesRouter from './routes/sales.js';
 import userRouter from './routes/user.js';
 import orderRouter from './routes/order.js';
+import barcodeRouter from './routes/barcode.js';
 
 //INIT
 const app = express();
@@ -28,6 +29,7 @@ app.use('/zamestnanci', employeesRouter);
 app.use('/obchod', salesRouter);
 app.use('/user', userRouter);
 app.use('/order', orderRouter);
+app.use('/barcode', barcodeRouter);
 
 //DB AND SERVER
 const mongoConfig = {
