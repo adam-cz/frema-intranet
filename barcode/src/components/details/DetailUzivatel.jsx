@@ -4,7 +4,7 @@ const DetailUzivatel = ({ user }) => {
   return (
     <Result
       status="success"
-      title="Zaměstnanec načten"
+      title={`Zaměstnanec ${user.jmeno} načten`}
       extra={
         <Button type="primary" key="console">
           Pokračovat

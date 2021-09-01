@@ -1,31 +1,52 @@
-import { Button, Result, Image } from 'antd';
+import { Button, Result, Image, Input } from 'antd';
 import { useState, useEffect } from 'react';
 import card from './card.gif';
 import * as api from '../../api';
 
-const Detailpriloz = () => {
-  const [input, setInput] = useState('');
+const Detailpriloz = ({ setUser }) => {
+  const [input, setInput] = useState(null);
 
   useEffect(() => {
-    api.verifyCardId(input);
-  }, [input]);
+    if (input !== null && input.length === 16) {
+      api
+        .verifyCardId(input)
+        .then(({ data }) => setUser(data))
+        .catch((err) => console.log('Uživatel neexistuje'));
+    }
+    setInput(null);
+  }, [input, setUser]);
 
-  const inputHandler = () => {
+  const manualInputHandler = () => {
     setInput(prompt('Zadejte ID karty'));
   };
 
-  const sendHandler = () => {};
+  const inputHandleChange = (event) => {
+    setInput(event.target.value);
+  };
 
   return (
-    <Result
-      icon={<Image height={250} preview={false} alt="card reader" src={card} />}
-      title="Přiložte svou čipovou kartu ke čtečce"
-      extra={
-        <Button type="primary" key="console" onClick={inputHandler}>
-          Zadat ručně
-        </Button>
-      }
-    />
+    <>
+      <Result
+        icon={
+          <Image height={250} preview={false} alt="card reader" src={card} />
+        }
+        title="Přiložte svou čipovou kartu ke čtečce"
+        extra={
+          <div class="hidden-input">
+            <Button type="primary" key="console" onClick={manualInputHandler}>
+              Zadat ručně
+            </Button>
+          </div>
+        }
+      />
+      <Input
+        value={input}
+        onBlur={({ target }) => target.focus()}
+        autoFocus
+        style={{ width: 10, opacity: 0, cursor: 'default' }}
+        onChange={inputHandleChange}
+      />
+    </>
   );
 };
 
