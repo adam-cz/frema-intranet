@@ -10,8 +10,8 @@ const Detailpriloz = ({ setUser }) => {
     if (input !== null && input.length === 16) {
       api
         .verifyCardId(input)
-        .then(({ data }) => setUser(data))
-        .catch((err) => console.log('Uživatel neexistuje'));
+        .then(({ data }) => setUser({ ...data, exists: true }))
+        .catch(() => setUser({ exists: false }));
     }
     setInput(null);
   }, [input, setUser]);

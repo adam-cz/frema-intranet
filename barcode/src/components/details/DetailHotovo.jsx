@@ -1,27 +1,24 @@
-import { Button, Result } from 'antd';
+import { Result } from 'antd';
 import { useEffect } from 'react';
 
-const DetailHotovo = ({ user, setUser, operace, setOperace, setStep }) => {
+const DetailHotovo = ({
+  user,
+  setUser,
+  operace,
+  setOperace,
+  setStep,
+  info,
+}) => {
   useEffect(() => {
     if (operace)
       setTimeout(() => {
         setUser(null);
         setOperace(null);
         setStep(0);
-      }, 2000);
+      }, 3000);
   }, [operace, setOperace, setStep, setUser]);
 
-  return (
-    <Result
-      status="success"
-      title={`Operace ${operace.operace} na zakázkovém postupu ${operace.opv} načtena`}
-      extra={
-        <Button type="primary" key="console">
-          Pokračovat
-        </Button>
-      }
-    />
-  );
+  return <Result status={info && info.status} title={info && info.message} />;
 };
 
 export default DetailHotovo;

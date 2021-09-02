@@ -8,7 +8,6 @@ const { Header, Content, Footer } = Layout;
 
 function App() {
   const [step, setStep] = useState(0);
-  const [time, setTime] = useState(null);
 
   return (
     <Layout className="layout">
@@ -18,15 +17,10 @@ function App() {
       <Content style={{ padding: '0 50px' }}>
         <div className="site-layout-content">
           <div className="steper">
-            <Steper step={step} time={time} />
+            <Steper step={step} />
           </div>
           <div className="detail">
-            <Details
-              step={step}
-              setStep={setStep}
-              setTime={setTime}
-              time={time}
-            />
+            <Details step={step} setStep={setStep} />
           </div>
         </div>
       </Content>

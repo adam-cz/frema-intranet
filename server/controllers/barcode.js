@@ -25,26 +25,55 @@ export const setProces = async (req, res) => {
   try {
     const proces = await Proces.findOne({ barcode: req.body.barcode });
     if (!proces)
-      res.status(404).json({ status: 'error', message: 'Operace neexistuje' });
-    console.log('hello');
-    if (proces.casy.length === 1 || proces.casy.length % 2 === 1) {
-      proces.casy.push(new Date.now());
+      return res.status(200).json({
+        status: 'error',
+        message: 'Operace neexistuje',
+        proces: 'neexistuje',
+      });
+    if (proces.operator_id && proces.operator_id !== req.body.user.id)
+      return res.status(200).json({
+        status: 'error',
+        message: `Operaci ${
+          proces.operace
+        } postupu ${proces.opv.trim()} již vykonává ${proces.operator_jmeno}!`,
+        proces,
+      });
+    if (
+      (proces.casy && proces.casy.length === 1) ||
+      (proces.casy && proces.casy.length % 2 === 1)
+    ) {
+      proces.casy.push(Date.now());
+      proces.aktivni = false;
       await proces.save();
-      res.status(200).json({
+      return res.status(200).json({
         status: 'warning',
-        message: `Operace ${operace.polozka} z postupu ${operace.opv} dokončena nebo pozastavena`,
+        message: `Operace ${
+          proces.operace
+        } z postupu ${proces.opv.trim()} dokončena nebo pozastavena`,
+        proces,
       });
     }
-    proces.casy.push(new Date.now());
-    await proces.save();
-    res.status(200).json({
-      status: 'success',
-      message: `Operace ${operace.operace} na zakázkovém postupu ${operace.opv} načtena`,
-    });
+    if (
+      (proces.casy && proces.casy.length === 0) ||
+      (proces.casy && proces.casy.length % 2 === 0)
+    ) {
+      proces.casy.push(Date.now());
+      proces.aktivni = true;
+      proces.operator_id = req.body.user.id;
+      proces.operator_jmeno = req.body.user.jmeno;
+      await proces.save();
+      return res.status(200).json({
+        status: 'success',
+        message: `Operace ${
+          proces.operace
+        } na zakázkovém postupu ${proces.opv.trim()} načtena`,
+        proces,
+      });
+    }
   } catch (err) {
     res.status(404).json({ error: err });
   }
 };
 
 // 01C48ADD00000000
-// 3011064000_10
+// 3011058000_10

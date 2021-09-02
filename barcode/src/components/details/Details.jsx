@@ -27,13 +27,11 @@ const Details = ({ step, setStep, setTime, time }) => {
             setUser={setUser}
             setOperace={setOperace}
             setStep={setStep}
-            time={time}
-            setTime={setTime}
             setInfo={setInfo}
           />
         )
       ) : user ? (
-        <DetailUzivatel user={user} setStep={setStep} />
+        <DetailUzivatel user={user} setStep={setStep} setUser={setUser} />
       ) : (
         <Detailpriloz setUser={setUser} />
       )}

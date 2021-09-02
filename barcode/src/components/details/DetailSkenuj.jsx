@@ -3,31 +3,28 @@ import { useEffect, useState } from 'react';
 import * as api from '../../api';
 import barcode from './barcode.gif';
 
-const timeout = 10000;
-
-const DetailSkenuj = ({
-  user,
-  setUser,
-  setOperace,
-  time,
-  setTime,
-  setStep,
-  setInfo,
-}) => {
+const DetailSkenuj = ({ user, setUser, setOperace, setStep, setInfo }) => {
   const [input, setInput] = useState(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setUser(null);
+      setStep(0);
+    }, 10000);
+  }, [setUser, setStep]);
 
   useEffect(() => {
     if (input !== null && input.length > 8) {
       api
         .setProces(input, user)
-        .then((res) => {
-          console.log(res);
-          setOperace(res.data);
+        .then(({ data }) => {
+          setOperace(data.proces);
+          setInfo({ message: data.message, status: data.status });
         })
         .catch((err) => console.log(err));
     }
     setInput(null);
-  }, [input, user, setOperace]);
+  }, [input, user, setOperace, setInfo]);
 
   const manualInputHandler = () => {
     setInput(prompt('Zadejte ID operace'));

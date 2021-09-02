@@ -15,7 +15,7 @@ const Steper = ({ step, time }) => {
       />
       <Step
         title={step ? 'Čekám na načtení operace' : 'Načtení operace'}
-        subTitle={time ? `Zbývá ${time / 1000}s` : ''}
+        // subTitle={time.active ? `Zbývá ${time.time / 1000}s` : ''}
         description={
           step
             ? 'Načtěte prosím čárový kód operace'
