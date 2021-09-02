@@ -1,7 +1,7 @@
 import { Button, Result } from 'antd';
 import { useEffect } from 'react';
 
-const DetailUzivatel = ({ user, setStep }) => {
+const DetailHotovo = ({ user, setUser, operace, seOperace, setStep }) => {
   useEffect(() => {
     if (user) setTimeout(() => setStep(1), 1000);
   }, [user, setStep]);
@@ -19,4 +19,4 @@ const DetailUzivatel = ({ user, setStep }) => {
   );
 };
 
-export default DetailUzivatel;
+export default DetailHotovo;
