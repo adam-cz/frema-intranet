@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const procesSchema = mongoose.Schema({
+  barcode: String,
   operator_id: String,
   operator_jmeno: String,
   opv: String,

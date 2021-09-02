@@ -2,7 +2,7 @@ import { Steps } from 'antd';
 
 const { Step } = Steps;
 
-const Steper = ({ step }) => {
+const Steper = ({ step, time }) => {
   return (
     <Steps current={step}>
       <Step
@@ -15,7 +15,7 @@ const Steper = ({ step }) => {
       />
       <Step
         title={step ? 'Čekám na načtení operace' : 'Načtení operace'}
-        subTitle={step ? 'Zbývá 00:00:08' : ''}
+        subTitle={time ? `Zbývá ${time / 1000}s` : ''}
         description={
           step
             ? 'Načtěte prosím čárový kód operace'

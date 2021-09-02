@@ -1,4 +1,5 @@
 import sql, { pool } from '../utils/karat.js';
+import Proces from '../models/proces.js';
 
 export const fetchOrders = async (req, res) => {
   try {
@@ -73,6 +74,20 @@ export const fetchProcedures = async (req, res) => {
   }
 };
 
-export const createProcedure = (req, res) => {
+export const createProcedure = async (req, res) => {
   console.log(req.body);
+  try {
+    req.body.map(async (operace) => {
+      await Proces.create({
+        barcode: `${operace.opv.trim()}_${operace.polozka}`,
+        opv: operace.opv,
+        operace: operace.polozka,
+        popis: operace.popis.trim(),
+        stredisko: operace.zdroj,
+      });
+    });
+    res.status(200).json({ message: 'záznamy vytvořeny' });
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
 };

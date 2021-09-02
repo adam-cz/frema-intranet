@@ -1,4 +1,5 @@
 import sql, { pool } from '../utils/dochazka.js';
+import Proces from '../models/proces.js';
 
 export const verifyCardId = async (req, res) => {
   try {
@@ -19,3 +20,31 @@ export const verifyCardId = async (req, res) => {
     res.status(404).json({ error: err });
   }
 };
+
+export const setProces = async (req, res) => {
+  try {
+    const proces = await Proces.findOne({ barcode: req.body.barcode });
+    if (!proces)
+      res.status(404).json({ status: 'error', message: 'Operace neexistuje' });
+    console.log('hello');
+    if (proces.casy.length === 1 || proces.casy.length % 2 === 1) {
+      proces.casy.push(new Date.now());
+      await proces.save();
+      res.status(200).json({
+        status: 'warning',
+        message: `Operace ${operace.polozka} z postupu ${operace.opv} dokončena nebo pozastavena`,
+      });
+    }
+    proces.casy.push(new Date.now());
+    await proces.save();
+    res.status(200).json({
+      status: 'success',
+      message: `Operace ${operace.operace} na zakázkovém postupu ${operace.opv} načtena`,
+    });
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};
+
+// 01C48ADD00000000
+// 3011064000_10

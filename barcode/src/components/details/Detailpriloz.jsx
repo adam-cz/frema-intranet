@@ -32,7 +32,7 @@ const Detailpriloz = ({ setUser }) => {
         }
         title="Přiložte svou čipovou kartu ke čtečce"
         extra={
-          <div class="hidden-input">
+          <div className="hidden-input">
             <Button type="primary" key="console" onClick={manualInputHandler}>
               Zadat ručně
             </Button>

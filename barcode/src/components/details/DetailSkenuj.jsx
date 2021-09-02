@@ -1,19 +1,33 @@
 import { Button, Result, Input, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import * as api from '../../api';
+import barcode from './barcode.gif';
 
-const DetailSkenuj = ({ user, setOperace }) => {
+const timeout = 10000;
+
+const DetailSkenuj = ({
+  user,
+  setUser,
+  setOperace,
+  time,
+  setTime,
+  setStep,
+  setInfo,
+}) => {
   const [input, setInput] = useState(null);
 
   useEffect(() => {
-    if (input !== null && input.length === 16) {
+    if (input !== null && input.length > 8) {
       api
-        .setProces(input)
-        .then(({ data }) => setOperace(data))
-        .catch((err) => console.log('Uživatel neexistuje'));
+        .setProces(input, user)
+        .then((res) => {
+          console.log(res);
+          setOperace(res.data);
+        })
+        .catch((err) => console.log(err));
     }
     setInput(null);
-  }, [input, setOperace]);
+  }, [input, user, setOperace]);
 
   const manualInputHandler = () => {
     setInput(prompt('Zadejte ID operace'));
@@ -26,11 +40,11 @@ const DetailSkenuj = ({ user, setOperace }) => {
     <>
       <Result
         icon={
-          <Image height={250} preview={false} alt="card reader" src={card} />
+          <Image height={250} preview={false} alt="barcode" src={barcode} />
         }
-        title="Přiložte svou čipovou kartu ke čtečce"
+        title="Naskenujte čárový kód operace"
         extra={
-          <div class="hidden-input">
+          <div className="hidden-input">
             <Button type="primary" key="console" onClick={manualInputHandler}>
               Zadat ručně
             </Button>
