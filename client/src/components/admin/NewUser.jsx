@@ -43,6 +43,15 @@ function NewUser() {
             ))}
         </Select>
       </Form.Item>
+
+      <Form.Item
+        style={{ width: 300 }}
+        label="RFID"
+        name="rfid"
+        rules={[{ required: true, message: 'Načtěte kartu!' }]}
+      >
+        <Input />
+      </Form.Item>
       <Form.Item
         style={{ width: 300 }}
         label="E-mail"

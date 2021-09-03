@@ -81,11 +81,13 @@ export const updateEmployees = async (req, res) => {
     //insert new
     if (newEmployees) await User.insertMany(newEmployees);
     //delete expired
+    /*
     if (dismissedEmployees) {
       for (let i = 0; i < dismissedEmployees.length; i++) {
         await User.deleteOne({ _id: dismissedEmployees[i]._id });
       }
     }
+    */
     //create default attendance data
     await User.updateMany({}, { isPresent: 0, lastOperation: '' });
 

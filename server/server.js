@@ -21,7 +21,15 @@ const port = process.env.PORT_API || 3001;
 
 //MIDDLEWARE
 app.use(
-  cors({ credentials: true, origin: [`${appSite}:3000`, `${appSite}:5000`] })
+  cors({
+    credentials: true,
+    origin: [
+      `${appSite}:3000`,
+      `${appSite}:5000`,
+      'http://pc128:5000',
+      'http://pc128:3000',
+    ],
+  })
 );
 app.use(cookieParser());
 app.use(express.json());

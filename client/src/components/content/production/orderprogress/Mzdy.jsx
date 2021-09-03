@@ -68,14 +68,8 @@ const columns = [
   },
 ];
 
-const Operace = ({ procedures, loading }) => {
+const Mzdy = ({ procedures, loading }) => {
   const [data, setData] = useState([]);
-  const [mountBarcodePage, setMountBarcodePage] = useState(false);
-
-  const clickHandler = () => {
-    setMountBarcodePage(!mountBarcodePage);
-    api.createProcedure(data).then(({ data }) => message.success(data.message));
-  };
 
   useEffect(() => {
     if (!loading) {
@@ -87,20 +81,10 @@ const Operace = ({ procedures, loading }) => {
 
   return (
     <div>
-      <Button type="primary" onClick={clickHandler}>
-        Generovat čárové kódy
-      </Button>
-      {mountBarcodePage && (
-        <NewWindow
-          features={{ width: 1200, height: 1000 }}
-          onUnload={() => setMountBarcodePage(false)}
-        >
-          <Barcodes data={data} />
-        </NewWindow>
       )}
       <Table dataSource={data} columns={columns} loading={loading} />
     </div>
   );
 };
 
-export default Operace;
+export default Mzdy;

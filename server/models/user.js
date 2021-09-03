@@ -5,6 +5,7 @@ const userSchema = mongoose.Schema({
   surname: String,
   email: String,
   password: String,
+  rfid: String,
   isPresent: Boolean,
   lastOperation: Date,
   role: [{ type: String }],

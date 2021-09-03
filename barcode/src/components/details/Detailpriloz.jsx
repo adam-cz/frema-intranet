@@ -7,13 +7,14 @@ const Detailpriloz = ({ setUser }) => {
   const [input, setInput] = useState(null);
 
   useEffect(() => {
-    if (input !== null && input.length === 16) {
+    if (input !== null && input.length === 8) {
       api
         .verifyCardId(input)
         .then(({ data }) => setUser({ ...data, exists: true }))
         .catch(() => setUser({ exists: false }));
     }
-    setInput(null);
+
+    //setInput(null);
   }, [input, setUser]);
 
   const manualInputHandler = () => {

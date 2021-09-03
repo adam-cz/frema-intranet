@@ -14,6 +14,7 @@ const OrderDetail = ({ order }) => {
   useEffect(() => {
     const loadOrders = async () => {
       const { data } = await api.fetchProcedures(order);
+      console.log(data);
       setProcedures(data);
       setLoading(false);
     };

@@ -27,7 +27,6 @@ export const fetchProcedures = async (req, res) => {
     const { recordset: opvFinals } = await request.query(
       `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
     );
-
     const postupy = [];
     await Promise.all(
       opvFinals.map(async (opvFinal) => {
@@ -62,6 +61,7 @@ export const fetchProcedures = async (req, res) => {
             [nakl_mzd],
             [nakl_r1] FROM dba.v_opvoper WHERE opv = '${polotovar.opv}' ORDER BY 'polozka';`
             );
+
             polotovar.operace = operace;
             postupy.push(polotovar);
           })
@@ -75,18 +75,25 @@ export const fetchProcedures = async (req, res) => {
 };
 
 export const createProcedure = async (req, res) => {
-  console.log(req.body);
   try {
     req.body.map(async (operace) => {
-      await Proces.create({
+      const found = await Proces.findOne({
         barcode: `${operace.opv.trim()}_${operace.polozka}`,
-        opv: operace.opv,
-        operace: operace.polozka,
-        popis: operace.popis.trim(),
-        stredisko: operace.zdroj,
       });
+      if (!found)
+        await Proces.create({
+          barcode: `${operace.opv.trim()}_${operace.polozka}`,
+          opv: operace.opv,
+          operace: operace.polozka,
+          popis: operace.popis.trim(),
+          stredisko: operace.zdroj,
+        });
     });
-    res.status(200).json({ message: 'záznamy vytvořeny' });
+    console.log(count);
+    console.log(exists);
+    res.status(200).json({
+      message: `Čárové kódy vygenerovány`,
+    });
   } catch (err) {
     res.status(404).json({ error: err });
   }

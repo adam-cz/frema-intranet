@@ -2,13 +2,11 @@ import mongoose from 'mongoose';
 
 const procesSchema = mongoose.Schema({
   barcode: String,
-  operator_id: String,
-  operator_jmeno: String,
   opv: String,
   popis: String,
   stredisko: Number,
   operace: Number,
-  casy: [Date],
+  zaznamy: [{ cas: Date, operator_id: String, operator_jmeno: String }],
   aktivni: Boolean,
 });
 

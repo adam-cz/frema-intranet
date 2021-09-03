@@ -1,23 +1,34 @@
 import { Button, Result, Input, Image } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as api from '../../api';
 import barcode from './barcode.gif';
 
-const DetailSkenuj = ({ user, setUser, setOperace, setStep, setInfo }) => {
+const DetailSkenuj = ({
+  user,
+  setUser,
+  setOperace,
+  operace,
+  setStep,
+  setInfo,
+}) => {
   const [input, setInput] = useState(null);
+  const timeout = useRef(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setUser(null);
-      setStep(0);
+    timeout.current = setTimeout(() => {
+      if (!operace) {
+        setUser(null);
+        setStep(0);
+      }
     }, 10000);
-  }, [setUser, setStep]);
+  }, [setUser, setStep, operace]);
 
   useEffect(() => {
     if (input !== null && input.length > 8) {
       api
         .setProces(input, user)
         .then(({ data }) => {
+          clearTimeout(timeout.current);
           setOperace(data.proces);
           setInfo({ message: data.message, status: data.status });
         })

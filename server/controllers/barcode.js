@@ -1,23 +1,18 @@
-import sql, { pool } from '../utils/dochazka.js';
 import Proces from '../models/proces.js';
+import User from '../models/user.js';
 
 export const verifyCardId = async (req, res) => {
   try {
-    const poolConnection = await pool;
-    const request = new sql.Request(poolConnection);
-    const { recordset: id } = await request.query(
-      `SELECT RC FROM PrirazeniKarty WHERE (kodKarty = '${req.params.id}' AND datumVraceni IS NULL);`
-    );
-    const { recordset: jmeno } = await request.query(
-      `SELECT Jmeno, Prijmeni FROM Osoba WHERE RC = ${id[0].RC};`
-    );
+    console.log(req.params.id);
+    const user = await User.findOne({ rfid: req.params.id });
+    if (!user) return res.status(404).json({ error: err });
     const employee = {
-      id: id[0].RC,
-      jmeno: `${jmeno[0].Jmeno} ${jmeno[0].Prijmeni}`,
+      id: user._id,
+      jmeno: `${user.name} ${user.surname}`,
     };
-    res.status(200).json(employee);
+    return res.status(200).json(employee);
   } catch (err) {
-    res.status(404).json({ error: err });
+    return res.status(404).json({ error: err });
   }
 };
 
@@ -30,19 +25,48 @@ export const setProces = async (req, res) => {
         message: 'Operace neexistuje',
         proces: 'neexistuje',
       });
-    if (proces.operator_id && proces.operator_id !== req.body.user.id)
+    console.log(proces.zaznamy.length);
+
+    //Sudý záznam - vždy načten
+    if (proces.zaznamy.length % 2 === 0) {
+      proces.zaznamy.push({
+        cas: Date.now(),
+        operator_id: req.body.user.id,
+        operator_jmeno: req.body.user.jmeno,
+      });
+      proces.aktivni = true;
+      await proces.save();
       return res.status(200).json({
-        status: 'error',
-        message: `Operaci ${
+        status: 'success',
+        message: `Operace ${
           proces.operace
-        } postupu ${proces.opv.trim()} již vykonává ${proces.operator_jmeno}!`,
+        } na zakázkovém postupu ${proces.opv.trim()} načtena`,
         proces,
       });
-    if (
-      (proces.casy && proces.casy.length === 1) ||
-      (proces.casy && proces.casy.length % 2 === 1)
-    ) {
-      proces.casy.push(Date.now());
+    }
+
+    //lichý záznam
+    if (proces.zaznamy.length % 2 !== 0) {
+      //poslední lichý který vykonává někdo jiný
+      if (
+        proces.zaznamy[proces.zaznamy.length - 1].operator_id !=
+        req.body.user.id
+      )
+        return res.status(200).json({
+          status: 'error',
+          message: `Operaci ${
+            proces.operace
+          } postupu ${proces.opv.trim()} již vykonává ${
+            proces.zaznamy[proces.zaznamy.length - 1].operator_jmeno
+          }!`,
+          proces,
+        });
+      //jinak ukonči proces
+      proces.zaznamy.push({
+        cas: Date.now(),
+        operator_id: req.body.user.id,
+        operator_jmeno: req.body.user.jmeno,
+      });
       proces.aktivni = false;
       await proces.save();
       return res.status(200).json({
@@ -53,27 +77,7 @@ export const setProces = async (req, res) => {
         proces,
       });
     }
-    if (
-      (proces.casy && proces.casy.length === 0) ||
-      (proces.casy && proces.casy.length % 2 === 0)
-    ) {
-      proces.casy.push(Date.now());
-      proces.aktivni = true;
-      proces.operator_id = req.body.user.id;
-      proces.operator_jmeno = req.body.user.jmeno;
-      await proces.save();
-      return res.status(200).json({
-        status: 'success',
-        message: `Operace ${
-          proces.operace
-        } na zakázkovém postupu ${proces.opv.trim()} načtena`,
-        proces,
-      });
-    }
   } catch (err) {
     res.status(404).json({ error: err });
   }
 };
-
-// 01C48ADD00000000
-// 3011058000_10

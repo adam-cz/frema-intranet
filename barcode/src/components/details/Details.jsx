@@ -26,6 +26,7 @@ const Details = ({ step, setStep, setTime, time }) => {
             user={user}
             setUser={setUser}
             setOperace={setOperace}
+            operace={operace}
             setStep={setStep}
             setInfo={setInfo}
           />
