@@ -45,6 +45,10 @@ const PlanGraf = ({ procedures }) => {
     angleField: 'value',
     colorField: 'type',
     radius: 0.75,
+    legend: {
+      position: 'left',
+      offsetX: 50,
+    },
     label: {
       type: 'spider',
       labelHeight: 28,

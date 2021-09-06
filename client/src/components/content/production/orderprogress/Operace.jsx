@@ -1,5 +1,5 @@
 import { Table, Button, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import NewWindow from 'react-new-window';
 import { Barcodes } from './Barcodes';
 import * as api from '../../../../api';
@@ -68,22 +68,15 @@ const columns = [
   },
 ];
 
-const Operace = ({ procedures, loading }) => {
-  const [data, setData] = useState([]);
+const Operace = ({ proceses, loading }) => {
   const [mountBarcodePage, setMountBarcodePage] = useState(false);
 
   const clickHandler = () => {
     setMountBarcodePage(!mountBarcodePage);
-    api.createProcedure(data).then(({ data }) => message.success(data.message));
+    api
+      .createProcedure(proceses)
+      .then(({ data }) => message.success(data.message));
   };
-
-  useEffect(() => {
-    if (!loading) {
-      const count = [];
-      procedures.map((zp) => zp.operace.map((op) => count.push(op)));
-      setData(count);
-    }
-  }, [loading, procedures]);
 
   return (
     <div>
@@ -95,10 +88,10 @@ const Operace = ({ procedures, loading }) => {
           features={{ width: 1200, height: 1000 }}
           onUnload={() => setMountBarcodePage(false)}
         >
-          <Barcodes data={data} />
+          <Barcodes data={proceses} />
         </NewWindow>
       )}
-      <Table dataSource={data} columns={columns} loading={loading} />
+      <Table dataSource={proceses} columns={columns} loading={loading} />
     </div>
   );
 };

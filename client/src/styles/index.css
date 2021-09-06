@@ -104,7 +104,14 @@
   justify-content: space-between;
 }
 
-#leftChart,
+#charts {
+  display: flex;
+  flex-direction: row;
+}
+
+#leftChart {
+  width: 60%;
+}
 #rightChart {
-  width: 50%;
+  width: 40%;
 }

@@ -4,7 +4,7 @@ import DetailSkenuj from './DetailSkenuj';
 import DetailUzivatel from './DetailUzivatel';
 import DetailHotovo from './DetailHotovo';
 
-const Details = ({ step, setStep, setTime, time }) => {
+const Details = ({ step, setStep }) => {
   const [user, setUser] = useState(null);
   const [operace, setOperace] = useState(null);
   const [info, setInfo] = useState({});

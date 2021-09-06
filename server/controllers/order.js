@@ -28,6 +28,7 @@ export const fetchProcedures = async (req, res) => {
       `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
     );
     const postupy = [];
+
     await Promise.all(
       opvFinals.map(async (opvFinal) => {
         const { recordset: polotovary } = await request.query(
@@ -47,7 +48,7 @@ export const fetchProcedures = async (req, res) => {
         );
         await Promise.all(
           polotovary.map(async (polotovar) => {
-            const { recordset: operace } = await request.query(
+            const { recordset: data } = await request.query(
               `SELECT [opv],
             [polozka],
             [planvyroba],
@@ -61,7 +62,34 @@ export const fetchProcedures = async (req, res) => {
             [nakl_mzd],
             [nakl_r1] FROM dba.v_opvoper WHERE opv = '${polotovar.opv}' ORDER BY 'polozka';`
             );
+            //Nacteni realnych casu
+            const operace = [];
 
+            await Promise.all(
+              data.map(async (op) => {
+                let vykazano = 0;
+                const vykazy = await Proces.findOne({
+                  barcode: `${op.opv.trim()}_${op.polozka}`,
+                });
+
+                if (vykazy && vykazy.zaznamy && vykazy.zaznamy.length >= 2) {
+                  vykazy.zaznamy.map((zaznam, index, array) => {
+                    if (index % 2 == 0 && array[index + 1]) {
+                      vykazano += array[index + 1].cas - array[index].cas;
+                    }
+                  });
+                }
+                //console.log(vykazano);
+
+                operace.push({
+                  ...op,
+                  vykazy: vykazy ? vykazy.zaznamy : null,
+                  vykazano,
+                });
+              })
+            );
+
+            operace.map;
             polotovar.operace = operace;
             postupy.push(polotovar);
           })

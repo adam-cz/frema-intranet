@@ -81,7 +81,6 @@ const Mzdy = ({ procedures, loading }) => {
 
   return (
     <div>
-      )}
       <Table dataSource={data} columns={columns} loading={loading} />
     </div>
   );

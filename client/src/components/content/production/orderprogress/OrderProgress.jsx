@@ -8,6 +8,7 @@ const OrderProgress = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState('');
+
   useEffect(() => {
     const loadOrders = async () => {
       const { data } = await api.fetchOrders();

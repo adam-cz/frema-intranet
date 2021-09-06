@@ -12,24 +12,28 @@ const DetailSkenuj = ({
   setInfo,
 }) => {
   const [input, setInput] = useState(null);
-  const timeout = useRef(null);
+  const timeout = useRef(10000);
+  const interval = useRef(null);
 
   useEffect(() => {
-    timeout.current = setTimeout(() => {
-      if (!operace) {
-        setUser(null);
-        setStep(0);
-      }
-    }, 10000);
-  }, [setUser, setStep, operace]);
+    if (user) {
+      interval.current = setInterval(() => {
+        if (timeout.current === 0 && !operace) {
+          clearInterval(interval.current);
+          setStep(0);
+        }
+        timeout.current = timeout.current - 1000;
+      }, 1000);
+    }
+  }, [setUser, setStep, operace, user]);
 
   useEffect(() => {
     if (input !== null && input.length > 8) {
       api
-        .setProces(input, user)
+        .setProces(input.trim(), user)
         .then(({ data }) => {
-          clearTimeout(timeout.current);
           setOperace(data.proces);
+          clearInterval(interval.current);
           setInfo({ message: data.message, status: data.status });
         })
         .catch((err) => console.log(err));

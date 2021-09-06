@@ -5,7 +5,10 @@ export const verifyCardId = async (req, res) => {
   try {
     console.log(req.params.id);
     const user = await User.findOne({ rfid: req.params.id });
-    if (!user) return res.status(404).json({ error: err });
+    if (!user)
+      return res
+        .status(404)
+        .json({ status: 'error', message: 'Uživatel neexistuje' });
     const employee = {
       id: user._id,
       jmeno: `${user.name} ${user.surname}`,
@@ -49,7 +52,7 @@ export const setProces = async (req, res) => {
     if (proces.zaznamy.length % 2 !== 0) {
       //poslední lichý který vykonává někdo jiný
       if (
-        proces.zaznamy[proces.zaznamy.length - 1].operator_id !=
+        proces.zaznamy[proces.zaznamy.length - 1].operator_id !==
         req.body.user.id
       )
         return res.status(200).json({

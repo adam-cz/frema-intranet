@@ -4,12 +4,22 @@ import { Divider, Tabs } from 'antd';
 import PlanGraf from './PlanGraf';
 import PlanTable from './PlanTable';
 import Operace from './Operace';
+import PorovnaniGraf from './PorovnaniGraf';
 
 const { TabPane } = Tabs;
 
 const OrderDetail = ({ order }) => {
+  const [proceses, setProceses] = useState(null);
   const [procedures, setProcedures] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!loading) {
+      const count = [];
+      procedures.map((zp) => zp.operace.map((op) => count.push(op)));
+      setProceses(count);
+    }
+  }, [loading, procedures]);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -24,9 +34,19 @@ const OrderDetail = ({ order }) => {
   return (
     <div>
       <Divider>Detail zakázky</Divider>
-      <div id="leftChart">
-        <h3>Plánované náklady</h3>
-        {procedures ? <PlanGraf procedures={procedures} /> : 'Nic'}
+      <div id="charts">
+        <div id="leftChart">
+          <h3>Plánované náklady</h3>
+          {procedures ? <PlanGraf procedures={procedures} /> : ''}
+        </div>
+        <div id="rightChart">
+          <h3>Porovnání plánu se skutečností</h3>
+          {procedures ? (
+            <PorovnaniGraf procedures={procedures} proceses={proceses} />
+          ) : (
+            ''
+          )}
+        </div>
       </div>
       <Divider>Plánovaná kalkulace zakázky</Divider>
       <PlanTable procedures={procedures} loading={loading} />
@@ -34,7 +54,11 @@ const OrderDetail = ({ order }) => {
       <Divider>Rozpis zakázky dle operací</Divider>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Operace" key="1">
-          <Operace procedures={procedures} loading={loading} />
+          <Operace
+            procedures={procedures}
+            proceses={proceses}
+            loading={loading}
+          />
         </TabPane>
         <TabPane tab="Mzdy" key="2">
           Content of Tab Pane 2
