@@ -23,12 +23,18 @@ export const fetchProcedures = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
-
+    //Vyhledá zakázkové postupy objednávky
     const { recordset: opvFinals } = await request.query(
       `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
     );
     const postupy = [];
-
+    //načte sazebník strojních nákladů
+    const { recordset: zdroje } = await request.query(
+      `SELECT [operace], 
+      [nazev],
+      [sazba] FROM dba.zdr_ope ORDER BY operace;`
+    );
+    //Načte zakázkové postupy objednávky
     await Promise.all(
       opvFinals.map(async (opvFinal) => {
         const { recordset: polotovary } = await request.query(
@@ -46,9 +52,10 @@ export const fetchProcedures = async (req, res) => {
           [rn1],
           [cena] FROM dba.v_opvvyrza WHERE opvfinal = '${opvFinal.opv}' ORDER BY opv;`
         );
+        //Načte operace na zakázkových postupech
         await Promise.all(
           polotovary.map(async (polotovar) => {
-            const { recordset: data } = await request.query(
+            const { recordset: rawOperace } = await request.query(
               `SELECT [opv],
             [polozka],
             [planvyroba],
@@ -62,16 +69,15 @@ export const fetchProcedures = async (req, res) => {
             [nakl_mzd],
             [nakl_r1] FROM dba.v_opvoper WHERE opv = '${polotovar.opv}' ORDER BY 'polozka';`
             );
-            //Nacteni realnych casu
+            //Načteni reálných časů nad operacemi
             const operace = [];
-
             await Promise.all(
-              data.map(async (op) => {
+              rawOperace.map(async (op) => {
                 let vykazano = 0;
                 const vykazy = await Proces.findOne({
                   barcode: `${op.opv.trim()}_${op.polozka}`,
                 });
-
+                //Výpočet délky výkonu z časových značek
                 if (vykazy && vykazy.zaznamy && vykazy.zaznamy.length >= 2) {
                   vykazy.zaznamy.map((zaznam, index, array) => {
                     if (index % 2 == 0 && array[index + 1]) {
@@ -79,17 +85,19 @@ export const fetchProcedures = async (req, res) => {
                     }
                   });
                 }
-                //console.log(vykazano);
-
+                //Přiřazení sazby k operaci
+                const sazba = sazby.find(
+                  (sazba) => sazba.operace === op.zdroj
+                ).sazba;
                 operace.push({
                   ...op,
                   vykazy: vykazy ? vykazy.zaznamy : null,
                   vykazano,
+                  sazba,
                 });
               })
             );
 
-            operace.map;
             polotovar.operace = operace;
             postupy.push(polotovar);
           })

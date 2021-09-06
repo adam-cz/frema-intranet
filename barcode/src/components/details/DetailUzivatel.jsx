@@ -1,12 +1,6 @@
 import { Result } from 'antd';
-import { useEffect } from 'react';
 
-const DetailUzivatel = ({ user, setStep, setUser }) => {
-  useEffect(() => {
-    if (user.exists) setTimeout(() => setStep(1), 2000);
-    if (!user.exists) setTimeout(() => setUser(null), 3000);
-  }, [user, setStep, setUser]);
-
+const DetailUzivatel = ({ user }) => {
   return (
     <>
       {user && user.exists ? (

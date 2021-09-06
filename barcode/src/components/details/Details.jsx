@@ -34,7 +34,7 @@ const Details = ({ step, setStep }) => {
       ) : user ? (
         <DetailUzivatel user={user} setStep={setStep} setUser={setUser} />
       ) : (
-        <Detailpriloz setUser={setUser} />
+        <Detailpriloz setUser={setUser} user={user} setStep={setStep} />
       )}
     </>
   );

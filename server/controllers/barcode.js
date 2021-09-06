@@ -3,7 +3,6 @@ import User from '../models/user.js';
 
 export const verifyCardId = async (req, res) => {
   try {
-    console.log(req.params.id);
     const user = await User.findOne({ rfid: req.params.id });
     if (!user)
       return res
@@ -28,7 +27,6 @@ export const setProces = async (req, res) => {
         message: 'Operace neexistuje',
         proces: 'neexistuje',
       });
-    console.log(proces.zaznamy.length);
 
     //Sudý záznam - vždy načten
     if (proces.zaznamy.length % 2 === 0) {
@@ -51,8 +49,9 @@ export const setProces = async (req, res) => {
     //lichý záznam
     if (proces.zaznamy.length % 2 !== 0) {
       //poslední lichý který vykonává někdo jiný
+
       if (
-        proces.zaznamy[proces.zaznamy.length - 1].operator_id !==
+        proces.zaznamy[proces.zaznamy.length - 1].operator_id !=
         req.body.user.id
       )
         return res.status(200).json({

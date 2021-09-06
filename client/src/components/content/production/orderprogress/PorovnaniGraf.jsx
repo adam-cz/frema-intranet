@@ -1,5 +1,7 @@
 import { Column } from '@ant-design/charts';
 
+const MsNaPenize = (minuty) => (minuty / 1000) * 60;
+
 const PorovnaniGraf = ({ procedures, proceses }) => {
   const data = [
     {
@@ -47,9 +49,11 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
     {
       name: 'Skutečnost',
       naklad: 'Mzdy',
-      hodnota: Math.round(
-        proceses.reduce((total, current) => total + current.vykazano, 0)
-      ),
+      hodnota:
+        proceses &&
+        Math.round(
+          proceses.reduce((total, current) => total + current.vykazano, 0)
+        ),
     },
     {
       name: 'Skutečnost',
@@ -74,11 +78,12 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
   };
   return (
     <>
-      {console.log(
-        Math.round(
-          proceses.reduce((total, current) => total + current.vykazano, 0)
-        )
-      )}
+      {proceses &&
+        console.log(
+          Math.round(
+            proceses.reduce((total, current) => total + current.vykazano, 0)
+          )
+        )}
       <Column {...config} />;
     </>
   );

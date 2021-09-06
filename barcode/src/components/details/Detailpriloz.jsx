@@ -3,19 +3,25 @@ import { useState, useEffect } from 'react';
 import card from './card.gif';
 import * as api from '../../api';
 
-const Detailpriloz = ({ setUser }) => {
+const Detailpriloz = ({ setUser, user, setStep }) => {
   const [input, setInput] = useState(null);
 
   useEffect(() => {
-    if (input !== null && input.length === 8) {
+    if (input !== null && input.length === 8 && user === null) {
       api
         .verifyCardId(input)
-        .then(({ data }) => setUser({ ...data, exists: true }))
-        .catch(() => setUser({ exists: false }));
+        .then(({ data }) => {
+          setTimeout(() => setStep(1), 2000);
+          setUser({ ...data, exists: true });
+        })
+        .catch(() => {
+          setUser({ exists: false });
+          setTimeout(() => setUser(null), 3000);
+        });
     }
 
     //setInput(null);
-  }, [input, setUser]);
+  }, [input, setUser, setStep, user]);
 
   const manualInputHandler = () => {
     setInput(prompt('Zadejte ID karty'));

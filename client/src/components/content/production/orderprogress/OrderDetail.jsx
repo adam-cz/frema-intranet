@@ -18,6 +18,7 @@ const OrderDetail = ({ order }) => {
       const count = [];
       procedures.map((zp) => zp.operace.map((op) => count.push(op)));
       setProceses(count);
+      console.log(procedures);
     }
   }, [loading, procedures]);
 

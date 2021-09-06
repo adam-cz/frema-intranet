@@ -12,7 +12,7 @@ const DetailSkenuj = ({
   setInfo,
 }) => {
   const [input, setInput] = useState(null);
-  const timeout = useRef(10000);
+  const timeout = useRef(3000);
   const interval = useRef(null);
 
   useEffect(() => {
@@ -21,14 +21,19 @@ const DetailSkenuj = ({
         if (timeout.current === 0 && !operace) {
           clearInterval(interval.current);
           setStep(0);
+          setUser(null);
         }
         timeout.current = timeout.current - 1000;
       }, 1000);
     }
   }, [setUser, setStep, operace, user]);
 
-  useEffect(() => {
-    if (input !== null && input.length > 8) {
+  const manualInputHandler = () => {
+    setInput(prompt('Zadejte ID operace'));
+  };
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter')
       api
         .setProces(input.trim(), user)
         .then(({ data }) => {
@@ -37,12 +42,6 @@ const DetailSkenuj = ({
           setInfo({ message: data.message, status: data.status });
         })
         .catch((err) => console.log(err));
-    }
-    setInput(null);
-  }, [input, user, setOperace, setInfo]);
-
-  const manualInputHandler = () => {
-    setInput(prompt('Zadejte ID operace'));
   };
 
   const inputHandleChange = (event) => {
@@ -68,6 +67,7 @@ const DetailSkenuj = ({
         onBlur={({ target }) => target.focus()}
         autoFocus
         style={{ width: 10, opacity: 0, cursor: 'default' }}
+        onKeyDown={handleEnter}
         onChange={inputHandleChange}
       />
     </>
