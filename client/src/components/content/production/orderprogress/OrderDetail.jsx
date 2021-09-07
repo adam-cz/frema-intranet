@@ -15,10 +15,10 @@ const OrderDetail = ({ order }) => {
 
   useEffect(() => {
     if (!loading) {
+      console.log('Tady');
       const count = [];
       procedures.map((zp) => zp.operace.map((op) => count.push(op)));
       setProceses(count);
-      console.log(procedures);
     }
   }, [loading, procedures]);
 
@@ -42,7 +42,7 @@ const OrderDetail = ({ order }) => {
         </div>
         <div id="rightChart">
           <h3>Porovnání plánu se skutečností</h3>
-          {procedures ? (
+          {proceses ? (
             <PorovnaniGraf procedures={procedures} proceses={proceses} />
           ) : (
             ''

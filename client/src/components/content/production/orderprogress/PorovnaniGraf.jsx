@@ -1,7 +1,5 @@
 import { Column } from '@ant-design/charts';
 
-const MsNaPenize = (minuty) => (minuty / 1000) * 60;
-
 const PorovnaniGraf = ({ procedures, proceses }) => {
   const data = [
     {
@@ -52,13 +50,37 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
       hodnota:
         proceses &&
         Math.round(
-          proceses.reduce((total, current) => total + current.vykazano, 0)
+          proceses.reduce((total, current) => total + current.vykazanaMzda, 0)
         ),
     },
     {
       name: 'Skutečnost',
       naklad: 'Soc./Zdrav.',
-      hodnota: 28.8,
+      hodnota:
+        proceses &&
+        Math.round(
+          proceses.reduce(
+            (total, current) =>
+              total + current.nakl_mzd
+                ? current.vykazanaMzda * (current.nakl_r1 / current.nakl_mzd)
+                : 0,
+            0
+          )
+        ),
+    },
+    {
+      name: 'Skutečnost',
+      naklad: 'Strojní náklady',
+      hodnota:
+        proceses &&
+        Math.round(
+          proceses.reduce(
+            (total, current) =>
+              total +
+              (current.vykazanyCas / 1000 / 60) * (current.sazbaZdroje / 60),
+            0
+          )
+        ),
     },
   ];
   const config = {
@@ -80,9 +102,11 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
     <>
       {proceses &&
         console.log(
-          Math.round(
-            proceses.reduce((total, current) => total + current.vykazano, 0)
-          )
+          // Math.round(
+          proceses,
+          procedures
+          //.reduce((total, current) => total + current.vykazanaMzda, 0)
+          //)
         )}
       <Column {...config} />;
     </>

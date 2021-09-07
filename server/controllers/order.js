@@ -73,27 +73,46 @@ export const fetchProcedures = async (req, res) => {
             const operace = [];
             await Promise.all(
               rawOperace.map(async (op) => {
-                let vykazano = 0;
+                let vykazanyCas = 0;
+                let vykazanaMzda = 0;
                 const vykazy = await Proces.findOne({
                   barcode: `${op.opv.trim()}_${op.polozka}`,
                 });
                 //Výpočet délky výkonu z časových značek
                 if (vykazy && vykazy.zaznamy && vykazy.zaznamy.length >= 2) {
-                  vykazy.zaznamy.map((zaznam, index, array) => {
-                    if (index % 2 == 0 && array[index + 1]) {
-                      vykazano += array[index + 1].cas - array[index].cas;
-                    }
-                  });
+                  await Promise.all(
+                    vykazy.zaznamy.map(async (zaznam, index, array) => {
+                      if (index % 2 == 0 && array[index + 1]) {
+                        const delkaVykazu =
+                          new Date(array[index + 1].cas) -
+                          new Date(array[index].cas);
+                        const { recordset: hodinovaMzda } = await request.query(
+                          `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+                            zaznam.operator_id
+                          } AND rok = ${new Date(
+                            zaznam.cas
+                          ).getFullYear()} AND mesic = ${new Date(
+                            zaznam.cas
+                          ).getMonth()});`
+                        );
+                        vykazanaMzda +=
+                          (delkaVykazu / 1000 / 60 / 60) *
+                          hodinovaMzda[0].prd_plati;
+                        vykazanyCas += delkaVykazu;
+                      }
+                    })
+                  );
                 }
                 //Přiřazení sazby k operaci
-                const sazba = sazby.find(
+                const sazbaZdroje = zdroje.find(
                   (sazba) => sazba.operace === op.zdroj
                 ).sazba;
                 operace.push({
                   ...op,
                   vykazy: vykazy ? vykazy.zaznamy : null,
-                  vykazano,
-                  sazba,
+                  vykazanyCas,
+                  vykazanaMzda,
+                  sazbaZdroje,
                 });
               })
             );
