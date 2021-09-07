@@ -28,7 +28,7 @@ const HeaderNavigation = () => {
 
             <Menu.Item key="3">
               <span>Výroba</span>
-              <Link to="/vyroba" />
+              <Link to="/vyroba/zakazky" />
             </Menu.Item>
 
             {user.data.role.includes('admin') ? (

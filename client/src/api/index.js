@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = 'http://pc150:3001/';
+const api = 'http://localhost:3001/';
 
 axios.defaults.withCredentials = true;
 
