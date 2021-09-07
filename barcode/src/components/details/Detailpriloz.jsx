@@ -1,13 +1,13 @@
 import { Button, Result, Image, Input } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import card from './card.gif';
 import * as api from '../../api';
 
-const Detailpriloz = ({ setUser, user, setStep }) => {
+const Detailpriloz = ({ setUser, setStep }) => {
   const [input, setInput] = useState(null);
 
-  useEffect(() => {
-    if (input !== null && input.length === 8 && user === null) {
+  const handleEnter = (event) => {
+    if (event.key === 'Enter' && input.length === 8)
       api
         .verifyCardId(input)
         .then(({ data }) => {
@@ -18,10 +18,7 @@ const Detailpriloz = ({ setUser, user, setStep }) => {
           setUser({ exists: false });
           setTimeout(() => setUser(null), 3000);
         });
-    }
-
-    //setInput(null);
-  }, [input, setUser, setStep, user]);
+  };
 
   const manualInputHandler = () => {
     setInput(prompt('Zadejte ID karty'));
@@ -52,6 +49,7 @@ const Detailpriloz = ({ setUser, user, setStep }) => {
         autoFocus
         style={{ width: 10, opacity: 0, cursor: 'default' }}
         onChange={inputHandleChange}
+        onKeyDown={handleEnter}
       />
     </>
   );

@@ -17,7 +17,11 @@ const OrderDetail = ({ order }) => {
     if (!loading) {
       console.log('Tady');
       const count = [];
-      procedures.map((zp) => zp.operace.map((op) => count.push(op)));
+      procedures.map((zp) =>
+        zp.operace.map((op) =>
+          count.push({ ...op, barcode: `${op.opv}_${op.polozka}` })
+        )
+      );
       setProceses(count);
     }
   }, [loading, procedures]);

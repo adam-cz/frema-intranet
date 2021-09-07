@@ -2,14 +2,14 @@ import React from 'react';
 
 const SingleOperBarcode = ({ operace }) => {
   return (
-    <div class="operace">
-      <div class="kod">
-        <div class="popis">{operace.popis}</div>
+    <div className="operace">
+      <div className="kod">
+        <div className="popis">{operace.popis}</div>
         <div>
-          <svg class="barcode" ref={operace.barcodeRef} />
+          <svg className="barcode" ref={operace.barcodeRef} />
         </div>
       </div>
-      <div class="info">
+      <div className="info">
         <span>
           Zakázkový postup: <b>{operace.opv}</b>
         </span>

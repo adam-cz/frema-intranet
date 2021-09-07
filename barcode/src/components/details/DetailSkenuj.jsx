@@ -12,7 +12,7 @@ const DetailSkenuj = ({
   setInfo,
 }) => {
   const [input, setInput] = useState(null);
-  const timeout = useRef(3000);
+  const timeout = useRef(10000);
   const interval = useRef(null);
 
   useEffect(() => {

@@ -21,9 +21,9 @@ export const Barcodes = ({ data }) => {
 
   return (
     <>
-      <div class="page">
+      <div className="page">
         {operace.map((operace) => (
-          <SingleOperBarcode operace={operace} />
+          <SingleOperBarcode operace={operace} key={operace.barcode} />
         ))}
       </div>
     </>

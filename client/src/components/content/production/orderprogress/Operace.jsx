@@ -91,7 +91,12 @@ const Operace = ({ proceses, loading }) => {
           <Barcodes data={proceses} />
         </NewWindow>
       )}
-      <Table dataSource={proceses} columns={columns} loading={loading} />
+      <Table
+        dataSource={proceses}
+        columns={columns}
+        loading={loading}
+        rowKey="barcode"
+      />
     </div>
   );
 };

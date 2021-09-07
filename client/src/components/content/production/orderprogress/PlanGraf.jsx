@@ -17,25 +17,40 @@ const PlanGraf = ({ procedures }) => {
     {
       type: 'Materiál',
       value: Math.round(
-        procedures.reduce((total, current) => total + current.material, 0)
+        procedures.reduce(
+          (total, current) =>
+            current.material ? total + current.material : total,
+          0
+        )
       ),
     },
     {
       type: 'Polotovary',
       value: Math.round(
-        procedures.reduce((total, current) => total + current.polotovar, 0)
+        procedures.reduce(
+          (total, current) =>
+            current.polotovar ? total + current.polotovar : total,
+          0
+        )
       ),
     },
     {
       type: 'Kooperace',
       value: Math.round(
-        procedures.reduce((total, current) => total + current.kooper, 0)
+        procedures.reduce(
+          (total, current) => (current.kooper ? total + current.kooper : total),
+          0
+        )
       ),
     },
     {
       type: 'Strojní náklady',
       value: Math.round(
-        procedures.reduce((total, current) => total + current.strnakl, 0)
+        procedures.reduce(
+          (total, current) =>
+            current.strnakl ? total + current.strnakl : total,
+          0
+        )
       ),
     },
   ];
