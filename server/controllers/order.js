@@ -131,21 +131,22 @@ export const fetchProcedures = async (req, res) => {
 
 export const createProcedure = async (req, res) => {
   try {
+    console.log(req.body);
     req.body.map(async (operace) => {
       const found = await Proces.findOne({
         barcode: `${operace.opv.trim()}_${operace.polozka}`,
       });
+
       if (!found)
         await Proces.create({
           barcode: `${operace.opv.trim()}_${operace.polozka}`,
           opv: operace.opv,
+          objednavka: operace.objednavka,
           operace: operace.polozka,
           popis: operace.popis.trim(),
           stredisko: operace.zdroj,
         });
     });
-    console.log(count);
-    console.log(exists);
     res.status(200).json({
       message: `Čárové kódy vygenerovány`,
     });

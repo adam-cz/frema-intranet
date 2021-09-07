@@ -3,6 +3,7 @@ import OrderDetail from './OrderDetail';
 import { Breadcrumb } from 'antd';
 import { useState, useEffect } from 'react';
 import * as api from '../../../../api/index';
+import './production.css';
 
 const OrderProgress = () => {
   const [order, setOrder] = useState(null);

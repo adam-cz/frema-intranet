@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const procesSchema = mongoose.Schema({
   barcode: String,
+  objednavka: String,
   opv: String,
   popis: String,
   stredisko: Number,

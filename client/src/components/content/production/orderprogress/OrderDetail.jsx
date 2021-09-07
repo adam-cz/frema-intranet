@@ -15,21 +15,23 @@ const OrderDetail = ({ order }) => {
 
   useEffect(() => {
     if (!loading) {
-      console.log('Tady');
       const count = [];
       procedures.map((zp) =>
         zp.operace.map((op) =>
-          count.push({ ...op, barcode: `${op.opv}_${op.polozka}` })
+          count.push({
+            ...op,
+            barcode: `${op.opv}_${op.polozka}`,
+            objednavka: order,
+          })
         )
       );
       setProceses(count);
     }
-  }, [loading, procedures]);
+  }, [loading, procedures, order]);
 
   useEffect(() => {
     const loadOrders = async () => {
       const { data } = await api.fetchProcedures(order);
-      console.log(data);
       setProcedures(data);
       setLoading(false);
     };

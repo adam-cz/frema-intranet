@@ -80,9 +80,14 @@ const Operace = ({ proceses, loading }) => {
 
   return (
     <div>
-      <Button type="primary" onClick={clickHandler}>
-        Generovat čárové kódy
-      </Button>
+      <div>
+        <Button className="buttonOperace" type="primary" onClick={clickHandler}>
+          Generovat čárové kódy k operacím
+        </Button>
+        <Button className="buttonOperace" type="primary" onClick={clickHandler}>
+          Generovat volné čárové kódy
+        </Button>
+      </div>
       {mountBarcodePage && (
         <NewWindow
           features={{ width: 1200, height: 1000 }}
