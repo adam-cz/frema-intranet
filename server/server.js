@@ -14,6 +14,7 @@ import salesRouter from './routes/sales.js';
 import userRouter from './routes/user.js';
 import orderRouter from './routes/order.js';
 import barcodeRouter from './routes/barcode.js';
+import vykazyRouter from './routes/vykazy.js';
 
 //INIT
 const app = express();
@@ -42,6 +43,7 @@ app.use('/obchod', salesRouter);
 app.use('/user', userRouter);
 app.use('/order', orderRouter);
 app.use('/barcode', barcodeRouter);
+app.use('/vykazy', vykazyRouter);
 
 //DB AND SERVER
 const mongoConfig = {

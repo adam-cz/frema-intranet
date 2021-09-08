@@ -55,3 +55,6 @@ export const fetchOrders = () => axios.get(`${api}order/`);
 export const fetchProcedures = (order) => axios.get(`${api}order/${order}`);
 export const createProcedure = (procedures) =>
   axios.post(`${api}order/create`, procedures);
+
+//Vykazy
+export const nacistVykazy = () => axios.get(`${api}vykazy/`);
