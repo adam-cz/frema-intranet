@@ -8,6 +8,8 @@ const procesSchema = mongoose.Schema({
   stredisko: Number,
   operace: Number,
   zaznamy: [{ cas: Date, operator_id: String, operator_jmeno: String }],
+  prvniVykaz: Date,
+  posledniVykaz: Date,
   aktivni: Boolean,
 });
 
