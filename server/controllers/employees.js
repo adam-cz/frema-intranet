@@ -37,21 +37,18 @@ const loadEmployees = async () => {
   const poolConnection = await pool;
   const request = new sql.Request(poolConnection);
   //fetch all employees list with details
-  const employees = await request.query(
+  const { recordset: all } = await request.query(
     'SELECT RC, Jmeno, Prijmeni FROM Osoba'
   );
   //fetch expiration info (2. table)
-  const filter = await request.query(
-    'SELECT RC, DatumUkonceni FROM PracovniPomer'
+  const { recordset: filter } = await request.query(
+    'SELECT RC FROM PracovniPomer WHERE DatumUkonceni IS NULL'
   );
+
   //filter all dismissed employees from 1.table
-  const filteredEmployees = employees.recordset.filter((element) => {
-    return isExpired(
-      filter.recordset.find((el) => {
-        return el.RC === element.RC;
-      }).DatumUkonceni
-    );
-  });
+  const filteredEmployees = filter.map((empl) =>
+    all.find((find) => find.RC === empl.RC)
+  );
   //prepare Object with correct keys for saving to app db
   const convertedEmployees = filteredEmployees.map(
     ({ Jmeno, Prijmeni, RC }) => ({
@@ -66,8 +63,9 @@ const loadEmployees = async () => {
 //Get back difference of two lists - used for filter employees who are still employed
 const compareLists = (list1, list2) => {
   const newEmployees = list2.filter((e) => {
-    return !list1.map((el) => parseInt(el.RC)).includes(parseInt(e.RC));
+    return !list1.map((el) => el._id).includes(e.RC);
   });
+  console.log(newEmployees);
   return newEmployees;
 };
 
@@ -77,7 +75,7 @@ export const updateEmployees = async (req, res) => {
     const MSSQLemployees = await loadEmployees();
     const MongoEmployees = await User.find();
     const newEmployees = compareLists(MongoEmployees, MSSQLemployees);
-    const dismissedEmployees = compareLists(MSSQLemployees, MongoEmployees);
+    //  const dismissedEmployees = compareLists(MSSQLemployees, MongoEmployees);
     //insert new
     if (newEmployees) await User.insertMany(newEmployees);
     //delete expired
@@ -94,7 +92,7 @@ export const updateEmployees = async (req, res) => {
     res.status(200).send({
       message: 'Update Completed',
       added: newEmployees.length,
-      deleted: dismissedEmployees.length,
+      // deleted: dismissedEmployees.length,
     });
   } catch (err) {
     res.status(400).send({ message: err.message });

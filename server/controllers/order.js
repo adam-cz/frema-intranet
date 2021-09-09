@@ -19,31 +19,24 @@ export const fetchOrders = async (req, res) => {
   }
 };
 
-const nactiZp = async (request, objednavka) => {
-  const { recordset: opvFinals } = await request.query(
-    `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
-  );
-  console.log(opvFinals);
-  return opvFinals;
-};
-
-const nactiSazebnikZdroju = async (request) => {
-  const { recordset: zdroje } = await request.query(
-    `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
-  );
-  return zdroje;
-};
-
 export const fetchProcedures = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
+
     //Vyhledá zakázkové postupy objednávky
-    const opvFinals = await nactiZp(request, req.params.order);
+    const { recordset: opvFinals } = await request.query(
+      `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
+    );
+
     //načte sazebník strojních nákladů
-    const sazby = await nactiSazebnikZdroju(request);
+    const { recordset: zdroje } = await request.query(
+      `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
+    );
+    console.log(opvFinals);
 
     const postupy = [];
+
     //Načte zakázkové postupy objednávky
     await Promise.all(
       opvFinals.map(async (opvFinal) => {
@@ -79,8 +72,10 @@ export const fetchProcedures = async (req, res) => {
             [nakl_mzd],
             [nakl_r1] FROM dba.v_opvoper WHERE opv = '${polotovar.opv}' ORDER BY 'polozka';`
             );
-            //Načteni reálných časů nad operacemi
+
             const operace = [];
+
+            //Načteni reálných časů (výkazů) nad operacemi
             await Promise.all(
               rawOperace.map(async (op) => {
                 let vykazanyCas = 0;
@@ -88,14 +83,18 @@ export const fetchProcedures = async (req, res) => {
                 const vykazy = await Proces.findOne({
                   barcode: `${op.opv.trim()}_${op.polozka}`,
                 });
-                //Výpočet délky výkonu z časových značek
+
+                //Výpočet délky výkonu a mzdy z časových značek
                 if (vykazy && vykazy.zaznamy && vykazy.zaznamy.length >= 2) {
+                  //Při více než dvou výkazech (= započetí a ukončení) iteruje
                   await Promise.all(
                     vykazy.zaznamy.map(async (zaznam, index, array) => {
+                      //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
                       if (index % 2 == 0 && array[index + 1]) {
                         const delkaVykazu =
                           new Date(array[index + 1].cas) -
                           new Date(array[index].cas);
+                        //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
                         const { recordset: hodinovaMzda } = await request.query(
                           `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
                             zaznam.operator_id
@@ -105,6 +104,7 @@ export const fetchProcedures = async (req, res) => {
                             zaznam.cas
                           ).getMonth()});`
                         );
+                        //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
                         vykazanaMzda +=
                           (delkaVykazu / 1000 / 60 / 60) *
                           hodinovaMzda[0].prd_plati;
@@ -113,10 +113,12 @@ export const fetchProcedures = async (req, res) => {
                     })
                   );
                 }
+
                 //Přiřazení sazby k operaci
                 const sazbaZdroje = zdroje.find(
                   (sazba) => sazba.operace === op.zdroj
                 ).sazba;
+                //Do operace pushuje iterované data a součty
                 operace.push({
                   ...op,
                   vykazy: vykazy ? vykazy.zaznamy : null,
@@ -126,7 +128,6 @@ export const fetchProcedures = async (req, res) => {
                 });
               })
             );
-
             polotovar.operace = operace;
             postupy.push(polotovar);
           })
