@@ -19,21 +19,31 @@ export const fetchOrders = async (req, res) => {
   }
 };
 
+const nactiZp = async (request, objednavka) => {
+  const { recordset: opvFinals } = await request.query(
+    `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
+  );
+  console.log(opvFinals);
+  return opvFinals;
+};
+
+const nactiSazebnikZdroju = async (request) => {
+  const { recordset: zdroje } = await request.query(
+    `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
+  );
+  return zdroje;
+};
+
 export const fetchProcedures = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     //Vyhledá zakázkové postupy objednávky
-    const { recordset: opvFinals } = await request.query(
-      `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
-    );
-    const postupy = [];
+    const opvFinals = await nactiZp(request, req.params.order);
     //načte sazebník strojních nákladů
-    const { recordset: zdroje } = await request.query(
-      `SELECT [operace], 
-      [nazev],
-      [sazba] FROM dba.zdr_ope ORDER BY operace;`
-    );
+    const sazby = await nactiSazebnikZdroju(request);
+
+    const postupy = [];
     //Načte zakázkové postupy objednávky
     await Promise.all(
       opvFinals.map(async (opvFinal) => {

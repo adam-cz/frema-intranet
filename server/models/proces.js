@@ -6,6 +6,7 @@ const procesSchema = mongoose.Schema({
   opv: String,
   popis: String,
   stredisko: Number,
+  stroj: { type: Number, default: 0 },
   operace: Number,
   zaznamy: [{ cas: Date, operator_id: String, operator_jmeno: String }],
   prvniVykaz: Date,
