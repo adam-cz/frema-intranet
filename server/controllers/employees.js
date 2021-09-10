@@ -63,13 +63,13 @@ const loadEmployees = async () => {
 //Get back difference of two lists - used for filter employees who are still employed
 const compareLists = (list1, list2) => {
   const newEmployees = list2.filter((e) => {
-    return !list1.map((el) => el._id).includes(e.RC);
+    return !list1.map((el) => parseInt(el._id)).includes(parseInt(e._id));
   });
   console.log(newEmployees);
   return newEmployees;
 };
 
-//Update internal employee database. Add new one, delete old one
+//Update internal employee database. Add new ones
 export const updateEmployees = async (req, res) => {
   try {
     const MSSQLemployees = await loadEmployees();
@@ -87,6 +87,7 @@ export const updateEmployees = async (req, res) => {
     }
     */
     //create default attendance data
+
     await User.updateMany({}, { isPresent: 0, lastOperation: '' });
 
     res.status(200).send({
@@ -95,7 +96,7 @@ export const updateEmployees = async (req, res) => {
       // deleted: dismissedEmployees.length,
     });
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    res.status(400).send(err);
   }
 };
 
