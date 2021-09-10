@@ -142,21 +142,39 @@ export const fetchProcedures = async (req, res) => {
 
 export const createProcedure = async (req, res) => {
   try {
-    console.log(req.body);
     req.body.map(async (operace) => {
       const found = await Proces.findOne({
-        barcode: `${operace.opv.trim()}_${operace.polozka}`,
+        barcode: `${operace.opv.trim()}_${operace.polozka}_${operace.stroj}`,
       });
-
-      if (!found)
-        await Proces.create({
-          barcode: `${operace.opv.trim()}_${operace.polozka}`,
-          opv: operace.opv,
-          objednavka: operace.objednavka,
-          operace: operace.polozka,
-          popis: operace.popis.trim(),
-          stredisko: operace.zdroj,
-        });
+      console.log(req.body);
+      if (!found) {
+        if (operace.zdroj === '160') {
+          for (let i = 0; i < 5; i++) {
+            await Proces.create({
+              barcode: `${operace.opv.trim()}_${operace.polozka}_${
+                operace.stroj
+              }`,
+              opv: operace.opv,
+              objednavka: operace.objednavka,
+              operace: operace.polozka,
+              stroj: i,
+              popis: operace.popis.trim(),
+              stredisko: operace.zdroj,
+            });
+          }
+        } else
+          await Proces.create({
+            barcode: `${operace.opv.trim()}_${operace.polozka}_${
+              operace.stroj
+            }`,
+            opv: operace.opv,
+            objednavka: operace.objednavka,
+            operace: operace.polozka,
+            stroj: operace.stroj,
+            popis: operace.popis.trim(),
+            stredisko: operace.zdroj,
+          });
+      }
     });
     res.status(200).json({
       message: `Čárové kódy vygenerovány`,

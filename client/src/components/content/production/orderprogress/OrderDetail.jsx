@@ -20,7 +20,7 @@ const OrderDetail = ({ order }) => {
         zp.operace.map((op) =>
           count.push({
             ...op,
-            barcode: `${op.opv}_${op.polozka}`,
+            barcode: `${op.opv}_${op.polozka}_${op.stroj}`,
             objednavka: order,
           })
         )

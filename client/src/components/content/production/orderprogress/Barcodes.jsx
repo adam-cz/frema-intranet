@@ -13,9 +13,10 @@ export const Barcodes = ({ data }) => {
   const operace = data.map((operace) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { inputRef: barcodeRef } = useBarcode({
-      value: `${operace.opv.trim()}_${operace.polozka}`,
+      value: `${operace.opv.trim()}_${operace.polozka}_${operace.stroj}`,
       options,
     });
+    console.log(operace);
     return { ...operace, barcodeRef };
   });
 

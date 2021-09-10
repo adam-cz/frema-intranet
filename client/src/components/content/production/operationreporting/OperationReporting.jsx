@@ -1,4 +1,3 @@
-import { ApiTwoTone } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import InfoTimeline from './InfoTimeline';
 import * as api from '../../../../api';
