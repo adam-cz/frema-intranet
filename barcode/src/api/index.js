@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = 'http://localhost:3001/';
+const api = process.env.API_URL;
 
 export const verifyCardId = (id) => axios.get(`${api}barcode/user/${id}`);
 export const setProces = (barcode, user) =>
