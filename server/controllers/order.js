@@ -1,5 +1,6 @@
 import sql, { pool } from '../utils/karat.js';
 import Proces from '../models/proces.js';
+import { zdroje } from '../config/zdroje.js';
 
 export const fetchOrders = async (req, res) => {
   try {
@@ -30,7 +31,7 @@ export const fetchProcedures = async (req, res) => {
     );
 
     //načte sazebník strojních nákladů
-    const { recordset: zdroje } = await request.query(
+    const { recordset: sazbyStrNak } = await request.query(
       `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
     );
     console.log(opvFinals);
@@ -115,7 +116,7 @@ export const fetchProcedures = async (req, res) => {
                 }
 
                 //Přiřazení sazby k operaci
-                const sazbaZdroje = zdroje.find(
+                const sazbaZdroje = sazbyStrNak.find(
                   (sazba) => sazba.operace === op.zdroj
                 ).sazba;
                 //Do operace pushuje iterované data a součty
@@ -144,38 +145,23 @@ export const createProcedure = async (req, res) => {
   try {
     req.body.map(async (operace) => {
       const found = await Proces.findOne({
-        barcode: `${operace.opv.trim()}_${operace.polozka}_${operace.stroj}`,
+        opv: operace.opv,
+        operace: operace.polozka,
       });
-      console.log(req.body);
       if (!found) {
-        if (operace.zdroj === '160') {
-          for (let i = 0; i < 5; i++) {
-            await Proces.create({
-              barcode: `${operace.opv.trim()}_${operace.polozka}_${
-                operace.stroj
-              }`,
-              opv: operace.opv,
-              objednavka: operace.objednavka,
-              operace: operace.polozka,
-              stroj: i,
-              popis: operace.popis.trim(),
-              stredisko: operace.zdroj,
-            });
-          }
-        } else
-          await Proces.create({
-            barcode: `${operace.opv.trim()}_${operace.polozka}_${
-              operace.stroj
-            }`,
-            opv: operace.opv,
-            objednavka: operace.objednavka,
-            operace: operace.polozka,
-            stroj: operace.stroj,
-            popis: operace.popis.trim(),
-            stredisko: operace.zdroj,
-          });
+        const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
+        console.log(zdroj);
+        await Proces.create({
+          opv: operace.opv,
+          objednavka: operace.objednavka,
+          operace: operace.polozka,
+          popis: operace.popis.trim(),
+          stredisko: operace.zdroj,
+          stroje: zdroj ? zdroj.stroje : [{ stroj: 'výchozí' }],
+        });
       }
     });
+
     res.status(200).json({
       message: `Čárové kódy vygenerovány`,
     });

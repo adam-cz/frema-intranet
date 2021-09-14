@@ -16,7 +16,6 @@ export const Barcodes = ({ data }) => {
       value: `${operace.opv.trim()}_${operace.polozka}_${operace.stroj}`,
       options,
     });
-    console.log(operace);
     return { ...operace, barcodeRef };
   });
 
