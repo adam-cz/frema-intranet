@@ -143,29 +143,37 @@ export const fetchProcedures = async (req, res) => {
 
 export const createProcedure = async (req, res) => {
   try {
-    req.body.map(async (operace) => {
-      const found = await Proces.findOne({
-        opv: operace.opv,
-        operace: operace.polozka,
-      });
-      if (!found) {
-        const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
-        console.log(zdroj);
-        await Proces.create({
+    const results = [];
+    await Promise.all(
+      req.body.map(async (operace) => {
+        console.log(operace);
+        const found = await Proces.findOne({
           opv: operace.opv,
-          objednavka: operace.objednavka,
-          operace: operace.polozka,
-          popis: operace.popis.trim(),
-          stredisko: operace.zdroj,
-          stroje: zdroj ? zdroj.stroje : [{ stroj: 'výchozí' }],
+          polozka: operace.polozka,
         });
-      }
-    });
-
+        if (found) results.push(found);
+        if (!found) {
+          const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
+          const result = await Proces.create({
+            opv: operace.opv,
+            objednavka: operace.objednavka,
+            polozka: operace.polozka,
+            planvyroba: operace.planvyroba,
+            minut_nor: operace.minut_nor,
+            popis: operace.popis.trim(),
+            stredisko: operace.zdroj,
+            stroje: zdroj ? zdroj.stroje : [{ nazev: null }],
+          });
+          results.push(result);
+        }
+      })
+    );
     res.status(200).json({
+      type: 'success',
       message: `Čárové kódy vygenerovány`,
+      payload: results,
     });
   } catch (err) {
-    res.status(404).json({ error: err });
+    res.status(404).json({ type: 'error', message: err.message });
   }
 };

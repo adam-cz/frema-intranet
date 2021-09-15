@@ -1,12 +1,33 @@
-import React from 'react';
+import { useBarcode } from 'react-barcodes';
+
+const options = {
+  displayValue: false,
+  height: 50,
+  width: 1.8,
+};
 
 const SingleOperBarcode = ({ operace }) => {
+  console.log(operace);
+  const barcodes = operace.stroje.map((stroj) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { inputRef: barcodeRef } = useBarcode({
+      value: `${operace.opv.trim()}_${operace.polozka}_${stroj.nazev}`,
+      options,
+    });
+    return { nazev: stroj.nazev, barcodeRef };
+  });
+
   return (
     <div className="operace">
       <div className="kod">
         <div className="popis">{operace.popis}</div>
         <div>
-          <svg className="barcode" ref={operace.barcodeRef} />
+          {barcodes.map((barcode) => (
+            <div className="barcode-divider">
+              <b>{barcode.nazev && barcode.nazev}</b>
+              <svg className="barcode" ref={barcode.barcodeRef} />
+            </div>
+          ))}
         </div>
       </div>
       <div className="info">

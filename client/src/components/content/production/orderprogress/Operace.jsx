@@ -69,13 +69,14 @@ const columns = [
 ];
 
 const Operace = ({ proceses, loading }) => {
-  const [mountBarcodePage, setMountBarcodePage] = useState(false);
+  const [payload, setPayload] = useState(null);
 
   const clickHandler = () => {
-    setMountBarcodePage(!mountBarcodePage);
-    api
-      .createProcedure(proceses)
-      .then(({ data }) => message.success(data.message));
+    console.log(proceses);
+    api.createProcedure(proceses).then(({ data }) => {
+      console.log(data.payload);
+      setPayload(data.payload);
+    });
   };
 
   return (
@@ -88,12 +89,12 @@ const Operace = ({ proceses, loading }) => {
           Generovat volné čárové kódy
         </Button>
       </div>
-      {mountBarcodePage && (
+      {payload && (
         <NewWindow
           features={{ width: 1200, height: 1000 }}
-          onUnload={() => setMountBarcodePage(false)}
+          onUnload={() => setPayload(null)}
         >
-          <Barcodes data={proceses} />
+          <Barcodes data={payload} />
         </NewWindow>
       )}
       <Table

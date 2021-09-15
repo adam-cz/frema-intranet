@@ -3,24 +3,24 @@ export const zdroje = [
     zdroj: '160',
     stroje: [
       {
-        stroj: 'AV 128 H',
-        sazba: 1130,
+        nazev: 'AV 128 H',
+        sazba: 885,
       },
       {
-        stroj: 'MCFV 1060',
-        sazba: 1100,
+        nazev: 'MCFV 1060',
+        sazba: 854,
       },
       {
-        stroj: 'Depomil',
-        sazba: 1000,
+        nazev: 'Depomil',
+        sazba: 943,
       },
       {
-        stroj: 'AV1612',
-        sazba: 1330,
+        nazev: 'AV1612',
+        sazba: 1047,
       },
       {
-        stroj: 'MCV 1220',
-        sazba: 1280,
+        nazev: 'MCV 1220',
+        sazba: 1007,
       },
     ],
   },
