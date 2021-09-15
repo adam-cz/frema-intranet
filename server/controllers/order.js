@@ -34,7 +34,6 @@ export const fetchProcedures = async (req, res) => {
     const { recordset: sazbyStrNak } = await request.query(
       `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
     );
-    console.log(opvFinals);
 
     const postupy = [];
 
@@ -146,7 +145,6 @@ export const createProcedure = async (req, res) => {
     const results = [];
     await Promise.all(
       req.body.map(async (operace) => {
-        console.log(operace);
         const found = await Proces.findOne({
           opv: operace.opv,
           polozka: operace.polozka,

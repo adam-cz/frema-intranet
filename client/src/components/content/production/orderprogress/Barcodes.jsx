@@ -5,6 +5,7 @@ import SingleOperBarcode from './SingleOperBarcode';
 export const Barcodes = ({ data: operace }) => {
   const postupy = [...new Set(operace.map((operace) => operace.opv.trim()))];
   const pocet = useRef(null);
+
   const setPocet = (operace, postup) => {
     pocet.current = operace.filter(
       (op) =>
@@ -33,7 +34,9 @@ export const Barcodes = ({ data: operace }) => {
       {postupy.map((postup) => (
         <div className="zalamovani">
           {setPocet(operace, postup)}
-          {pocet > 0 && <h1 className="nadpis">Operace pro ZP {postup}</h1>}
+          {pocet.current > 0 && (
+            <h1 className="nadpis">Operace pro ZP {postup}</h1>
+          )}
           {operace.map((operace) => {
             if (
               operace.opv.trim() === postup &&

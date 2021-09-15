@@ -20,7 +20,11 @@ export const verifyCardId = async (req, res) => {
 
 export const setProces = async (req, res) => {
   try {
-    const proces = await Proces.findOne({ barcode: req.body.barcode });
+    const barcode = req.body.barcode.split('_');
+    const proces = await Proces.findOne({
+      opv: barcode[0],
+      polozka: barcode[1],
+    });
     if (!proces)
       return res.status(200).json({
         status: 'error',
@@ -34,14 +38,17 @@ export const setProces = async (req, res) => {
         cas: Date.now(),
         operator_id: req.body.user.id,
         operator_jmeno: req.body.user.jmeno,
+        stroj: barcode[2],
       });
       proces.aktivni = true;
       await proces.save();
       return res.status(200).json({
         status: 'success',
         message: `Operace ${
-          proces.operace
-        } na zakázkovém postupu ${proces.opv.trim()} načtena`,
+          proces.polozka
+        } na zakázkovém postupu ${proces.opv.trim()} ${
+          barcode[2] && 'na stroji ' + barcode[2]
+        } načtena`,
         proces,
       });
     }

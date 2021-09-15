@@ -9,7 +9,9 @@ const procesSchema = mongoose.Schema({
   polozka: String,
   planvyroba: Number,
   minut_nor: Number,
-  zaznamy: [{ cas: Date, operator_id: String, operator_jmeno: String }],
+  zaznamy: [
+    { cas: Date, operator_id: String, operator_jmeno: String, stroj: String },
+  ],
   prvniVykaz: Date,
   posledniVykaz: Date,
   aktivni: Boolean,
