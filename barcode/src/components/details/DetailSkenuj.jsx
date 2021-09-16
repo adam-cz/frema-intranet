@@ -1,7 +1,8 @@
-import { Button, Result, Input, Image } from 'antd';
+import { Result, Input, Image } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import * as api from '../../api';
 import barcode from './barcode.gif';
+import Proces from './Proces';
 
 const DetailSkenuj = ({
   user,
@@ -28,24 +29,24 @@ const DetailSkenuj = ({
     }
   }, [setUser, setStep, operace, user]);
 
-  const manualInputHandler = () => {
-    setInput(prompt('Zadejte ID operace'));
+  const setProces = () => {
+    api
+      .setProces(input.trim(), user)
+      .then(({ data }) => {
+        setOperace(data.proces);
+        clearInterval(interval.current);
+        setInfo({ message: data.message, status: data.status });
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleEnter = (event) => {
-    if (event.key === 'Enter')
-      api
-        .setProces(input.trim(), user)
-        .then(({ data }) => {
-          setOperace(data.proces);
-          clearInterval(interval.current);
-          setInfo({ message: data.message, status: data.status });
-        })
-        .catch((err) => console.log(err));
+    if (event.key === 'Enter') setProces();
   };
 
   const inputHandleChange = (event) => {
     setInput(event.target.value);
+    console.log(user);
   };
   return (
     <>
@@ -55,10 +56,22 @@ const DetailSkenuj = ({
         }
         title="Naskenujte čárový kód operace"
         extra={
-          <div className="hidden-input">
-            <Button type="primary" key="console" onClick={manualInputHandler}>
-              Zadat ručně
-            </Button>
+          <div>
+            {user.procesy && (
+              <>
+                <h3>Máte následující neukončené procesy:</h3>
+                <div className="procesy">
+                  {user.procesy &&
+                    user.procesy.map((proces) => (
+                      <Proces
+                        proces={proces}
+                        setInput={setInput}
+                        setProces={setProces}
+                      />
+                    ))}
+                </div>
+              </>
+            )}
           </div>
         }
       />

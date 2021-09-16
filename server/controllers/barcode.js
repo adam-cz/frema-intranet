@@ -1,6 +1,5 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
-import { zdroje } from '../config/zdroje.js';
 
 export const verifyCardId = async (req, res) => {
   try {
@@ -12,6 +11,7 @@ export const verifyCardId = async (req, res) => {
     const employee = {
       id: user._id,
       jmeno: `${user.name} ${user.surname}`,
+      procesy: user.working,
     };
     return res.status(200).json(employee);
   } catch (err) {
@@ -22,10 +22,13 @@ export const verifyCardId = async (req, res) => {
 export const setProces = async (req, res) => {
   try {
     const barcode = req.body.barcode.split('_');
+    const user = await User.findOne({ _id: req.body.user.id });
     const proces = await Proces.findOne({
       opv: barcode[0],
       polozka: barcode[1],
     });
+
+    //Pokud nenajde existující proces, nepokračuje
     if (!proces)
       return res.status(200).json({
         status: 'error',
@@ -33,43 +36,46 @@ export const setProces = async (req, res) => {
         proces: 'neexistuje',
       });
 
+    //filtruje pouze záznamy na daný stroj.
+    //Pokud je stroj výchozí (null), vrací všechny záznamy.
+    const zaznamy = proces.zaznamy.filter(
+      (zaznam) => zaznam.stroj === barcode[2]
+    );
+
+    //pokud už vykonávám jinou operaci a nejedná se o vícestrojovku
+    //TODO
+
     //Sudý záznam - vždy načten
-    if (proces.zaznamy.length % 2 === 0) {
+    if (zaznamy.length % 2 === 0) {
       proces.zaznamy.push({
         cas: Date.now(),
         operator_id: req.body.user.id,
         operator_jmeno: req.body.user.jmeno,
         stroj: barcode[2],
       });
-      proces.aktivni = true;
+      user.working.push({
+        opv: proces.opv,
+        polozka: proces.polozka,
+        stroj: barcode[2],
+      });
       await proces.save();
+      await user.save();
       return res.status(200).json({
         status: 'success',
-        message: `Operace ${
-          proces.polozka
-        } na zakázkovém postupu ${proces.opv.trim()} ${
-          barcode[2] && 'na stroji ' + barcode[2]
-        } načtena`,
+        message: `Operace ${proces.polozka} na zakázkovém postupu ${proces.opv} načtena`,
         proces,
       });
     }
 
     //lichý záznam
-    if (proces.zaznamy.length % 2 !== 0) {
-      //pokud už vykonávám jinou operaci a nejedná se o vícestrojovku
-
+    if (zaznamy.length % 2 !== 0) {
       //poslední lichý který vykonává někdo jiný
-      if (
-        proces.zaznamy[proces.zaznamy.length - 1].operator_id !=
-        req.body.user.id
-      )
+      if (zaznamy[zaznamy.length - 1].operator_id != req.body.user.id)
         return res.status(200).json({
           status: 'error',
-          message: `Operaci ${
-            proces.operace
-          } postupu ${proces.opv.trim()} již vykonává ${
-            proces.zaznamy[proces.zaznamy.length - 1].operator_jmeno
-          }!`,
+          message: `Operaci ${proces.polozka} postupu ${
+            proces.opv
+          } již vykonává ${zaznamy[zaznamy.length - 1].operator_jmeno}!`,
           proces,
         });
 
@@ -78,14 +84,25 @@ export const setProces = async (req, res) => {
         cas: Date.now(),
         operator_id: req.body.user.id,
         operator_jmeno: req.body.user.jmeno,
+        stroj: barcode[2],
       });
-      proces.aktivni = false;
+      user.working.splice(
+        user.working.findIndex(
+          (item) =>
+            item ===
+            {
+              opv: proces.opv,
+              polozka: proces.polozka,
+              stroj: barcode[2],
+            }
+        ),
+        1
+      );
       await proces.save();
+      await user.save();
       return res.status(200).json({
         status: 'warning',
-        message: `Operace ${proces.operace} z postupu ${proces.opv.trim()} ${
-          barcode[2] && 'na stroji ' + barcode[2]
-        } dokončena nebo pozastavena`,
+        message: `Operace ${proces.polozka} z postupu ${proces.opv} dokončena nebo pozastavena`,
         proces,
       });
     }

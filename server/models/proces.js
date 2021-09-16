@@ -14,9 +14,15 @@ const procesSchema = mongoose.Schema({
   ],
   prvniVykaz: Date,
   posledniVykaz: Date,
-  aktivni: Boolean,
+  aktivni: { type: Boolean, default: true },
 });
 
 const Proces = mongoose.model('Proces', procesSchema);
 
 export default Proces;
+
+//pro kontrolu tisku:
+//21OPT30100000198
+
+//pro kontrolu vykazovani:
+//21OPT30100000181

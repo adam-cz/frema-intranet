@@ -7,7 +7,6 @@ const options = {
 };
 
 const SingleOperBarcode = ({ operace }) => {
-  console.log(operace);
   const barcodes = operace.stroje.map((stroj) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { inputRef: barcodeRef } = useBarcode({

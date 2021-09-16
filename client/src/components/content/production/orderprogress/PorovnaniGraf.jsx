@@ -100,14 +100,6 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
   };
   return (
     <>
-      {proceses &&
-        console.log(
-          // Math.round(
-          proceses,
-          procedures
-          //.reduce((total, current) => total + current.vykazanaMzda, 0)
-          //)
-        )}
       <Column {...config} />;
     </>
   );

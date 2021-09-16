@@ -153,7 +153,7 @@ export const createProcedure = async (req, res) => {
         if (!found) {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
           const result = await Proces.create({
-            opv: operace.opv,
+            opv: operace.opv.trim(),
             objednavka: operace.objednavka,
             polozka: operace.polozka,
             planvyroba: operace.planvyroba,

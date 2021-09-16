@@ -1,4 +1,4 @@
-import { Button, Result, Image, Input } from 'antd';
+import { Result, Image, Input } from 'antd';
 import { useState } from 'react';
 import card from './card.gif';
 import * as api from '../../api';
@@ -7,7 +7,7 @@ const Detailpriloz = ({ setUser, setStep }) => {
   const [input, setInput] = useState(null);
 
   const handleEnter = (event) => {
-    if (event.key === 'Enter' && input.length === 8)
+    if (event.key === 'Enter')
       api
         .verifyCardId(input)
         .then(({ data }) => {
@@ -18,10 +18,6 @@ const Detailpriloz = ({ setUser, setStep }) => {
           setUser({ exists: false });
           setTimeout(() => setUser(null), 3000);
         });
-  };
-
-  const manualInputHandler = () => {
-    setInput(prompt('Zadejte ID karty'));
   };
 
   const inputHandleChange = (event) => {
@@ -35,13 +31,6 @@ const Detailpriloz = ({ setUser, setStep }) => {
           <Image height={250} preview={false} alt="card reader" src={card} />
         }
         title="Přiložte svou čipovou kartu ke čtečce"
-        extra={
-          <div className="hidden-input">
-            <Button type="primary" key="console" onClick={manualInputHandler}>
-              Zadat ručně
-            </Button>
-          </div>
-        }
       />
       <Input
         value={input}

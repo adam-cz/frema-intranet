@@ -16,3 +16,24 @@ html body {
 .steper {
   margin: 50px 300px;
 }
+
+.ctverec {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px;
+  margin: 0 20px;
+  border: 1px solid #52c41a;
+  background-color: #f6ffed;
+  cursor: pointer;
+}
+
+.ctverec:hover {
+  border: 1px solid #d9363e;
+  background-color: #ffccc7;
+}
+
+.procesy {
+  display: flex;
+  flex-direction: row;
+}

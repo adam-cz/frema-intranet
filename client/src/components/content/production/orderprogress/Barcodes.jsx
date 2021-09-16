@@ -11,23 +11,7 @@ export const Barcodes = ({ data: operace }) => {
       (op) =>
         op.opv.trim() === postup && op.stredisko !== 999 && op.stredisko !== 500
     ).length;
-    console.log(pocet);
   };
-
-  /*
-
-  const operace = data.map((operace) => {
-    if (operace.stroje.length === 1 && operace.stroje[0] === 'výchozí') {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { inputRef: barcodeRef } = useBarcode({
-        value: `${operace.opv.trim()}_${operace.polozka}_null`,
-        options,
-      });
-      return { ...operace, barcodeRef };
-    }
-  });
-21OPT30100000181
-  */
 
   return (
     <div className="page">
