@@ -1,5 +1,6 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
+import { zdroje } from '../config/zdroje.js';
 
 export const verifyCardId = async (req, res) => {
   try {
@@ -55,8 +56,9 @@ export const setProces = async (req, res) => {
 
     //lichý záznam
     if (proces.zaznamy.length % 2 !== 0) {
-      //poslední lichý který vykonává někdo jiný
+      //pokud už vykonávám jinou operaci a nejedná se o vícestrojovku
 
+      //poslední lichý který vykonává někdo jiný
       if (
         proces.zaznamy[proces.zaznamy.length - 1].operator_id !=
         req.body.user.id
@@ -70,6 +72,7 @@ export const setProces = async (req, res) => {
           }!`,
           proces,
         });
+
       //jinak ukonči proces
       proces.zaznamy.push({
         cas: Date.now(),
@@ -80,9 +83,9 @@ export const setProces = async (req, res) => {
       await proces.save();
       return res.status(200).json({
         status: 'warning',
-        message: `Operace ${
-          proces.operace
-        } z postupu ${proces.opv.trim()} dokončena nebo pozastavena`,
+        message: `Operace ${proces.operace} z postupu ${proces.opv.trim()} ${
+          barcode[2] && 'na stroji ' + barcode[2]
+        } dokončena nebo pozastavena`,
         proces,
       });
     }
