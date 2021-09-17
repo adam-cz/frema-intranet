@@ -46,7 +46,6 @@ const DetailSkenuj = ({
 
   const inputHandleChange = (event) => {
     setInput(event.target.value);
-    console.log(user);
   };
   return (
     <>
@@ -57,9 +56,11 @@ const DetailSkenuj = ({
         title="Naskenujte čárový kód operace"
         extra={
           <div>
-            {user.procesy && (
+            {user && (
               <>
-                <h3>Máte následující neukončené procesy:</h3>
+                <h3>
+                  Máte následující neukončené procesy. Kliknutím ukončíte:
+                </h3>
                 <div className="procesy">
                   {user.procesy &&
                     user.procesy.map((proces) => (
@@ -67,6 +68,7 @@ const DetailSkenuj = ({
                         proces={proces}
                         setInput={setInput}
                         setProces={setProces}
+                        input={input}
                       />
                     ))}
                 </div>

@@ -89,12 +89,9 @@ export const setProces = async (req, res) => {
       user.working.splice(
         user.working.findIndex(
           (item) =>
-            item ===
-            {
-              opv: proces.opv,
-              polozka: proces.polozka,
-              stroj: barcode[2],
-            }
+            item.opv === barcode[0] &&
+            item.polozka === barcode[1] &&
+            item.stroj === barcode[2]
         ),
         1
       );

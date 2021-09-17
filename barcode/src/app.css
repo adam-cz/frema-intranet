@@ -26,6 +26,7 @@ html body {
   border: 1px solid #52c41a;
   background-color: #f6ffed;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .ctverec:hover {

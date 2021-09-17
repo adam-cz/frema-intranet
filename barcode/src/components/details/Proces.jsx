@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-const Proces = ({ proces, setInput, setProces }) => {
+const Proces = ({ proces, setInput, setProces, input }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading) setProces();
-  }, [loading, setProces]);
+    if (!loading && input) setProces();
+  }, [loading, setProces, input]);
 
   return (
     <div
