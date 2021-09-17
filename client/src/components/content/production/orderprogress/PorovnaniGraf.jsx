@@ -100,6 +100,7 @@ const PorovnaniGraf = ({ procedures, proceses }) => {
   };
   return (
     <>
+      {console.log(proceses)}
       <Column {...config} />;
     </>
   );

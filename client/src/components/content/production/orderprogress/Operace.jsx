@@ -72,10 +72,9 @@ const Operace = ({ proceses, loading }) => {
   const [payload, setPayload] = useState(null);
 
   const clickHandler = () => {
-    console.log(proceses);
     api.createProcedure(proceses).then(({ data }) => {
-      console.log(data.payload);
       setPayload(data.payload);
+      message.success(data.message);
     });
   };
 

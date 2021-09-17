@@ -56,21 +56,21 @@ const DetailSkenuj = ({
         title="Naskenujte čárový kód operace"
         extra={
           <div>
-            {user && (
+            {user && user.procesy.length > 0 && (
               <>
                 <h3>
                   Máte následující neukončené procesy. Kliknutím ukončíte:
                 </h3>
                 <div className="procesy">
-                  {user.procesy &&
-                    user.procesy.map((proces) => (
-                      <Proces
-                        proces={proces}
-                        setInput={setInput}
-                        setProces={setProces}
-                        input={input}
-                      />
-                    ))}
+                  {user.procesy.map((proces) => (
+                    <Proces
+                      proces={proces}
+                      setInput={setInput}
+                      setProces={setProces}
+                      input={input}
+                      key={proces._id}
+                    />
+                  ))}
                 </div>
               </>
             )}

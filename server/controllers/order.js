@@ -20,6 +20,8 @@ export const fetchOrders = async (req, res) => {
   }
 };
 
+const postupy = () => {};
+
 export const fetchProcedures = async (req, res) => {
   try {
     const poolConnection = await pool;
@@ -81,7 +83,8 @@ export const fetchProcedures = async (req, res) => {
                 let vykazanyCas = 0;
                 let vykazanaMzda = 0;
                 const vykazy = await Proces.findOne({
-                  barcode: `${op.opv.trim()}_${op.polozka}`,
+                  opv: op.opv.trim(),
+                  polozka: op.polozka,
                 });
 
                 //Výpočet délky výkonu a mzdy z časových značek
