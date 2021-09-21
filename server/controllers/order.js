@@ -149,9 +149,10 @@ export const createProcedure = async (req, res) => {
     await Promise.all(
       req.body.map(async (operace) => {
         const found = await Proces.findOne({
-          opv: operace.opv,
+          opv: operace.opv.trim(),
           polozka: operace.polozka,
         });
+        console.log(found);
         if (found) results.push(found);
         if (!found) {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
