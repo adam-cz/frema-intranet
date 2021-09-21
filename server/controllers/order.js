@@ -86,42 +86,47 @@ export const fetchProcedures = async (req, res) => {
                   opv: op.opv.trim(),
                   polozka: op.polozka,
                 });
-                vykazy?.stroje.map(async (stroj) => {
-                  const zaznamy = vykazy.zaznamy.filter(
-                    (zaznam) => zaznam.stroj === stroj.nazev
-                  );
-                  console.log(zaznamy, 'mezera');
-                  if (zaznamy && zaznamy.length >= 2) {
-                    //Při více než dvou výkazech (= započetí a ukončení) iteruje
-                    await Promise.all(
-                      vykazy.zaznamy.map(async (zaznam, index, array) => {
-                        //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
-                        if (index % 2 == 0 && array[index + 1]) {
-                          const delkaVykazu =
-                            new Date(array[index + 1].cas) -
-                            new Date(array[index].cas);
-                          //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
-                          const { recordset: hodinovaMzda } =
-                            await request.query(
-                              `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-                                zaznam.operator_id
-                              } AND rok = ${new Date(
-                                zaznam.cas
-                              ).getFullYear()} AND mesic = ${new Date(
-                                zaznam.cas
-                              ).getMonth()});`
-                            );
-                          //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
-                          vykazanaMzda +=
-                            (delkaVykazu / 1000 / 60 / 60) *
-                            hodinovaMzda[0].prd_plati;
-                          vykazanyCas += delkaVykazu;
-                        }
-                      })
-                    );
-                  }
-                });
                 //Výpočet délky výkonu a mzdy z časových značek
+                await Promise.all(
+                  vykazy?.stroje.map(async (stroj) => {
+                    const zaznamy = vykazy.zaznamy.filter(
+                      (zaznam) => zaznam.stroj === stroj.nazev
+                    );
+                    console.log(zaznamy);
+                    if (zaznamy && zaznamy.length >= 2) {
+                      //Při více než dvou výkazech (= započetí a ukončení) iteruje
+                      console.log('tady');
+                      await Promise.all(
+                        zaznamy.map(async (zaznam, index, array) => {
+                          //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
+                          if (index % 2 == 0 && array[index + 1]) {
+                            const delkaVykazu =
+                              new Date(array[index + 1].cas) -
+                              new Date(array[index].cas);
+
+                            //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
+                            const { recordset: hodinovaMzda } =
+                              await request.query(
+                                `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+                                  zaznam.operator_id
+                                } AND rok = ${new Date(
+                                  zaznam.cas
+                                ).getFullYear()} AND mesic = ${new Date(
+                                  zaznam.cas
+                                ).getMonth()});`
+                              );
+                            //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
+                            vykazanaMzda +=
+                              (delkaVykazu / 1000 / 60 / 60) *
+                              hodinovaMzda[0].prd_plati;
+                            vykazanyCas += delkaVykazu;
+                            console.log(vykazanaMzda, vykazanyCas);
+                          }
+                        })
+                      );
+                    }
+                  })
+                );
 
                 //Přiřazení sazby k operaci
                 const sazbaZdroje = sazbyStrNak.find(
@@ -163,7 +168,6 @@ export const createProcedure = async (req, res) => {
           opv: operace.opv.trim(),
           polozka: operace.polozka,
         });
-        console.log(found);
         if (found) results.push(found);
         if (!found) {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
@@ -179,9 +183,9 @@ export const createProcedure = async (req, res) => {
               ? zdroj.stroje
               : [
                   {
-                    nazev: null,
+                    nazev: 'null',
                     sazba: sazby.find(
-                      (sazba) => sazba.operace === operace.stredisko
+                      (sazba) => sazba.operace === operace.zdroj
                     ).sazba,
                   },
                 ],
