@@ -26,3 +26,5 @@ export default Proces;
 
 //pro kontrolu vykazovani:
 //21OPT30100000181
+
+//+éž+řčá+
