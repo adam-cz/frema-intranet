@@ -27,4 +27,8 @@ export default Proces;
 //pro kontrolu vykazovani:
 //21OPT30100000181
 
+//3010997000_10_AV 128 H
+//3010997000_10_MCFV 1060
+//3010997000_20_null
+
 //+éž+řčá+

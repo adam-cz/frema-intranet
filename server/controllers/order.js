@@ -86,36 +86,42 @@ export const fetchProcedures = async (req, res) => {
                   opv: op.opv.trim(),
                   polozka: op.polozka,
                 });
-
-                //Výpočet délky výkonu a mzdy z časových značek
-                if (vykazy && vykazy.zaznamy && vykazy.zaznamy.length >= 2) {
-                  //Při více než dvou výkazech (= započetí a ukončení) iteruje
-                  await Promise.all(
-                    vykazy.zaznamy.map(async (zaznam, index, array) => {
-                      //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
-                      if (index % 2 == 0 && array[index + 1]) {
-                        const delkaVykazu =
-                          new Date(array[index + 1].cas) -
-                          new Date(array[index].cas);
-                        //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
-                        const { recordset: hodinovaMzda } = await request.query(
-                          `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-                            zaznam.operator_id
-                          } AND rok = ${new Date(
-                            zaznam.cas
-                          ).getFullYear()} AND mesic = ${new Date(
-                            zaznam.cas
-                          ).getMonth()});`
-                        );
-                        //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
-                        vykazanaMzda +=
-                          (delkaVykazu / 1000 / 60 / 60) *
-                          hodinovaMzda[0].prd_plati;
-                        vykazanyCas += delkaVykazu;
-                      }
-                    })
+                vykazy?.stroje.map(async (stroj) => {
+                  const zaznamy = vykazy.zaznamy.filter(
+                    (zaznam) => zaznam.stroj === stroj.nazev
                   );
-                }
+                  console.log(zaznamy, 'mezera');
+                  if (zaznamy && zaznamy.length >= 2) {
+                    //Při více než dvou výkazech (= započetí a ukončení) iteruje
+                    await Promise.all(
+                      vykazy.zaznamy.map(async (zaznam, index, array) => {
+                        //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
+                        if (index % 2 == 0 && array[index + 1]) {
+                          const delkaVykazu =
+                            new Date(array[index + 1].cas) -
+                            new Date(array[index].cas);
+                          //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
+                          const { recordset: hodinovaMzda } =
+                            await request.query(
+                              `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+                                zaznam.operator_id
+                              } AND rok = ${new Date(
+                                zaznam.cas
+                              ).getFullYear()} AND mesic = ${new Date(
+                                zaznam.cas
+                              ).getMonth()});`
+                            );
+                          //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
+                          vykazanaMzda +=
+                            (delkaVykazu / 1000 / 60 / 60) *
+                            hodinovaMzda[0].prd_plati;
+                          vykazanyCas += delkaVykazu;
+                        }
+                      })
+                    );
+                  }
+                });
+                //Výpočet délky výkonu a mzdy z časových značek
 
                 //Přiřazení sazby k operaci
                 const sazbaZdroje = sazbyStrNak.find(
@@ -145,6 +151,11 @@ export const fetchProcedures = async (req, res) => {
 
 export const createProcedure = async (req, res) => {
   try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: sazby } = await request.query(
+      `SELECT [operace], [nazev], [sazba] FROM dba.zdr_ope ORDER BY operace;`
+    );
     const results = [];
     await Promise.all(
       req.body.map(async (operace) => {
@@ -164,7 +175,16 @@ export const createProcedure = async (req, res) => {
             minut_nor: operace.minut_nor,
             popis: operace.popis.trim(),
             stredisko: operace.zdroj,
-            stroje: zdroj ? zdroj.stroje : [{ nazev: null }],
+            stroje: zdroj
+              ? zdroj.stroje
+              : [
+                  {
+                    nazev: null,
+                    sazba: sazby.find(
+                      (sazba) => sazba.operace === operace.stredisko
+                    ).sazba,
+                  },
+                ],
           });
           results.push(result);
         }
