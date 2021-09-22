@@ -2,6 +2,7 @@ import sql, { pool } from '../utils/karat.js';
 import Proces from '../models/proces.js';
 import { zdroje } from '../config/zdroje.js';
 
+//Vrací seznam objednávek
 export const fetchOrders = async (req, res) => {
   try {
     const poolConnection = await pool;
@@ -20,25 +21,76 @@ export const fetchOrders = async (req, res) => {
   }
 };
 
-const fetchOperace = async (objednavka) => {
+//Vrací všechny operace a jejich základní data pod danou objednávkou
+const nactiOperace = async (objednavka = '21OPT30100000198') => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
 
-    //Vyhledá zakázkové postupy objednávky
-    const { recordset: opvFinals } = await request.query(
-      `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${req.params.order}' ORDER BY opv;`
-    );
-    const {}
+    const operace = [];
 
+    //Vyhledá finální zakázkové postupy objednávky
+    const { recordset: zakazkovePostupyFinaly } = await request.query(
+      `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
+    );
+    //Vyhledá podřízené zakázkové postupy finálů
+    await Promise.all(
+      zakazkovePostupyFinaly.map(async (final) => {
+        const { recordset: zakazkovePostupy } = await request.query(
+          `SELECT [opv], 
+          [opvfinal],
+          [popis], 
+          [planvyroba], 
+          [vevyrobe], 
+          [odvedeno], 
+          [jedn_mzdy], 
+          [material], 
+          [polotovar], 
+          [kooper],
+          [strnakl], 
+          [rn1],
+          [cena] FROM dba.v_opvvyrza WHERE opvfinal = '${final.opv}' ORDER BY opv;`
+        );
+
+        //Vyhledá podřízené operace všech zakázkových postupů
+        await Promise.all(
+          zakazkovePostupy.map(async (zakazkovyPostup) => {
+            const { recordset: operaceKarat } = await request.query(
+              `SELECT TRIM(opv) AS "opv",
+            TRIM(opvfinal) AS "opvfinal",
+            polozka,
+            planvyroba,
+            vevyrobe,
+            odvedeno,
+            popis,
+            zdroj,          
+            minut_nor AS "trvani_plan",
+            naklady AS nakl_celkem_plan,
+            nakl_stn AS nakl_stn_plan, 
+            nakl_mzd AS "mzdy_plan",
+            nakl_r1 AS "nakl_r1_plan" FROM dba.v_opvoper WHERE opv = '${zakazkovyPostup.opv}' ORDER BY 'polozka';`
+            );
+            //Všechny operace a jejich základní data postupně ukládá do proměnné "operace"
+            operaceKarat.map((op) => operace.push({ ...op, objednavka }));
+          })
+        );
+      })
+    );
+
+    return operace;
   } catch (err) {
     console.log(err);
   }
 };
 
-export const fetchProcedures = async (req, res) => {
+const doplnVykazy = (operaceBezVykazu) =>
+  operaceBezVykazu.map(async (operace) => {});
+
+export const fetchData = async (req, res) => {
   try {
-    res.status(200).json(postupy);
+    const operace = await nactiOperace(req.params.order);
+
+    res.status(200).json(operace);
   } catch (err) {
     res.status(404).json({ error: err });
   }
