@@ -32,3 +32,44 @@ export default Proces;
 //3010997000_20_null
 
 //+éž+řčá+
+
+/*
+operace JSON:
+
+objednavka
+opv
+polozka
+popis
+
+trvani_plan
+trvani
+mzdy_plan
+mzdy
+material_plan
+material
+kooperace_plan
+kooperace
+polotovary_plan
+polotovary
+nakl_stn_plan
+nakl_stn
+nakl_r1_plan
+nakl_r1
+nakl_celkem_plan
+nakl_celkem
+
+plan_vyroba
+vevyrobe
+odvedeno
+
+zdroj
+stroje {
+	nazev
+	sazba
+}
+vykazy {
+	cas
+}
+
+
+*/

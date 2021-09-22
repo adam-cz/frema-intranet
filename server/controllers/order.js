@@ -20,8 +20,6 @@ export const fetchOrders = async (req, res) => {
   }
 };
 
-const postupy = () => {};
-
 export const fetchProcedures = async (req, res) => {
   try {
     const poolConnection = await pool;
