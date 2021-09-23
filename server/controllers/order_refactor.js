@@ -65,13 +65,21 @@ const nactiOperace = async (objednavka = '21OPT30100000198') => {
             popis,
             zdroj,          
             minut_nor AS "trvani_plan",
-            naklady AS nakl_celkem_plan,
             nakl_stn AS nakl_stn_plan, 
             nakl_mzd AS "mzdy_plan",
             nakl_r1 AS "nakl_r1_plan" FROM dba.v_opvoper WHERE opv = '${zakazkovyPostup.opv}' ORDER BY 'polozka';`
             );
             //Všechny operace a jejich základní data postupně ukládá do proměnné "operace"
-            operaceKarat.map((op) => operace.push({ ...op, objednavka }));
+            operaceKarat.map((op) =>
+              operace.push({
+                ...op,
+                //V případě kooperace nepřiřazuje náklad na zdroj do strojních nákladů
+                nakl_stn_plan: op.zdroj === '500' ? 0 : op.nakl_stn_plan,
+                //V případě kooperace řadí náklady na zdroj do správné proměnné
+                kooperace_plan: op.zdroj === '500' ? op.nakl_stn_plan : 0,
+                objednavka,
+              })
+            );
           })
         );
       })
@@ -83,15 +91,104 @@ const nactiOperace = async (objednavka = '21OPT30100000198') => {
   }
 };
 
-const doplnVykazy = (operaceBezVykazu) =>
-  operaceBezVykazu.map(async (operace) => {});
+const doplnVykazyStroje = async (operaceBezVykazu) => {
+  try {
+    await Promise.all(
+      //Iteruje operace a dohledává existující záznamy výkazů a strojních sazeb v databázi
+      operaceBezVykazu.map(async (operace, index, array) => {
+        const proces = await Proces.findOne({
+          opv: operace.opv,
+          polozka: operace.polozka,
+        });
+        array[index].vykazy =
+          proces?.zaznamy.length > 0 ? proces.zaznamy : null;
+        array[index].stroje = proces?.stroje.length > 0 ? proces.stroje : null;
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const doplnMaterial = async (operaceBezMaterialu) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    await Promise.all(
+      //Iteruje operace a dohledává plán a skutečné zatížení materiálem
+      operaceBezMaterialu.map(async (operace, index, array) => {
+        const { recordset: material } = await request.query(
+          `SELECT popis AS "nazev", 
+          pozadovano, 
+          vydano, 
+          mj AS "merna_jednotka", 
+          cena FROM dba.v_opvmat WHERE opv = ${operace.opv} AND polozka = ${operace.polozka};`
+        );
+
+        array[index].material_data = material || null;
+        array[index].material_plan = material.reduce(
+          (total, currentValue) =>
+            total + currentValue.pozadovano * currentValue.cena,
+          0
+        );
+        array[index].material = material.reduce(
+          (total, currentValue) =>
+            total + currentValue.vydano * currentValue.cena,
+          0
+        );
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const doplnKooperace = async (operaceBezKooper) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    await Promise.all(
+      //Iteruje operace a v případě kooperace
+      operaceBezKooper.map(async (operace, index, array) => {
+        if (operace.zdroj === '500') {
+          const { recordset: pozadavek } =
+            (await request.query(
+              `SELECT id_poz FROM dba.zdr_poz WHERE doklad = ${operace.opv} AND polozka = ${operace.polozka};`
+            )) || null;
+          console.log(pozadavek);
+          const { recordset: kooperace } = pozadavek
+            ? await request.query(
+                `SELECT nazev, 
+            mnozstvi_poz AS "mnozstvi", 
+            doklad,
+            cena_na_doklade AS "cena" FROM dba.zdr_koo_pol WHERE id_poz = ${pozadavek[0].id_poz};`
+              )
+            : null;
+          console.log(kooperace);
+
+          //array[index].kooperace_data.nazev = kooperace[0].nazev;
+          //array[index].kooperace_data.dodavatel = doklad[0].nazev;
+
+          array[index].kooperace = kooperace
+            ? kooperace[0].mnozstvi * kooperace[0].cena
+            : 0;
+        }
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const fetchData = async (req, res) => {
   try {
-    const operace = await nactiOperace(req.params.order);
-
+    let operace = await nactiOperace(req.params.order);
+    await doplnVykazyStroje(operace);
+    await doplnMaterial(operace);
+    await doplnKooperace(operace);
     res.status(200).json(operace);
   } catch (err) {
+    console.log(err);
     res.status(404).json({ error: err });
   }
 };
