@@ -22,7 +22,7 @@ export const fetchOrders = async (req, res) => {
 };
 
 //Vrací všechny operace a jejich základní data pod danou objednávkou
-const nactiOperace = async (objednavka = '21OPT30100000198') => {
+const nactiOperace = async (objednavka = '21OPT40100000039') => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
@@ -31,14 +31,14 @@ const nactiOperace = async (objednavka = '21OPT30100000198') => {
 
     //Vyhledá finální zakázkové postupy objednávky
     const { recordset: zakazkovePostupyFinaly } = await request.query(
-      `SELECT [opv] FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
+      `SELECT TRIM(opv) AS "opv" FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
     );
     //Vyhledá podřízené zakázkové postupy finálů
     await Promise.all(
       zakazkovePostupyFinaly.map(async (final) => {
         const { recordset: zakazkovePostupy } = await request.query(
-          `SELECT [opv], 
-          [opvfinal],
+          `SELECT TRIM(opv) AS "opv", 
+          TRIM(opvfinal) AS "opvfinal",
           [popis], 
           [planvyroba], 
           [vevyrobe], 
@@ -122,7 +122,7 @@ const doplnMaterial = async (operaceBezMaterialu) => {
           pozadovano, 
           vydano, 
           mj AS "merna_jednotka", 
-          cena FROM dba.v_opvmat WHERE opv = ${operace.opv} AND polozka = ${operace.polozka};`
+          cena FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND polozka = ${operace.polozka};`
         );
 
         array[index].material_data = material || null;
@@ -148,30 +148,34 @@ const doplnKooperace = async (operaceBezKooper) => {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     await Promise.all(
-      //Iteruje operace a v případě kooperace
+      //Iteruje operace a v případě kooperace doplní data
       operaceBezKooper.map(async (operace, index, array) => {
         if (operace.zdroj === '500') {
-          const { recordset: pozadavek } =
-            (await request.query(
-              `SELECT id_poz FROM dba.zdr_poz WHERE doklad = ${operace.opv} AND polozka = ${operace.polozka};`
-            )) || null;
-          console.log(pozadavek);
-          const { recordset: kooperace } = pozadavek
-            ? await request.query(
-                `SELECT nazev, 
+          const { recordset: pozadavek } = await request.query(
+            `SELECT id_poz FROM dba.zdr_poz WHERE doklad = '${operace.opv}' AND polozka = ${operace.polozka};`
+          );
+          const { recordset: kooperace } = await request.query(
+            `SELECT nazev, 
             mnozstvi_poz AS "mnozstvi", 
             doklad,
             cena_na_doklade AS "cena" FROM dba.zdr_koo_pol WHERE id_poz = ${pozadavek[0].id_poz};`
-              )
-            : null;
-          console.log(kooperace);
+          );
+          const { recordset: doklad } =
+            kooperace.length > 0 &&
+            (await request.query(
+              `SELECT zkraceny_nazev AS "nazev" FROM dba.zdr_koo_dkl WHERE doklad = '${kooperace[0].doklad}';`
+            ));
 
-          //array[index].kooperace_data.nazev = kooperace[0].nazev;
-          //array[index].kooperace_data.dodavatel = doklad[0].nazev;
+          console.log(kooperace?.length, doklad?.length);
 
-          array[index].kooperace = kooperace
-            ? kooperace[0].mnozstvi * kooperace[0].cena
-            : 0;
+          if (doklad?.length > 0) {
+            array[index].kooperace_data = {
+              nazev: kooperace[0].nazev,
+              dodavatel: doklad[0].nazev,
+            };
+          } else array[index].kooperace_data = null;
+          array[index].kooperace =
+            doklad?.length > 0 ? kooperace[0].mnozstvi * kooperace[0].cena : 0;
         }
       })
     );
