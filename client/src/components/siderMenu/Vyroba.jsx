@@ -13,7 +13,7 @@ const Vyroba = () => {
         style={{ height: '100%', borderRight: 0 }}
       >
         <Menu.Item key="1">
-          <span>Rozpracovanost zakázek</span>
+          <span>Vyhodnocení zakázek</span>
           <Link to="/vyroba/zakazky" />
         </Menu.Item>
         <Menu.Item key="2">

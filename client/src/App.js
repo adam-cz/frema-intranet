@@ -18,8 +18,8 @@ import Customers from './components/content/sales/customers/Customers';
 import { getEmployees } from './actions/employees';
 import Admin from './components/siderMenu/Admin';
 import NewUser from './components/admin/NewUser';
-import OrderProgress from './components/content/production/orderprogress/OrderProgress';
-import OperationReporting from './components/content/production/operationreporting/OperationReporting';
+import OrderProgress from './components/content/vyroba/vyhodnoceniZakazek/Vyhodnoceni';
+import OperationReporting from './components/content/vyroba/vykazovaniOperaci/Vykazovani';
 
 const { Content, Sider } = Layout;
 
