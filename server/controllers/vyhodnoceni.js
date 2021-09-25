@@ -2,12 +2,46 @@ import sql, { pool } from '../utils/karat.js';
 import Proces from '../models/proces.js';
 import { zdroje } from '../config/zdroje.js';
 
-//Vrací seznam objednávek
-export const fetchOrders = async (req, res) => {
+export const getOrderNumber = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
-    const { recordset } = await request.query(
+    const { recordset: final } = await request.query(
+      `SELECT objednavka
+     FROM dba.v_opv WHERE opv = '${req.params.final}';`
+    );
+    res.status(200).json(final[0].objednavka);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: err });
+  }
+};
+
+export const fetchList = async (req, res) => {
+  try {
+    if (req.path === '/opv') {
+      const opvs = await fetchOpvs();
+      return res.status(200).json(opvs);
+    }
+    if (req.path === '/finaly') {
+      const finaly = await fetchFinals();
+      return res.status(200).json(finaly);
+    }
+    if (req.path === '/objednavky') {
+      const objednavky = await fetchOrders();
+      res.status(200).json(objednavky);
+    }
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};
+
+//Vrací seznam objednávek
+const fetchOrders = async () => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: objednavky } = await request.query(
       `SELECT TOP (500) [doklad], 
       [poznamka], 
       [zkraceny_nazev], 
@@ -15,14 +49,61 @@ export const fetchOrders = async (req, res) => {
       [dat_dodani], 
       [dat_expedice] FROM dba.op_zahlavi WHERE denik = 'OP' ORDER BY dat_por DESC;`
     );
-    res.status(200).json(recordset);
+    return objednavky;
   } catch (err) {
-    res.status(404).json({ error: err });
+    console.log(err);
+  }
+};
+
+const fetchFinals = async (objednavka) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: finaly } = await request.query(
+      `SELECT TOP (500) TRIM(opv) AS "opv",
+      objednavka,
+      nazev,
+      da_vy_op AS "datum_vytvoreni",
+      planvyroba FROM dba.v_opv ${
+        objednavka && `WHERE objednavka = '${objednavka}'`
+      } ORDER BY da_vy_op DESC;`
+    );
+    return finaly;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchOpvs = async (final) => {
+  try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: opvs } = await request.query(
+      `SELECT TOP 500 TRIM(opv) AS "opv", 
+      TRIM (opvfinal) AS "opvfinal",
+      da_vy_op AS "datum_vzniku",
+      popis, 
+      planvyroba, 
+      vevyrobe, 
+      odvedeno, 
+      jedn_mzdy, 
+      material, 
+      polotovar, 
+      kooper,
+      strnakl, 
+      rn1,
+      cena FROM dba.v_opvvyrza ${
+        final && `WHERE opvfinal = '${final}'`
+      } ORDER BY datum_vzniku DESC;`
+    );
+    return opvs;
+  } catch (err) {
+    console.log(err);
   }
 };
 
 //Vrací všechny operace a jejich základní data pod danou objednávkou
-const nactiOperace = async (objednavka = '21OPT30100000181') => {
+const nactiOperace = async (objednavka) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
@@ -30,27 +111,12 @@ const nactiOperace = async (objednavka = '21OPT30100000181') => {
     const operace = [];
 
     //Vyhledá finální zakázkové postupy objednávky
-    const { recordset: zakazkovePostupyFinaly } = await request.query(
-      `SELECT TRIM(opv) AS "opv" FROM dba.v_opv WHERE objednavka = '${objednavka}' ORDER BY opv;`
-    );
+    const zakazkovePostupyFinaly = await fetchFinals(objednavka);
+
     //Vyhledá podřízené zakázkové postupy finálů
     await Promise.all(
       zakazkovePostupyFinaly.map(async (final) => {
-        const { recordset: zakazkovePostupy } = await request.query(
-          `SELECT TRIM(opv) AS "opv", 
-          TRIM(opvfinal) AS "opvfinal",
-          [popis], 
-          [planvyroba], 
-          [vevyrobe], 
-          [odvedeno], 
-          [jedn_mzdy], 
-          [material], 
-          [polotovar], 
-          [kooper],
-          [strnakl], 
-          [rn1],
-          [cena] FROM dba.v_opvvyrza WHERE opvfinal = '${final.opv}' ORDER BY opv;`
-        );
+        const zakazkovePostupy = await fetchOpvs(final.opv);
 
         //Vyhledá podřízené operace všech zakázkových postupů
         await Promise.all(

@@ -12,7 +12,7 @@ import './utils/cron.js';
 import employeesRouter from './routes/employees.js';
 import salesRouter from './routes/sales.js';
 import userRouter from './routes/user.js';
-import orderRouter from './routes/order.js';
+import vyhodnoceniRouter from './routes/vyhodnoceni.js';
 import barcodeRouter from './routes/barcode.js';
 import vykazyRouter from './routes/vykazy.js';
 
@@ -41,7 +41,7 @@ app.use(express.json());
 app.use('/zamestnanci', employeesRouter);
 app.use('/obchod', salesRouter);
 app.use('/user', userRouter);
-app.use('/order', orderRouter);
+app.use('/vyhodnoceni', vyhodnoceniRouter);
 app.use('/barcode', barcodeRouter);
 app.use('/vykazy', vykazyRouter);
 

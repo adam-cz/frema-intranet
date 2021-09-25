@@ -51,10 +51,15 @@ export const deletePerson = (personID, customerID) =>
 export const fetchEmployees = () => axios.get(`${api}zamestnanci/`);
 
 //Orders
-export const fetchOrders = () => axios.get(`${api}order/`);
-export const fetchProcedures = (order) => axios.get(`${api}order/${order}`);
+export const fetchOrders = () => axios.get(`${api}vyhodnoceni/objednavky`);
+export const getOrderNumber = (final) =>
+  axios.get(`${api}vyhodnoceni/opt/${final}`);
+export const fetchFinals = () => axios.get(`${api}vyhodnoceni/finaly`);
+export const fetchOpvs = () => axios.get(`${api}vyhodnoceni/opv`);
+export const fetchOperace = (order) =>
+  axios.get(`${api}vyhodnoceni/operace/${order}`);
 export const createProcedure = (procedures) =>
-  axios.post(`${api}order/create`, procedures);
+  axios.post(`${api}vyhodnoceni/create`, procedures);
 
 //Vykazy
 export const nacistVykazy = () => axios.get(`${api}vykazy/`);
