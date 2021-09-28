@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import TableSearch from '../../ui/TableSearch';
 import * as api from '../../../../api/index';
 import { DateTime } from 'luxon';
+import { useHistory } from 'react-router-dom';
 
 const formatter = new Intl.NumberFormat('cs-CZ', {
   style: 'currency',
@@ -11,6 +12,7 @@ const formatter = new Intl.NumberFormat('cs-CZ', {
 });
 
 const ZakazkovePostupy = ({ setVyber }) => {
+  const history = useHistory();
   const [loading, setLoading] = useState(true);
   const [postupy, setPostupy] = useState(null);
   const columns = [
@@ -64,15 +66,13 @@ const ZakazkovePostupy = ({ setVyber }) => {
       rowKey="opv"
       onRow={(record) => {
         return {
-          onClick: () => {
-            api.getOrderNumber(record.opvfinal).then((res) =>
-              setVyber({
-                objednavka: res.data,
-                final: record.opvfinal,
-                opv: record.opv,
-              })
-            );
-            //setOrder(record.doklad);
+          onClick: (e) => {
+            e.preventDefault();
+            api.getOrderNumber(record.opvfinal).then((res) => {
+              history.push(
+                `/vyroba/zakazky/${res.data}/${record.opvfinal}/${record.opv}`
+              );
+            });
           },
         };
       }}

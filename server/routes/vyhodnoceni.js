@@ -7,6 +7,7 @@ import {
   getOrderNumber,
   fetchList,
   fetchData,
+  fetchOpvList,
   createProcedure,
 } from '../controllers/vyhodnoceni.js';
 
@@ -19,6 +20,7 @@ router.get('/finaly', authenticateToken, authGetData, fetchList);
 router.get('/opv', authenticateToken, authGetData, fetchList);
 router.get('/opt/:final', authenticateToken, authGetData, getOrderNumber);
 router.get('/operace/:order', authenticateToken, authGetData, fetchData);
+router.get('/opv/:objednavka', authenticateToken, authGetData, fetchOpvList);
 router.post('/create', authenticateToken, authGetData, createProcedure);
 
 export default router;

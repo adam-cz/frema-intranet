@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import TableSearch from '../../ui/TableSearch';
 import * as api from '../../../../api/index';
 import { DateTime } from 'luxon';
+import { useHistory } from 'react-router-dom';
 
-const Objednavky = ({ setVyber }) => {
+const Objednavky = ({ setObjednavka }) => {
+  const history = useHistory();
   const [loading, setLoading] = useState(true);
   const [objednavky, setObjednavky] = useState(null);
   const columns = [
@@ -58,8 +60,9 @@ const Objednavky = ({ setVyber }) => {
       rowKey="doklad"
       onRow={(record) => {
         return {
-          onClick: () => {
-            setVyber({ objednavka: record.doklad, final: null, opv: null });
+          onClick: (e) => {
+            e.preventDefault();
+            history.push(`/vyroba/zakazky/${record.doklad}`);
           },
         };
       }}

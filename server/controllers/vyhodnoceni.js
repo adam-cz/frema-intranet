@@ -36,6 +36,23 @@ export const fetchList = async (req, res) => {
   }
 };
 
+//Vrací seznam ZP pod danou objednávkou
+export const fetchOpvList = async (req, res) => {
+  try {
+    const opvList = [];
+    const finals = await fetchFinals(req.params.objednavka);
+    await Promise.all(
+      finals.map(async (final) => {
+        const opvs = await fetchOpvs(final.opv);
+        opvs.map((opv) => opvList.push(opv));
+      })
+    );
+    res.status(200).json(opvList);
+  } catch (err) {
+    res.status(404).json({ error: err });
+  }
+};
+
 //Vrací seznam objednávek
 const fetchOrders = async () => {
   try {
@@ -250,7 +267,6 @@ const doplnKooperace = async (operaceBezKooper) => {
                   const { recordset: doklad } = await request.query(
                     `SELECT zkraceny_nazev AS "nazev" FROM dba.zdr_koo_dkl WHERE doklad = '${koop.doklad}';`
                   );
-                  console.log(array[index]);
                   array[index].kooperace_data.push({
                     nazev: koop.nazev,
                     mnozstvi: koop.mnozstvi,
@@ -284,9 +300,9 @@ const doplnMzdyAZbytek = async (operaceBezMezd) => {
         let vykazanyCas = 0;
         let strojNakl = 0;
         let vykazanaMzda = 0;
-        operace.stroj &&
+        operace.stroje &&
           (await Promise.all(
-            //Rozdělí výkazy na jednotlivé stroje kvůli vícestrojovým sazbám a různým strojním
+            //Rozdělí výkazy na jednotlivé stroje kvůli vícestrojovým sazbám a různým strojním nákladům
             operace.stroje.map(async (stroj) => {
               const vykazyNaStroj = operace.vykazy?.filter(
                 (vykaz) => vykaz.stroj === stroj.nazev
@@ -294,7 +310,7 @@ const doplnMzdyAZbytek = async (operaceBezMezd) => {
               if (vykazyNaStroj && vykazyNaStroj.length >= 2) {
                 await Promise.all(
                   vykazyNaStroj.map(async (vykaz, index, array) => {
-                    //Při každém sudém záznamu ho odečte od následujícího lichého pro zjištění délky úkony, poté zpracuje až další sudý
+                    //Při každém sudém záznamu ho odečte od předchozího lichého pro zjištění délky úkony, poté zpracuje až další sudý
                     if (index % 2 == 0 && array[index + 1]) {
                       const delkaVykazu =
                         new Date(array[index + 1].cas) -

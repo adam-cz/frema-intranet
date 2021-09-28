@@ -60,6 +60,8 @@ export const fetchOperace = (order) =>
   axios.get(`${api}vyhodnoceni/operace/${order}`);
 export const createProcedure = (procedures) =>
   axios.post(`${api}vyhodnoceni/create`, procedures);
+export const fetchOpvList = (objednavka) =>
+  axios.get(`${api}vyhodnoceni/opv/${objednavka}`);
 
 //Vykazy
 export const nacistVykazy = () => axios.get(`${api}vykazy/`);
