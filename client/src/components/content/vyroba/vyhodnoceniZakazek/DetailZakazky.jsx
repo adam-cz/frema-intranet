@@ -1,12 +1,15 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Divider, Tabs } from 'antd';
+import { Divider, Tabs, Button } from 'antd';
 import * as api from '../../../../api/index';
 import Breadcrumbs from './Breadcrumbs';
 import SeznamZP from './SeznamZP';
 import SeznamOperace from './SeznamOperace';
 import GrafPorovnani from './GrafPorovnani';
 import SeznamMzdy from './SeznamMzdy';
+import NewWindow from 'react-new-window';
+import { Barcodes } from './Barcodes';
+import './DetailZakazky.css';
 
 const { TabPane } = Tabs;
 
@@ -15,6 +18,13 @@ const DetailZakazky = () => {
   const [loading, setLoading] = useState(true);
   const [operace, setOperace] = useState(null);
   const [operaceFiltr, setOperaceFiltr] = useState(null);
+  const [payload, setPayload] = useState(null);
+
+  const clickHandler = () => {
+    api.createProcedure(operace).then(({ data }) => {
+      setPayload(data.payload);
+    });
+  };
 
   //Filtruje operace na základě parametru final a opv v url
   useEffect(() => {
@@ -48,6 +58,27 @@ const DetailZakazky = () => {
       <Divider>Zakázkové postupy objednávky {objednavka}</Divider>
       <SeznamZP />
       <Divider>Rozpis operací vybraných zakázkových postupů</Divider>
+      <div>
+        <Button className="buttonOperace" type="primary" onClick={clickHandler}>
+          Generovat čárové kódy k operacím
+        </Button>
+        <Button
+          className="buttonOperace"
+          type="primary"
+          onClick={clickHandler}
+          disabled
+        >
+          Generovat volné čárové kódy
+        </Button>
+      </div>
+      {payload && (
+        <NewWindow
+          features={{ width: 1200, height: 1000 }}
+          onUnload={() => setPayload(null)}
+        >
+          <Barcodes data={payload} />
+        </NewWindow>
+      )}
       <Tabs defaultActiveKey="1">
         <TabPane tab="Operace" key="1">
           <SeznamOperace loading={loading} operaceFiltr={operaceFiltr} />

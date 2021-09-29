@@ -295,19 +295,21 @@ const doplnMzdyAZbytek = async (operaceBezMezd) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
+
     //Iteruje operace a dopňuje mzdy, strojní náklady, čas a následně dopočte celkové částky
     await Promise.all(
       operaceBezMezd.map(async (operace, index, array) => {
         let vykazanyCas = 0;
         let strojNakl = 0;
         let vykazanaMzda = 0;
+
         operace.stroje &&
           (await Promise.all(
             //Rozdělí výkazy na jednotlivé stroje kvůli vícestrojovým sazbám a různým strojním nákladům
             operace.stroje.map(async (stroj) => {
-              const vykazyNaStroj = operace.vykazy?.filter(
-                (vykaz) => vykaz.stroj === stroj.nazev
-              );
+              const vykazyNaStroj = operace.vykazy?.filter((vykaz) => {
+                return vykaz.stroj === stroj.nazev;
+              });
               if (vykazyNaStroj && vykazyNaStroj.length >= 2) {
                 await Promise.all(
                   vykazyNaStroj.map(async (vykaz, index, array) => {
@@ -329,11 +331,11 @@ const doplnMzdyAZbytek = async (operaceBezMezd) => {
                       );
                       //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
                       const delkaVykazuMin = delkaVykazu / 1000 / 60 / 60; //Hodiny
+
                       vykazanaMzda +=
                         delkaVykazuMin * hodinovaMzda[0].prd_plati;
                       vykazanyCas += delkaVykazuMin;
                       strojNakl += delkaVykazuMin * stroj?.sazba || 0;
-                      //console.log(vykazanaMzda, vykazanyCas);
                     }
                   })
                 );
@@ -389,25 +391,24 @@ export const createProcedure = async (req, res) => {
           opv: operace.opv.trim(),
           polozka: operace.polozka,
         });
-        console.log(found);
         if (found) results.push(found);
         if (!found) {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
           const result = await Proces.create({
-            opv: operace.opv.trim(),
+            opv: operace.opv,
             objednavka: operace.objednavka,
             polozka: operace.polozka,
             planvyroba: operace.planvyroba,
-            minut_nor: operace.minut_nor,
+            minut_nor: operace.trvani_plan,
             popis: operace.popis.trim(),
             stredisko: operace.zdroj,
             stroje: zdroj
               ? zdroj.stroje
               : [
                   {
-                    nazev: null,
+                    nazev: 'null',
                     sazba: sazby.find(
-                      (sazba) => sazba.operace === operace.stredisko
+                      (sazba) => sazba.operace === operace.zdroj
                     ).sazba,
                   },
                 ],
