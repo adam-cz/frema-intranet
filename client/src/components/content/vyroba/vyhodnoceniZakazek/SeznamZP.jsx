@@ -165,7 +165,6 @@ const SeznamZP = () => {
   useEffect(() => {
     if (loading) {
       api.fetchOpvList(objednavka).then((result) => {
-        console.log(result.data);
         setPostupy(result.data);
         setLoading(false);
       });

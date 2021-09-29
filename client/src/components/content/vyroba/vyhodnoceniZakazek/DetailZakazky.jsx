@@ -65,7 +65,6 @@ const DetailZakazky = () => {
           No a na konec dodělám i tohle
         </TabPane>
       </Tabs>
-      {operaceFiltr && console.log(operaceFiltr)}
     </div>
   );
 };

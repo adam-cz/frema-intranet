@@ -156,6 +156,7 @@ const nactiOperace = async (objednavka) => {
             operaceKarat.map((op) =>
               operace.push({
                 ...op,
+                id: `${op.opv}_${op.polozka}`,
                 //Pro získání celkové částky je nutno násobit počtem kusů
                 trvani_plan: op.trvani_plan * op.planvyroba,
                 mzdy_plan: op.mzdy_plan * op.planvyroba,

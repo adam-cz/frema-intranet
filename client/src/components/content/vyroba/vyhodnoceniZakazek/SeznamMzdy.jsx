@@ -53,12 +53,14 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
   const [loading, setLoading] = useState(true);
   const [vykazy, setVykazy] = useState(null);
 
+  //Zpracuje výkazy z operací pro účely zobrazení rozpisu mezd
   useEffect(() => {
     if (operace) {
       const vykazyHelper = [];
-
+      //Iteruje operace a následně jejich výkazy
       operace.forEach((op) => {
         op.vykazy?.forEach((vykaz, index, array) => {
+          //Pokud v pomocné prom. nenalezne zaměstnance, vytvoří ho a připraví si pole pro stroje/operace se kterými pracoval
           if (
             !vykazyHelper.find(
               (vykazHelper) => vykazHelper.id === vykaz.operator_id
@@ -69,10 +71,11 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
               jmeno: vykaz.operator_jmeno,
               operace: [],
             });
+          //Uloží si zaměstnance z aktuálního výkazu do proměnné
           const zamestnanec = vykazyHelper.find(
             (vykazHelper) => vykazHelper.id === vykaz.operator_id
           );
-
+          //Pokud stroj/operace neexistuje, vytvoří si ho a připraví pole pro výkazy daného stroje a zaměstnance
           if (
             !zamestnanec.operace.find(
               (operace) => operace.stroj === vykaz.stroj
@@ -86,16 +89,17 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
               vykazy: [],
             });
           }
+          //Vytvoří pomocnou prom. pro stroj/operaci
           const stroj = zamestnanec.operace.find(
             (operace) => operace.stroj === vykaz.stroj
           );
-          console.log(stroj.vykazy);
-
+          //V případě, že je výkaz první nebo je ten poslední ukončen, vytvoří nový záznam
           if (
             stroj.vykazy.length === 0 ||
             stroj.vykazy[stroj.vykazy.length - 1].stop
           )
             stroj.vykazy.push({ start: vykaz.cas });
+          //NEBO v případě, že předchozí výkaz neni ukončen, ukončí ho a dopočítá trvání výkazu
           else {
             stroj.vykazy[stroj.vykazy.length - 1].stop = vykaz.cas;
             stroj.vykazy[stroj.vykazy.length - 1].trvaniMin =
@@ -106,10 +110,37 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           }
         });
       });
+      console.log(vykazyHelper);
       setVykazy(vykazyHelper);
       setLoading(false);
     }
   }, [operace]);
+
+  const expandedRowRender = (vykazy) => {
+    const columns = [
+      {
+        title: 'Stroj',
+        dataIndex: 'stroj',
+        key: 'stroj',
+        render: (value) => (value === 'null' ? 'Výchozí stroj' : value),
+      },
+      { title: 'Popis', dataIndex: 'popis', key: 'popis' },
+      { title: 'OPV', dataIndex: 'opv', key: 'opv' },
+      {
+        title: 'Položka',
+        dataIndex: 'polozka',
+        key: 'polozka',
+      },
+    ];
+    return (
+      <Table
+        columns={columns}
+        dataSource={vykazy.operace}
+        pagination={false}
+        rowKey="stroj"
+      />
+    );
+  };
 
   return (
     <div>
@@ -117,7 +148,8 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         dataSource={vykazy}
         columns={columns}
         loading={loading}
-        rowKey="barcode"
+        expandable={{ expandedRowRender }}
+        rowKey="jmeno"
       />
     </div>
   );

@@ -75,7 +75,7 @@ const SeznamOperace = ({ loading, operaceFiltr }) => {
         dataSource={operaceFiltr}
         columns={columns}
         loading={loading}
-        rowKey="barcode"
+        rowKey="id"
       />
     </div>
   );
