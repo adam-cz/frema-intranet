@@ -18,24 +18,30 @@ const columns = [
     title: 'Hodinová sazba',
     dataIndex: 'sazba',
     key: 'sazba',
-    render: (value) => Math.round(value),
+    render: (value) => formatter.format(value),
   },
   {
     title: 'Celkem vykázáno (min.)',
     dataIndex: 'vykazano',
     key: 'vykazano',
+    render: (value) => Math.round(value),
   },
   {
     title: 'Mzda',
     dataIndex: 'mzda',
     key: 'mzda',
-    render: (value) => Math.round(value),
+    render: (value) => formatter.format(value),
   },
   {
     title: 'Činnost',
     dataIndex: 'cinnost',
     key: 'cinnost',
-    render: (value) => Math.round(value),
+    render: (value) =>
+      !value ? (
+        <Tag color="green">Všechny výkazy dokončeny</Tag>
+      ) : (
+        <Tag color="orange">Aktivních operací: {value}</Tag>
+      ),
   },
 ];
 
@@ -49,7 +55,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
       const vykazyHelper = [];
       //Iteruje operace a následně jejich výkazy
       operace.forEach((op) => {
-        op.vykazy?.forEach((vykaz, index, array) => {
+        op.vykazy?.forEach((vykaz) => {
           //Pokud v pomocné prom. nenalezne zaměstnance, vytvoří ho a připraví si pole pro stroje/operace se kterými pracoval
           if (
             !vykazyHelper.find(
@@ -59,6 +65,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
             vykazyHelper.push({
               id: vykaz.operator_id,
               jmeno: vykaz.operator_jmeno,
+              sazba: vykaz.hodinovaMzda,
               operace: [],
             });
           //Uloží si zaměstnance z aktuálního výkazu do proměnné
@@ -75,6 +82,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
               stroj: vykaz.stroj,
               opv: op.opv,
               polozka: op.polozka,
+              zdroj: op.zdroj,
               popis: op.popis,
               vykazy: [],
             });
@@ -97,8 +105,35 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
                 new Date(stroj.vykazy[stroj.vykazy.length - 1].start)) /
               1000 /
               60;
+            stroj.vykazy[stroj.vykazy.length - 1].mzda =
+              (vykaz.hodinovaMzda *
+                stroj.vykazy[stroj.vykazy.length - 1].trvaniMin) /
+              60;
           }
         });
+      });
+      //Doplní celkové mzdy
+      vykazyHelper.forEach((vykaz) => {
+        vykaz.operace.forEach((stroj) => {
+          stroj.vykazano = stroj.vykazy.reduce(
+            (total, current) => total + (current?.trvaniMin || 0),
+            0
+          );
+          stroj.mzda = stroj.vykazy.reduce(
+            (total, current) => total + (current?.mzda || 0),
+            0
+          );
+          stroj.cinnost = stroj.vykazy?.find((vykaz) => !vykaz.stop) || false;
+        });
+        vykaz.mzda = vykaz.operace.reduce(
+          (total, current) => total + current.mzda,
+          0
+        );
+        vykaz.vykazano = vykaz.operace.reduce(
+          (total, current) => total + current.vykazano,
+          0
+        );
+        vykaz.cinnost = vykaz.operace.filter((stroj) => stroj.cinnost).length;
       });
       console.log(vykazyHelper);
       setVykazy(vykazyHelper);
@@ -131,7 +166,12 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           key: 'trvaniMin',
           render: (value) => (value ? Math.round(value) : 'Výkaz není ukončen'),
         },
-        { title: 'Mzda', dataIndex: 'mzda', key: 'mzda' },
+        {
+          title: 'Mzda',
+          dataIndex: 'mzda',
+          key: 'mzda',
+          render: (value) => formatter.format(value),
+        },
         {
           title: 'Činnost',
           dataIndex: 'cinnost',
@@ -149,7 +189,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           columns={columns}
           dataSource={stroje.vykazy}
           pagination={false}
-          rowKey="stroj"
+          rowKey="start"
         />
       );
     };
@@ -172,12 +212,29 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         title: 'Vykázáno na stroji (min.)',
         dataIndex: 'vykazano',
         key: 'vykazano',
+        render: (value) => Math.round(value),
       },
-      { title: 'Mzda na stroji', dataIndex: 'mzda', key: 'mzda' },
+      {
+        title: 'Mzda na stroji',
+        dataIndex: 'mzda',
+        key: 'mzda',
+        render: (value) => formatter.format(value),
+      },
       {
         title: 'Činnost',
         dataIndex: 'cinnost',
         key: 'cinnost',
+        render: (value) =>
+          value ? (
+            <Tag color="orange">
+              Operace aktivní od{' '}
+              {DateTime.fromISO(value.start).toLocaleString(
+                DateTime.TIME_24_SIMPLE
+              )}
+            </Tag>
+          ) : (
+            <Tag color="green">Všechny výkazy dokončeny</Tag>
+          ),
       },
     ];
     return (
@@ -193,6 +250,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
 
   return (
     <div>
+      {console.log(operace)}
       <Table
         dataSource={vykazy}
         columns={columns}

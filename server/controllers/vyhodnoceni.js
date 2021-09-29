@@ -183,6 +183,8 @@ const nactiOperace = async (objednavka) => {
 
 const doplnVykazyStroje = async (operaceBezVykazu) => {
   try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
     await Promise.all(
       //Iteruje operace a dohledává existující záznamy výkazů a strojních sazeb v databázi
       operaceBezVykazu.map(async (operace, index, array) => {
@@ -191,7 +193,25 @@ const doplnVykazyStroje = async (operaceBezVykazu) => {
           polozka: operace.polozka,
         });
         array[index].vykazy =
-          proces?.zaznamy.length > 0 ? proces.zaznamy : null;
+          proces?.zaznamy.length > 0
+            ? await Promise.all(
+                proces.zaznamy.map(async (vykaz) => {
+                  const { recordset: hodinovaMzda } = await request.query(
+                    `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+                      vykaz.operator_id
+                    } AND rok = ${new Date(
+                      vykaz.cas
+                    ).getFullYear()} AND mesic = ${new Date(
+                      vykaz.cas
+                    ).getMonth()});`
+                  );
+                  return {
+                    ...vykaz._doc,
+                    hodinovaMzda: hodinovaMzda[0].prd_plati,
+                  };
+                })
+              )
+            : null;
         array[index].stroje = proces?.stroje.length > 0 ? proces.stroje : null;
       })
     );
