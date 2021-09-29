@@ -117,6 +117,25 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
   }, [operace]);
 
   const expandedRowRender = (vykazy) => {
+    const expandedRowRender = (stroje) => {
+      const columns = [
+        {
+          title: 'Start',
+          dataIndex: 'start',
+          key: 'start',
+        },
+        { title: 'Stop', dataIndex: 'stop', key: 'stop' },
+        { title: 'Délka (min.)', dataIndex: 'trvaniMin', key: 'trvaniMin' },
+      ];
+      return (
+        <Table
+          columns={columns}
+          dataSource={stroje.vykazy}
+          pagination={false}
+          rowKey="stroj"
+        />
+      );
+    };
     const columns = [
       {
         title: 'Stroj',
@@ -136,6 +155,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
       <Table
         columns={columns}
         dataSource={vykazy.operace}
+        expandable={{ expandedRowRender }}
         pagination={false}
         rowKey="stroj"
       />
