@@ -1,15 +1,21 @@
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import './DetailZakazky.css';
 import { Divider, Tabs, Button } from 'antd';
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import * as api from '../../../../api/index';
+
+import { Barcodes } from './Barcodes';
 import Breadcrumbs from './Breadcrumbs';
 import SeznamZP from './SeznamZP';
 import SeznamOperace from './SeznamOperace';
 import GrafPorovnani from './GrafPorovnani';
 import SeznamMzdy from './SeznamMzdy';
 import NewWindow from 'react-new-window';
-import { Barcodes } from './Barcodes';
-import './DetailZakazky.css';
+import SeznamStrojniNaklady from './SeznamStrojniNaklady';
+import SeznamMaterial from './SeznamMaterial';
+import SeznamKooperace from './SeznamKooperace';
 
 const { TabPane } = Tabs;
 
@@ -20,13 +26,21 @@ const DetailZakazky = () => {
   const [operaceFiltr, setOperaceFiltr] = useState(null);
   const [payload, setPayload] = useState(null);
 
+  //Zpracování čárových kódů
   const clickHandler = () => {
     api.createProcedure(operace).then(({ data }) => {
       setPayload(data.payload);
     });
   };
 
-  //Filtruje operace na základě parametru final a opv v url
+  //Načítá operace na základě objednávky v prametru URL
+  useEffect(() => {
+    if (loading && !operace) {
+      api.fetchOperace(objednavka).then((result) => setOperace(result.data));
+    }
+  }, [operace, loading, objednavka]);
+
+  //Filtruje operace na základě výběru (parametru final a opv v url)
   useEffect(() => {
     if (operace && opv) {
       setOperaceFiltr(operace.filter((operace) => operace.opv === opv));
@@ -40,15 +54,8 @@ const DetailZakazky = () => {
       setOperaceFiltr(operace);
       return;
     }
+    setLoading(false);
   }, [operace, final, opv]);
-
-  //Načítá operace na základě objednávky v prametru URL
-  useEffect(() => {
-    if (loading && !operace) {
-      api.fetchOperace(objednavka).then((result) => setOperace(result.data));
-    }
-    if (operaceFiltr) setLoading(false);
-  }, [operace, loading, objednavka, operaceFiltr]);
 
   return (
     <div>
@@ -87,13 +94,13 @@ const DetailZakazky = () => {
           <SeznamMzdy operaceFiltr={operaceFiltr} />
         </TabPane>
         <TabPane tab="Strojní náklady" key="3">
-          Na tomhle budu dělat potom
+          <SeznamStrojniNaklady operaceFiltr={operaceFiltr} />
         </TabPane>
         <TabPane tab="Materiál" key="4">
-          Pak se vrhnu na tohle
+          <SeznamMaterial operaceFiltr={operaceFiltr} />
         </TabPane>
         <TabPane tab="Kooperace" key="5">
-          No a na konec dodělám i tohle
+          <SeznamKooperace operaceFiltr={operaceFiltr} />
         </TabPane>
       </Tabs>
     </div>
