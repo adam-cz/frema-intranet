@@ -1,5 +1,6 @@
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import { useState, useEffect } from 'react';
+import { DateTime } from 'luxon';
 
 const formatter = new Intl.NumberFormat('cs-CZ', {
   style: 'currency',
@@ -14,38 +15,27 @@ const columns = [
     key: 'jmeno',
   },
   {
-    title: 'Odvedeno',
-    dataIndex: 'odvedeno',
-    key: 'odevedeno',
-  },
-  {
-    title: 'Trvání plán (min)',
-    dataIndex: 'trvani_plan',
-    key: 'trvani_plan',
+    title: 'Hodinová sazba',
+    dataIndex: 'sazba',
+    key: 'sazba',
     render: (value) => Math.round(value),
   },
   {
-    title: 'Vykázáno (min)',
-    dataIndex: 'trvani',
-    key: 'trvani',
+    title: 'Celkem vykázáno (min.)',
+    dataIndex: 'vykazano',
+    key: 'vykazano',
+  },
+  {
+    title: 'Mzda',
+    dataIndex: 'mzda',
+    key: 'mzda',
     render: (value) => Math.round(value),
   },
   {
-    title: 'Zdroj',
-    dataIndex: 'zdroj',
-    key: 'zdroj',
-  },
-  {
-    title: 'Náklady plán',
-    dataIndex: 'nakl_celkem_plan',
-    key: 'nakl_celkem_plan',
-    render: (value) => formatter.format(value),
-  },
-  {
-    title: 'Náklady skutečnost',
-    dataIndex: 'nakl_celkem',
-    key: 'nakl_celkem',
-    render: (value) => formatter.format(value),
+    title: 'Činnost',
+    dataIndex: 'cinnost',
+    key: 'cinnost',
+    render: (value) => Math.round(value),
   },
 ];
 
@@ -123,9 +113,36 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           title: 'Start',
           dataIndex: 'start',
           key: 'start',
+          render: (value) =>
+            DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT),
         },
-        { title: 'Stop', dataIndex: 'stop', key: 'stop' },
-        { title: 'Délka (min.)', dataIndex: 'trvaniMin', key: 'trvaniMin' },
+        {
+          title: 'Stop',
+          dataIndex: 'stop',
+          key: 'stop',
+          render: (value) =>
+            value
+              ? DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT)
+              : 'Výkaz není ukončen',
+        },
+        {
+          title: 'Délka (min.)',
+          dataIndex: 'trvaniMin',
+          key: 'trvaniMin',
+          render: (value) => (value ? Math.round(value) : 'Výkaz není ukončen'),
+        },
+        { title: 'Mzda', dataIndex: 'mzda', key: 'mzda' },
+        {
+          title: 'Činnost',
+          dataIndex: 'cinnost',
+          key: 'cinnost',
+          render: (value, record) =>
+            record.stop ? (
+              <Tag color="green">Výkaz ukončen</Tag>
+            ) : (
+              <Tag color="orange">Činnost probíhá...</Tag>
+            ),
+        },
       ];
       return (
         <Table
@@ -143,12 +160,24 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         key: 'stroj',
         render: (value) => (value === 'null' ? 'Výchozí stroj' : value),
       },
+      { title: 'Zdroj', dataIndex: 'zdroj', key: 'zdroj' },
       { title: 'Popis', dataIndex: 'popis', key: 'popis' },
       { title: 'OPV', dataIndex: 'opv', key: 'opv' },
       {
         title: 'Položka',
         dataIndex: 'polozka',
         key: 'polozka',
+      },
+      {
+        title: 'Vykázáno na stroji (min.)',
+        dataIndex: 'vykazano',
+        key: 'vykazano',
+      },
+      { title: 'Mzda na stroji', dataIndex: 'mzda', key: 'mzda' },
+      {
+        title: 'Činnost',
+        dataIndex: 'cinnost',
+        key: 'cinnost',
       },
     ];
     return (
