@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Table, Tag } from 'antd';
 import { DateTime } from 'luxon';
 import prepocetStrojniNaklady from '../../../../utils/prepocetStrojniNaklady';
@@ -59,10 +59,17 @@ const columns = [
 const SeznamStrojniNaklady = ({ operaceFiltr: operace }) => {
   const [operaceStrNakl, setOperaceStrNakl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const operaceRef = useRef(null);
+
+  //Způsobí přepočet při změně výběru ZP
+  useEffect(() => {
+    if (operace !== operaceRef.current) setLoading(true);
+  }, [operace]);
 
   //Přepočet operací pro účely snažšího zobrazení mezd
   useEffect(() => {
     if (loading && operace) {
+      operaceRef.current = operace;
       setOperaceStrNakl(prepocetStrojniNaklady(operace));
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Table, Tag } from 'antd';
 import { DateTime } from 'luxon';
 import prepocetMzdy from '../../../../utils/prepocetMzdy';
@@ -50,10 +50,17 @@ const columns = [
 const SeznamMzdy = ({ operaceFiltr: operace }) => {
   const [operaceMzdy, setOperaceMzdy] = useState(null);
   const [loading, setLoading] = useState(true);
+  const operaceRef = useRef(null);
+
+  //Způsobí přepočet při změně výběru ZP
+  useEffect(() => {
+    if (operace !== operaceRef.current) setLoading(true);
+  }, [operace]);
 
   //Přepočet operací pro účely snažšího zobrazení mezd
   useEffect(() => {
     if (loading && operace) {
+      operaceRef.current = operace;
       setOperaceMzdy(prepocetMzdy(operace));
       setLoading(false);
     }

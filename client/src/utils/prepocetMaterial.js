@@ -1,8 +1,7 @@
 export default function prepocetMaterial(operace) {
   //Pomocná proměnná
-  console.log('tu');
   const materialHelper = [];
-  //Iteruje výkazy operací a pokud nenalezne stroj v pomocné prom., připraví ho
+  //Iteruje výkazy operací a pokud nenalezne materiálový výkaz v pomocné prom., připraví ho
   operace.forEach((op) => {
     op.material_data?.forEach((materialVykaz) => {
       if (
@@ -18,18 +17,19 @@ export default function prepocetMaterial(operace) {
           operace: [],
         });
       }
-      //Uloží stroj z aktuálního výkazu do proměnné
+      //Uloží výkaz z aktuálního výkazu do proměnné
       const material = materialHelper.find(
         (matHelper) => matHelper.nomenklatura === materialVykaz.nomenklatura
       );
-      //V případě, že je výkaz první nebo je ten předchozí ukončen, vytvoří nový
-
+      //Vloží data do výkazu
       material.operace.push({
+        autor: materialVykaz.autor,
         opv: op.opv,
         polozka: op.polozka,
         popis: op.popis,
         pozadovano: materialVykaz.pozadovano,
         vydano: materialVykaz.vydano,
+        MJ: materialVykaz.merna_jednotka.trim(),
         cena_mj: materialVykaz.cena,
         cena: materialVykaz.cena * materialVykaz.vydano,
       });
@@ -49,12 +49,6 @@ export default function prepocetMaterial(operace) {
       (total, current) => total + current.cena,
       0
     );
-    material.cinnost = material.vykazy?.find(
-      (mat) => mat.vydano < mat.pozadovano
-    )
-      ? true
-      : false;
   });
-  console.log(materialHelper);
   return materialHelper;
 }
