@@ -229,6 +229,7 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
       operaceBezMaterialu.map(async (operace, index, array) => {
         const { recordset: material } = await request.query(
           `SELECT popis AS "nazev", 
+          nomenklatura,
           pozadovano, 
           vydano, 
           mj AS "merna_jednotka", 

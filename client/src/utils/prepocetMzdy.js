@@ -1,4 +1,5 @@
 export default function prepocetMzdy(operace) {
+  //Pomocná proměnná
   const vykazyHelper = [];
   //Iteruje operace a následně jejich výkazy
   operace.forEach((op) => {
@@ -57,7 +58,7 @@ export default function prepocetMzdy(operace) {
       }
     });
   });
-  //Doplní celkové mzdy
+  //Iteruje pomocnou proměnnou a dopňuje součty výsledků do vyšších úrovní proměnné.
   vykazyHelper.forEach((vykaz) => {
     vykaz.operace.forEach((stroj) => {
       stroj.vykazano = stroj.vykazy.reduce(
