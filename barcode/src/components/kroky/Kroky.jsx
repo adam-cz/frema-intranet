@@ -2,17 +2,31 @@ import { Steps } from 'antd';
 
 const { Step } = Steps;
 
-const Kroky = ({ uzivatel, operace }) => {
+const Kroky = ({ uzivatel }) => {
   return (
-    <Steps>
+    <Steps current={!uzivatel ? 0 : 1}>
       <Step
-        title={'Čekám na identifikaci zaměstnance'}
-        description={'Prosím přiložte svou čipovou kartu ke čtečce'}
+        title={
+          !uzivatel
+            ? 'Čekám na identifikaci zaměstnance'
+            : `Uživatel ${uzivatel.jmeno} načten`
+        }
+        description={
+          !uzivatel
+            ? 'Prosím přiložte svou čipovou kartu ke čtečce'
+            : !uzivatel.procesy > 0
+            ? 'Uživatel nemá žádné aktivní operace'
+            : `Máte ${uzivatel.procesy.length} aktivní operace!`
+        }
       />
       <Step
         title={'Načtení operace'}
         // subTitle={time.active ? `Zbývá ${time.time / 1000}s` : ''}
-        description={'Nejdřive je potřeba identifikovat zaměstnance'}
+        description={
+          !uzivatel
+            ? 'čekám na identifikaci uživatele'
+            : 'Načtěte prosím čárový kód operace'
+        }
       />
     </Steps>
   );

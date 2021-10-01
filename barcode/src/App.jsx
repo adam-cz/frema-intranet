@@ -11,7 +11,6 @@ const { Header, Content, Footer } = Layout;
 
 function App() {
   const [uzivatel, setUzivatel] = useState(null);
-  const [operace, setOperace] = useState(null);
 
   return (
     <Layout className="layout">
@@ -21,18 +20,13 @@ function App() {
       <Content style={{ padding: '0 50px' }}>
         <div className="site-layout-content">
           <div className="steper">
-            <Kroky uzivatel={uzivatel} operace={operace} />
+            <Kroky uzivatel={uzivatel} />
           </div>
           <div className="detail">
             {uzivatel ? (
-              <CarovyKod
-                uzivatel={uzivatel}
-                setUzivatel={setUzivatel}
-                operace={operace}
-                setOperace={setOperace}
-              />
+              <CarovyKod uzivatel={uzivatel} setUzivatel={setUzivatel} />
             ) : (
-              <Karta uzivatel={uzivatel} setUzivatel={setUzivatel} />
+              <Karta setUzivatel={setUzivatel} />
             )}
           </div>
         </div>

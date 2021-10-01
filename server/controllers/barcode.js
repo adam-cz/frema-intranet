@@ -6,15 +6,20 @@ export const verifyCardId = async (req, res) => {
     const user = await User.findOne({ rfid: req.params.id });
     if (!user)
       return res
-        .status(404)
+        .status(200)
         .json({ status: 'error', message: 'Uživatel neexistuje' });
     const employee = {
       id: user._id,
       jmeno: `${user.name} ${user.surname}`,
       procesy: user.working,
     };
-    return res.status(200).json(employee);
+    return res.status(200).json({
+      status: 'success',
+      message: `Uživatel ${user.name} ${user.surname} načten`,
+      employee,
+    });
   } catch (err) {
+    console.log(err.message);
     return res.status(404).json({ error: err });
   }
 };
