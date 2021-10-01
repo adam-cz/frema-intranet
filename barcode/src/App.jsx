@@ -1,13 +1,17 @@
-import { Layout } from 'antd';
 import './app.css';
-import Steper from './components/steper/Steper';
+import { Layout } from 'antd';
+
 import { useState } from 'react';
-import Details from './components/details/Details';
+
+import Kroky from './components/kroky/Kroky';
+import CarovyKod from './components/carovyKod/CarovyKod';
+import Karta from './components/karta/Karta';
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  const [step, setStep] = useState(0);
+  const [uzivatel, setUzivatel] = useState(null);
+  const [operace, setOperace] = useState(null);
 
   return (
     <Layout className="layout">
@@ -17,10 +21,19 @@ function App() {
       <Content style={{ padding: '0 50px' }}>
         <div className="site-layout-content">
           <div className="steper">
-            <Steper step={step} />
+            <Kroky uzivatel={uzivatel} operace={operace} />
           </div>
           <div className="detail">
-            <Details step={step} setStep={setStep} />
+            {uzivatel ? (
+              <CarovyKod
+                uzivatel={uzivatel}
+                setUzivatel={setUzivatel}
+                operace={operace}
+                setOperace={setOperace}
+              />
+            ) : (
+              <Karta uzivatel={uzivatel} setUzivatel={setUzivatel} />
+            )}
           </div>
         </div>
       </Content>
