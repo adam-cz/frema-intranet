@@ -192,26 +192,34 @@ const doplnVykazyStroje = async (operaceBezVykazu) => {
           opv: operace.opv,
           polozka: operace.polozka,
         });
-        array[index].vykazy =
-          proces?.zaznamy.length > 0
-            ? await Promise.all(
-                proces.zaznamy.map(async (vykaz) => {
-                  const { recordset: hodinovaMzda } = await request.query(
-                    `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-                      vykaz.operator_id
-                    } AND rok = ${new Date(
-                      vykaz.cas
-                    ).getFullYear()} AND mesic = ${new Date(
-                      vykaz.cas
-                    ).getMonth()});`
-                  );
-                  return {
-                    ...vykaz._doc,
-                    hodinovaMzda: hodinovaMzda[0].prd_plati,
-                  };
-                })
-              )
-            : null;
+
+        if (proces?.zaznamy.length > 0) {
+          /* 
+          Seřadí výkazy v db podle data z důvodu konzistence při výpočtu časů.
+          Může totiž nastat situace, kdy záznamy z důvodu výpadku sítě a následnému
+          dohrání z terminálů nebudou v db řazeny dle data výkazu.
+          */
+          const serazeneVykazy = proces.zaznamy.sort(
+            (a, b) => a.cas.getTime() - b.cas.getTime()
+          );
+          array[index].vykazy = await Promise.all(
+            serazeneVykazy.map(async (vykaz) => {
+              const { recordset: hodinovaMzda } = await request.query(
+                `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+                  vykaz.operator_id
+                } AND rok = ${new Date(
+                  vykaz.cas
+                ).getFullYear()} AND mesic = ${new Date(
+                  vykaz.cas
+                ).getMonth()});`
+              );
+              return {
+                ...vykaz._doc,
+                hodinovaMzda: hodinovaMzda[0].prd_plati,
+              };
+            })
+          );
+        } else array[index].vykazy = null;
         array[index].stroje = proces?.stroje.length > 0 ? proces.stroje : null;
       })
     );
@@ -413,8 +421,8 @@ export const createProcedure = async (req, res) => {
           opv: operace.opv.trim(),
           polozka: operace.polozka,
         });
-        if (found) results.push(found);
-        if (!found) {
+        if (found && operace.zdroj !== ('999' || '500')) results.push(found);
+        if (!found && operace.zdroj !== ('999' || '500')) {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
           const result = await Proces.create({
             opv: operace.opv,
@@ -428,7 +436,7 @@ export const createProcedure = async (req, res) => {
               ? zdroj.stroje
               : [
                   {
-                    nazev: 'null',
+                    nazev: 'NULL',
                     sazba: sazby.find(
                       (sazba) => sazba.operace === operace.zdroj
                     ).sazba,

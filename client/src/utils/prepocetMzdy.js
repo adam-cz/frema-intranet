@@ -55,6 +55,12 @@ export default function prepocetMzdy(operace) {
           (vykaz.hodinovaMzda *
             stroj.vykazy[stroj.vykazy.length - 1].trvaniMin) /
           60;
+        console.log(op);
+        stroj.vykazy[stroj.vykazy.length - 1].r1 =
+          ((op.nakl_r1_plan / op.mzdy_plan) *
+            (vykaz.hodinovaMzda *
+              stroj.vykazy[stroj.vykazy.length - 1].trvaniMin)) /
+            60 || 0;
       }
     });
   });
@@ -69,12 +75,17 @@ export default function prepocetMzdy(operace) {
         (total, current) => total + (current?.mzda || 0),
         0
       );
+      stroj.r1 = stroj.vykazy.reduce(
+        (total, current) => total + (current?.r1 || 0),
+        0
+      );
       stroj.cinnost = stroj.vykazy?.find((vykaz) => !vykaz.stop) || false;
     });
     vykaz.mzda = vykaz.operace.reduce(
       (total, current) => total + current.mzda,
       0
     );
+    vykaz.r1 = vykaz.operace.reduce((total, current) => total + current.r1, 0);
     vykaz.vykazano = vykaz.operace.reduce(
       (total, current) => total + current.vykazano,
       0

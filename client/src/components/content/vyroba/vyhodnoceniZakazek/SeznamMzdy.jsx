@@ -35,6 +35,18 @@ const columns = [
     render: (value) => formatter.format(value),
   },
   {
+    title: 'Soc./Zdrav.',
+    dataIndex: 'r1',
+    key: 'r1',
+    render: (value) => formatter.format(value),
+  },
+  {
+    title: 'Celkem',
+    dataIndex: 'celkem',
+    key: 'celkem',
+    render: (value, record) => formatter.format(record.mzda + record.r1),
+  },
+  {
     title: 'Činnost',
     dataIndex: 'cinnost',
     key: 'cinnost',
@@ -98,6 +110,18 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           render: (value) => formatter.format(value),
         },
         {
+          title: 'Soc./Zdrav.',
+          dataIndex: 'r1',
+          key: 'r1',
+          render: (value) => formatter.format(value),
+        },
+        {
+          title: 'Celkem',
+          dataIndex: 'celkem',
+          key: 'celkem',
+          render: (value, record) => formatter.format(record.mzda + record.r1),
+        },
+        {
           title: 'Činnost',
           dataIndex: 'cinnost',
           key: 'cinnost',
@@ -144,6 +168,18 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         dataIndex: 'mzda',
         key: 'mzda',
         render: (value) => formatter.format(value),
+      },
+      {
+        title: 'Soc./Zdrav.',
+        dataIndex: 'r1',
+        key: 'r1',
+        render: (value) => formatter.format(value),
+      },
+      {
+        title: 'Celkem',
+        dataIndex: 'celkem',
+        key: 'celkem',
+        render: (value, record) => formatter.format(record.mzda + record.r1),
       },
       {
         title: 'Činnost',

@@ -11,7 +11,7 @@ export const zdroje = [
         sazba: 854,
       },
       {
-        nazev: 'Depomil',
+        nazev: 'DEPOMIL',
         sazba: 943,
       },
       {

@@ -1,4 +1,4 @@
-import { message, Result, Image } from 'antd';
+import { message, Result, Image, Spin } from 'antd';
 import barcode from './barcode.gif';
 
 import { useEffect } from 'react';
@@ -12,16 +12,64 @@ const config = {
   },
 };
 
-const CarovyKod = ({ setUzivatel, uzivatel }) => {
+const CarovyKod = ({
+  setUzivatel,
+  uzivatel,
+  odpocet,
+  setOdpocet,
+  offline,
+  setOffline,
+  loading,
+  setLoading,
+}) => {
   useEffect(() => {
+    let myInterval = setInterval(() => {
+      if (odpocet.value > 0) {
+        setOdpocet({ ...odpocet, value: odpocet.value - 1 });
+      }
+      if (odpocet.value === 0) {
+        setUzivatel(null);
+        setOdpocet({ ...odpocet, value: odpocet.initValue });
+        clearInterval(myInterval);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
+
+  useEffect(() => {
+    const handleOffline = (scanKod, uzivatel) => {
+      setLoading(false);
+      const vykazy = JSON.parse(localStorage.getItem('vykazy')) || [];
+      vykazy.push({ scanKod, uzivatel });
+      localStorage.setItem('vykazy', JSON.stringify(vykazy));
+      setUzivatel(null);
+      message.warning('Výkaz uložen k pozdějšímu zpracování');
+    };
     const overCarovyKod = (scanVystup) => {
+      if (loading) return;
+      setLoading(true);
       const scanKod = scanVystup.detail.scanCode;
-      console.log(scanKod);
-      api.setProces(scanKod, uzivatel).then(({ data }) => {
-        console.log(data);
-        if (data.status === 'success') setUzivatel(null);
-        message[data.status](data.message);
-      });
+      if (!offline)
+        api
+          .setProces(scanKod, uzivatel)
+          .then(({ data }) => {
+            if (data.status === ('success' || 'warning')) {
+              setUzivatel(null);
+            }
+            if (data.status === 'error')
+              setOdpocet({ ...odpocet, value: odpocet.initValue });
+            message[data.status](data.message);
+            console.log(data);
+          })
+          .catch((error) => {
+            if (!offline) setOffline(true);
+            handleOffline(scanKod, uzivatel);
+            console.log(error);
+          });
+      //Pokud je offline nebo byl při identifikaci uřivatele, bude vykaz uložen do localstorage
+      if (offline || !uzivatel.jmeno) handleOffline(scanKod, uzivatel);
     };
 
     onScan.attachTo(window, config);
@@ -30,16 +78,20 @@ const CarovyKod = ({ setUzivatel, uzivatel }) => {
       window.removeEventListener('scan', overCarovyKod);
       onScan.detachFrom(window);
     };
-  }, [setUzivatel, uzivatel]);
+  });
 
   return (
     <div>
-      <Result
-        icon={
-          <Image height={250} preview={false} alt="barcode" src={barcode} />
-        }
-        title="Naskenujte čárový kód operace"
-      />
+      {loading ? (
+        <Result icon={<Spin size="large" />} title="Ukládám výkaz..." />
+      ) : (
+        <Result
+          icon={
+            <Image height={250} preview={false} alt="barcode" src={barcode} />
+          }
+          title="Naskenujte čárový kód operace"
+        />
+      )}
     </div>
   );
 };

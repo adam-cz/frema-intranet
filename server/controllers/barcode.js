@@ -1,6 +1,10 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
 
+export const ping = () => (req, res) => {
+  return res.status(200).json({ status: 'operational' });
+};
+
 export const verifyCardId = async (req, res) => {
   try {
     const user = await User.findOne({ rfid: req.params.id });

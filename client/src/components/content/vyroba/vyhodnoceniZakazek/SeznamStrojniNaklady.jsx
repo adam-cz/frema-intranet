@@ -16,7 +16,7 @@ const columns = [
     dataIndex: 'stroj',
     key: 'stroj',
     render: (value, record) =>
-      value === 'null' ? `Zařízení zdroje ${record.zdroj}` : value,
+      value === 'NULL' ? `Zařízení zdroje ${record.zdroj}` : value,
   },
   {
     title: 'Zdroj',
