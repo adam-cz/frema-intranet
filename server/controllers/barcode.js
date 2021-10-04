@@ -1,8 +1,13 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
 
-export const ping = () => (req, res) => {
-  return res.status(200).json({ status: 'operational' });
+export const ping = (req, res) => {
+  try {
+    return res.status(200).json({ status: 'operational' });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(404).json({ error: err });
+  }
 };
 
 export const verifyCardId = async (req, res) => {

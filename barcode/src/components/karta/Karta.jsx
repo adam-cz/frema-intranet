@@ -16,7 +16,7 @@ const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
   useEffect(() => {
     const handleOffline = (scanKod) => {
       setLoading(false);
-      setUzivatel({ id: scanKod });
+      setUzivatel({ rfid: scanKod });
       message.warning('Uživatel načten lokálně, terminál je OFFLINE');
     };
     const overUzivatele = (scanVystup) => {

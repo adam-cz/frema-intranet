@@ -20,18 +20,50 @@ function App() {
     initValue: initOdpocet,
     value: initOdpocet,
   });
+  const uploadVykazy = async () => {
+    const vykazy = JSON.parse(localStorage.getItem('vykazy'));
+    if (vykazy) {
+      await Promise.all(
+        vykazy.forEach(async (vykaz) => {
+          try {
+            const uzivatel = await api.verifyCardId(vykaz.uzivatel.rfid);
+            const operace = await api.setProces(
+              vykaz.scanKod,
+              uzivatel.data.employee
+            );
+            console.log(vykaz.scanKod, uzivatel.data.employee);
+          } catch (err) {
+            console.log(err);
+          }
+        })
+      );
+    }
+  };
 
   useEffect(() => {
-    if (offline) {
-      console.log('interval');
-      const offlineInterval = setInterval(() => {
-        api.ping().then(({ data }) => {
-          console.log(data);
-          setOffline(false);
-          clearInterval(offlineInterval);
-          console.log('spojení obnoveno');
+    const isAvailable = async (interval) => {
+      const timeout = new Promise((resolve, reject) => {
+        setTimeout(reject, 300, 'Request timed out');
+      });
+      const request = api.ping();
+      return Promise.race([timeout, request])
+        .then(async (response) => {
+          if (offline) {
+            if (interval) clearInterval(interval);
+            setOffline(false);
+            await uploadVykazy();
+          }
+          console.log('Spojení aktivní');
+        })
+        .catch((error) => {
+          if (!offline) setOffline(true);
+          console.log(error);
+          console.log('Připojení není dostupné');
         });
-      }, 10000);
+    };
+    if (!offline) isAvailable();
+    if (offline) {
+      const interval = setInterval(() => isAvailable(interval), 10000);
     }
   }, [offline]);
 

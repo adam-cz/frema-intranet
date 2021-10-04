@@ -60,16 +60,18 @@ const CarovyKod = ({
             }
             if (data.status === 'error')
               setOdpocet({ ...odpocet, value: odpocet.initValue });
+            setLoading(false);
             message[data.status](data.message);
             console.log(data);
           })
           .catch((error) => {
+            setLoading(false);
             if (!offline) setOffline(true);
             handleOffline(scanKod, uzivatel);
             console.log(error);
           });
       //Pokud je offline nebo byl při identifikaci uřivatele, bude vykaz uložen do localstorage
-      if (offline || !uzivatel.jmeno) handleOffline(scanKod, uzivatel);
+      if (offline || !uzivatel.id) handleOffline(scanKod, uzivatel);
     };
 
     onScan.attachTo(window, config);
