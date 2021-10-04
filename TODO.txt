@@ -1,0 +1,19 @@
+BARCODE TERMINAL
+- logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
+- zobrazeni aktivnich procesu uzivatele
+
+CLIENT
+- vypocet a zobrazeni vicestrojovky
+- generovani volnych carovych kodu
+- indikace dokoncenych (vyvedenych) opv
+- na zaklade dokonceni (vyvedeni) opv uzavrit moznost vykazovani
+- kolacove gafy planu a skutecnosti a prepinani mezi nimi
+- uzaverka
+- statistiky zakazek po uzaverce
+- VYKAZOVANI OPERACI 
+    - zobrazeni casovych os vykazu podle zadanych parametru
+    - editace vykazu
+    - podrobny vypocet mezd
+
+SERVER
+- vypocet vicestrojovky
