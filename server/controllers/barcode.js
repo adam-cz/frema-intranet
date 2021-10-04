@@ -36,6 +36,7 @@ export const verifyCardId = async (req, res) => {
 export const setProces = async (req, res) => {
   try {
     const barcode = req.body.barcode.split('_');
+    const cas = req.body.cas;
     const user = await User.findOne({ _id: req.body.user.id });
     const proces = await Proces.findOne({
       opv: barcode[0],
@@ -62,7 +63,7 @@ export const setProces = async (req, res) => {
     //Sudý záznam - vždy načten
     if (zaznamy.length % 2 === 0) {
       proces.zaznamy.push({
-        cas: Date.now(),
+        cas: cas || Date.now(),
         operator_id: req.body.user.id,
         operator_jmeno: req.body.user.jmeno,
         stroj: barcode[2],

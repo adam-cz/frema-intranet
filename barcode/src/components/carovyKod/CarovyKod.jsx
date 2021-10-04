@@ -4,6 +4,7 @@ import barcode from './barcode.gif';
 import { useEffect } from 'react';
 import onScan from 'onscan.js';
 import { translate } from '../../utils/charTranslator';
+import { isRfid, isBarcode } from '../../utils/scanRecognizer';
 import * as api from '../../api';
 
 const config = {
@@ -42,15 +43,23 @@ const CarovyKod = ({
     const handleOffline = (scanKod, uzivatel) => {
       setLoading(false);
       const vykazy = JSON.parse(localStorage.getItem('vykazy')) || [];
-      vykazy.push({ scanKod, uzivatel });
+      vykazy.push({ scanKod, uzivatel, cas: Date.now() });
       localStorage.setItem('vykazy', JSON.stringify(vykazy));
       setUzivatel(null);
+      setOdpocet({ ...odpocet, value: odpocet.initValue });
       message.warning('Výkaz uložen k pozdějšímu zpracování');
     };
     const overCarovyKod = (scanVystup) => {
+      const scanKod = scanVystup.detail.scanCode;
+      if (!isBarcode(scanKod)) {
+        if (isRfid(scanKod))
+          message.error('Uživatel je již načten, nyní načtěte čárový kód');
+        else message.error('Chybný formát čárového kódu');
+        setOdpocet({ ...odpocet, value: odpocet.initValue });
+        return;
+      }
       if (loading) return;
       setLoading(true);
-      const scanKod = scanVystup.detail.scanCode;
       if (!offline)
         api
           .setProces(scanKod, uzivatel)

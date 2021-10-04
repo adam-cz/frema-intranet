@@ -21,22 +21,34 @@ function App() {
     value: initOdpocet,
   });
   const uploadVykazy = async () => {
-    const vykazy = JSON.parse(localStorage.getItem('vykazy'));
+    let vykazy = JSON.parse(localStorage.getItem('vykazy'));
+    console.log(vykazy);
     if (vykazy) {
-      await Promise.all(
-        vykazy.forEach(async (vykaz) => {
-          try {
-            const uzivatel = await api.verifyCardId(vykaz.uzivatel.rfid);
+      while (vykazy.length > 0) {
+        try {
+          const vykaz = vykazy.shift();
+          const uzivatel = await api.verifyCardId(vykaz.uzivatel.rfid);
+          if (uzivatel.data.status === 'error')
+            console.log(`Uživatel s RFID ${vykaz.uzivatel.rfid} neexistuje`);
+          if (uzivatel.data.status === 'success') {
             const operace = await api.setProces(
               vykaz.scanKod,
-              uzivatel.data.employee
+              uzivatel.data.employee,
+              vykaz.cas
             );
-            console.log(vykaz.scanKod, uzivatel.data.employee);
-          } catch (err) {
-            console.log(err);
+            console.log(
+              uzivatel.data.employee.jmeno,
+              ' - ',
+              operace.data.message
+            );
           }
-        })
-      );
+        } catch (err) {
+          console.log('Neočekávaná chyba ', err);
+        }
+      }
+      if (vykazy.length > 0)
+        localStorage.setItem('vykazy', JSON.stringify(vykazy));
+      else localStorage.clear();
     }
   };
 

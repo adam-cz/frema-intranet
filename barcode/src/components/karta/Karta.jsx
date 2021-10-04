@@ -3,6 +3,7 @@ import card from './card.gif';
 
 import { useEffect } from 'react';
 import onScan from 'onscan.js';
+import { isRfid, isBarcode } from '../../utils/scanRecognizer';
 import { translate } from '../../utils/charTranslator';
 import * as api from '../../api';
 
@@ -20,14 +21,19 @@ const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
       message.warning('Uživatel načten lokálně, terminál je OFFLINE');
     };
     const overUzivatele = (scanVystup) => {
+      const scanKod = scanVystup.detail.scanCode;
+      if (!isRfid(scanKod)) {
+        if (isBarcode(scanKod))
+          message.error('Nejdříve přiložte kartu ke čtečce');
+        else message.error('Špatný formát karty');
+        return;
+      }
       if (loading) return;
       setLoading(true);
-      const scanKod = scanVystup.detail.scanCode;
       if (!offline)
         api
           .verifyCardId(scanKod)
           .then(({ data }) => {
-            console.log(data.employee);
             setLoading(false);
             if (data.status === 'success') setUzivatel(data.employee);
             message[data.status](data.message);
