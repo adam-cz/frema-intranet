@@ -147,7 +147,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         title: 'Stroj',
         dataIndex: 'stroj',
         key: 'stroj',
-        render: (value) => (value === 'null' ? 'Výchozí stroj' : value),
+        render: (value) => (value === 'NULL' ? 'Výchozí stroj' : value),
       },
       { title: 'Zdroj', dataIndex: 'zdroj', key: 'zdroj' },
       { title: 'Popis', dataIndex: 'popis', key: 'popis' },

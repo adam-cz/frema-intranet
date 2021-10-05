@@ -13,6 +13,7 @@
     "interactjs": "^1.10.11",
     "lodash": "^4.17.21",
     "luxon": "^2.0.2",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-barcodes": "^1.1.0",
     "react-calendar-timeline": "^0.27.0",
