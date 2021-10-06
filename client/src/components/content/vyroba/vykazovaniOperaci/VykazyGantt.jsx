@@ -1,13 +1,10 @@
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
 import moment from 'moment';
-import 'moment/locale/cs';
-
-moment.locale('cs');
 
 const groups = [
-  { id: 1, title: 'Zaměstnanec 1' },
-  { id: 2, title: 'group 2' },
+  { id: 1, title: 'Zaměstnanec 1', stackItems: true },
+  { id: 2, title: 'Zaměstnanec 2', stackItems: false },
 ];
 
 const items = [
@@ -32,16 +29,48 @@ const items = [
     start_time: moment().add(2, 'hour'),
     end_time: moment().add(3, 'hour'),
   },
+  {
+    id: 4,
+    group: 1,
+    title: 'item 3',
+    start_time: moment().add(1, 'hour'),
+    end_time: moment().add(3, 'hour'),
+  },
 ];
 
-const VykazyGantt = () => {
+const VykazyGantt = ({ filtrDatum }) => {
+  const minTime = filtrDatum.datumOd.hours(0).valueOf();
+  const maxTime = filtrDatum.datumDo.hours(23).valueOf();
+  const onTimeChange = (
+    visibleTimeStart,
+    visibleTimeEnd,
+    updateScrollCanvas
+  ) => {
+    if (visibleTimeStart < minTime && visibleTimeEnd > maxTime) {
+      updateScrollCanvas(minTime, maxTime);
+    } else if (visibleTimeStart < minTime) {
+      updateScrollCanvas(
+        minTime,
+        minTime + (visibleTimeEnd - visibleTimeStart)
+      );
+    } else if (visibleTimeEnd > maxTime) {
+      updateScrollCanvas(
+        maxTime - (visibleTimeEnd - visibleTimeStart),
+        maxTime
+      );
+    } else {
+      updateScrollCanvas(visibleTimeStart, visibleTimeEnd);
+    }
+  };
+
   return (
     <div>
       <Timeline
         groups={groups}
         items={items}
-        defaultTimeStart={moment().add(-12, 'hour')}
-        defaultTimeEnd={moment().add(12, 'hour')}
+        defaultTimeStart={filtrDatum.datumOd}
+        defaultTimeEnd={filtrDatum.datumDo}
+        onTimeChange={onTimeChange}
       />
     </div>
   );
