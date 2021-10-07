@@ -64,4 +64,5 @@ export const fetchOpvList = (objednavka) =>
   axios.get(`${api}vyhodnoceni/opv/${objednavka}`);
 
 //Vykazy
-export const nacistVykazy = () => axios.get(`${api}vykazy/`);
+export const nacistVykazy = (datumOd, datumDo, uzivatelId) =>
+  axios.post(`${api}vykazy/`, { datumOd, datumDo, uzivatelId });
