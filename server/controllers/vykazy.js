@@ -10,8 +10,8 @@ export const fetchVykazy = async (req, res) => {
         $elemMatch: { cas: { $gte: req.body.datumOd, $lte: req.body.datumDo } },
       },
     });
-    console.log(vykazy);
-    res.status(200).json(vykazy);
+    console.log(operace);
+    res.status(200).json(operace);
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err.message });
