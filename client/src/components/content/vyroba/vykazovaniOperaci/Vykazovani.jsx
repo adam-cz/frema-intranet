@@ -5,6 +5,7 @@ import { DatePicker, Divider, Spin } from 'antd';
 import moment from 'moment';
 import 'moment/locale/cs';
 import locale from 'antd/es/date-picker/locale/cs_CZ';
+import prepocetMzdy from '../../../../utils/prepocetMzdy';
 
 moment.locale('cs');
 
@@ -19,13 +20,16 @@ const OperationReporting = () => {
   });
 
   useEffect(() => {
-    if (loading)
+    if (loading && vykazy) {
+      setLoading(false);
+      console.log(vykazy);
+    }
+    if (loading && !vykazy)
       api.nacistVykazy(filtrDatum.datumOd, filtrDatum.datumDo).then((res) => {
-        setLoading(false);
+        setVykazy(prepocetMzdy(res.data));
         console.log(res.data);
-        setVykazy(res.data);
       });
-  }, [filtrDatum.datumOd, filtrDatum.datumDo, loading]);
+  }, [filtrDatum.datumOd, filtrDatum.datumDo, loading, vykazy]);
 
   return (
     <div>
@@ -38,6 +42,7 @@ const OperationReporting = () => {
           locale={locale}
           onChange={(Moment) => {
             setLoading(true);
+            setVykazy(null);
             setFiltrDatum({
               datumOd: Moment[0].hours(0),
               datumDo: Moment[1].hours(24),

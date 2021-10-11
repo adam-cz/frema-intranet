@@ -321,7 +321,7 @@ const doplnKooperace = async (operaceBezKooper) => {
   }
 };
 
-const doplnMzdyAZbytek = async (operaceBezMezd) => {
+export const doplnMzdyAZbytek = async (operaceBezMezd) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);

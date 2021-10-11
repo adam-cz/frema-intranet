@@ -1,9 +1,12 @@
 import Proces from '../models/proces.js';
+import { doplnMzdyAZbytek } from './vyhodnoceni.js';
 
 export const fetchVykazy = async (req, res) => {
   // req.body.datumOd
   // req.body.datumDo
   // req.body.uzivatelId
+
+  console.log(req.body.datumOd);
   try {
     const operace = await Proces.find({
       zaznamy: {
