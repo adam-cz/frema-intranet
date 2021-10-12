@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:prod": "serve -s build --listen 3000 --ssl-cert \"./cert/cert.pem\" --ssl-key \"./cert/cert.key\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

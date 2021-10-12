@@ -1,1 +1,1 @@
-export const appSite = 'http://localhost';
+export const appSite = 'https://localhost';

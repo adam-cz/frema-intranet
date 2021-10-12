@@ -29,6 +29,10 @@ app.use(
     origin: [
       `${appSite}:3000`,
       `${appSite}:5000`,
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:5000',
+      'https://localhost:5000',
       'http://pc128:5000',
       'https://pc128:5000',
       'http://pc128:3000',
