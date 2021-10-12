@@ -31,10 +31,10 @@ coverage
 # Bower dependency directory (https://bower.io/)
 bower_components
 
-# Crtificates
+# Certificates
+.key
+.pem
 cert/
-cert
-/cert
 
 # node-waf configuration
 .lock-wscript
