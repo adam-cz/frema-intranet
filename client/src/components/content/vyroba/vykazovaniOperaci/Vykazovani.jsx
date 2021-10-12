@@ -5,14 +5,13 @@ import { DatePicker, Divider, Spin } from 'antd';
 import moment from 'moment';
 import 'moment/locale/cs';
 import locale from 'antd/es/date-picker/locale/cs_CZ';
-import prepocetMzdy from '../../../../utils/prepocetMzdy';
 
 moment.locale('cs');
 
 const { RangePicker } = DatePicker;
 
 const OperationReporting = () => {
-  const [vykazy, setVykazy] = useState(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filtrDatum, setFiltrDatum] = useState({
     datumOd: moment().hours(0),
@@ -20,16 +19,16 @@ const OperationReporting = () => {
   });
 
   useEffect(() => {
-    if (loading && vykazy) {
+    if (loading && data) {
       setLoading(false);
-      console.log(vykazy);
+      console.log(data);
     }
-    if (loading && !vykazy)
+    if (loading && !data)
       api.nacistVykazy(filtrDatum.datumOd, filtrDatum.datumDo).then((res) => {
-        setVykazy(prepocetMzdy(res.data));
+        setData(res.data);
         console.log(res.data);
       });
-  }, [filtrDatum.datumOd, filtrDatum.datumDo, loading, vykazy]);
+  }, [filtrDatum.datumOd, filtrDatum.datumDo, loading, data]);
 
   return (
     <div>
@@ -42,7 +41,7 @@ const OperationReporting = () => {
           locale={locale}
           onChange={(Moment) => {
             setLoading(true);
-            setVykazy(null);
+            setData(null);
             setFiltrDatum({
               datumOd: Moment[0].hours(0),
               datumDo: Moment[1].hours(24),
@@ -51,7 +50,13 @@ const OperationReporting = () => {
         />
       )}
       <Divider>Časová osa výkazů</Divider>
-      <VykazyGantt vykzay={vykazy} filtrDatum={filtrDatum} />
+      {data && (
+        <VykazyGantt
+          groups={data.zamestnanci}
+          items={data.vykazy}
+          filtrDatum={filtrDatum}
+        />
+      )}
     </div>
   );
 };

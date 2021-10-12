@@ -35,6 +35,7 @@ bower_components
 .key
 .pem
 cert/
+/cert
 
 # node-waf configuration
 .lock-wscript
