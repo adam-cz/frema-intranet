@@ -1,6 +1,8 @@
 import 'dotenv/config.js';
 import express from 'express';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import { appSite } from './config/server.js';
@@ -28,8 +30,10 @@ app.use(
       `${appSite}:3000`,
       `${appSite}:5000`,
       'http://pc128:5000',
+      'https://pc128:5000',
       'http://pc128:3000',
       'http://pc-150:5000',
+      'https://pc-150:5000',
       'http://pc-150:3000',
     ],
   })
@@ -53,13 +57,20 @@ const mongoConfig = {
   useFindAndModify: false,
 };
 
+const httpsOptions = {
+  key: fs.readFileSync('./cert/cert.key'),
+  cert: fs.readFileSync('./cert/cert.pem'),
+};
+
 mongoose
   .connect(process.env.MONGO_URI, mongoConfig)
-  .then(() =>
-    app.listen(port, () =>
-      console.log(
-        `Mongo database connected and API server running on port ${port}`
-      )
-    )
-  )
+  .then(() => {
+    const server = https
+      .createServer(httpsOptions, app)
+      .listen(port, () =>
+        console.log(
+          `Mongo database connected and API server running on port ${port}`
+        )
+      );
+  })
   .catch((err) => console.log(err.message));
