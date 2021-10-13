@@ -51,6 +51,9 @@ export const fetchVykazy = async (req, res) => {
               vykazy.push({
                 id: uniqid(),
                 group: zaznam.operator_id,
+                canMove: false,
+                canResize: false,
+                canChangeGroup: false,
                 start_time: zaznam.cas.valueOf(),
                 stroj: zaznam.stroj,
                 objednavka: proces.objednavka,
