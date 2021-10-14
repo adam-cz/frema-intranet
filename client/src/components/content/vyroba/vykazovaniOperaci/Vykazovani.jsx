@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
 import * as api from '../../../../api';
 import VykazyGantt from './VykazyGantt';
-import { DatePicker, Divider, Spin, Select, Space } from 'antd';
+import { Divider, Spin, Space } from 'antd';
 import moment from 'moment';
-import 'moment/locale/cs';
-import locale from 'antd/es/date-picker/locale/cs_CZ';
-
-moment.locale('cs');
-
-const { RangePicker } = DatePicker;
-const { Option } = Select;
+import { FiltrRangePick } from './FiltrRangePick';
+import { FiltrSelect } from './FiltrSelect';
 
 const OperationReporting = () => {
   const [data, setData] = useState(null);
@@ -37,47 +32,18 @@ const OperationReporting = () => {
       ) : (
         <>
           <Space>
-            <RangePicker
-              showToday={true}
-              locale={locale}
-              value={[filtr.datumOd, filtr.datumDo]}
-              onChange={(Moment) => {
-                setLoading(true);
-                setData(null);
-                setFiltr({
-                  datumOd: Moment[0].hours(0),
-                  datumDo: Moment[1].hours(24),
-                });
-              }}
+            <FiltrRangePick
+              filtr={filtr}
+              setFiltr={setFiltr}
+              setLoading={setLoading}
+              setData={setData}
             />
-            <Select
-              showSearch
-              value={filtr.zamestnanecJmeno}
-              style={{ width: 200 }}
-              placeholder="Vyberte zaměstnance"
-              onChange={(value, option) => {
-                console.log(option);
-                setFiltr({
-                  ...filtr,
-                  zamestnanecId: value,
-                  zamestnanecJmeno: option.children,
-                });
-                setLoading(true);
-              }}
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              <Option key={'vsichni'} value={null}>
-                Všichni
-              </Option>
-              {data.zamestnanci.map((zamestnanec) => (
-                <Option key={zamestnanec.id} value={zamestnanec.id}>
-                  {zamestnanec.title}
-                </Option>
-              ))}
-            </Select>
+            <FiltrSelect
+              filtr={filtr}
+              setFiltr={setFiltr}
+              setLoading={setLoading}
+              data={data}
+            />
           </Space>
         </>
       )}

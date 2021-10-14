@@ -28,8 +28,11 @@ const DetailZakazky = () => {
 
   //Zpracování čárových kódů
   const clickHandler = () => {
-    api.createProcedure(operace).then(({ data }) => {
-      setPayload(data.payload);
+    api.createProcedure(operaceFiltr).then(({ data }) => {
+      console.log(data.payload);
+      setPayload(
+        data.payload.sort((a, b) => parseInt(a.polozka) - parseInt(b.polozka))
+      );
     });
   };
 
