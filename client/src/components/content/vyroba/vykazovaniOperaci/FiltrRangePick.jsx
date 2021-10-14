@@ -24,3 +24,20 @@ export const FiltrRangePick = ({ filtr, setFiltr, setData, setLoading }) => {
     />
   );
 };
+
+/*
+vykazy: [{cas, stav (start, end)]
+
+  let jednostroj = [{od, do}]
+  let vicestroj = [{od, do}]
+  let pocetStroju = 0;
+  
+  vykazy.forEach((vykaz, index) => {
+    if (vykaz.stav === 'start') pocetStroju++;
+    if (vykaz.stav === 'end') pocetstroju--;
+  
+    if (pocetStroju === 0) return;		
+    if (pocetStroju	=== 1) jednostroj.push({od: vykazy[index].cas, do: vykazy[index + 1].cas})
+    if (pocetStroju > 1) vicestroj.push({od: vykazy[index].cas, do: vykazy[index + 1].cas})	
+  })
+  */
