@@ -29,7 +29,6 @@ export const fetchVykazy = async (req, res) => {
               zamestnanci.push({
                 title: zaznam.operator_jmeno,
                 id: zaznam.operator_id,
-                stackItems: true,
                 mzda: 10,
               });
             const operator = vykazy.find(
@@ -51,19 +50,12 @@ export const fetchVykazy = async (req, res) => {
               vykazy.push({
                 id: uniqid(),
                 group: zaznam.operator_id,
-                itemProps: {
-                  style: { lineHeight: 100 },
-                },
-                canMove: false,
-                canResize: false,
-                canChangeGroup: false,
                 start_time: zaznam.cas.valueOf(),
                 stroj: zaznam.stroj,
                 objednavka: proces.objednavka,
                 opv: proces.opv,
                 operace: proces.polozka,
                 nazev: proces.popis,
-                title: `Operace ${proces.polozka} z OPV ${proces.opv} na stroji ${zaznam.stroj}`,
               });
             }
           });

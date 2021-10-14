@@ -50,8 +50,8 @@ const OperationReporting = () => {
       <Divider>Časová osa výkazů</Divider>
       {data && (
         <VykazyGantt
-          groups={data.zamestnanci}
-          items={data.vykazy}
+          zamestnanci={data.zamestnanci}
+          vykazy={data.vykazy}
           filtrDatum={filtr}
         />
       )}

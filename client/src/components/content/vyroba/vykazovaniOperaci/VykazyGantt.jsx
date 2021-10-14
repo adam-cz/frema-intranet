@@ -1,7 +1,7 @@
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
 
-const VykazyGantt = ({ filtrDatum, groups, items }) => {
+const VykazyGantt = ({ filtrDatum, zamestnanci, vykazy }) => {
   const minTime = filtrDatum.datumOd.hours(0).valueOf();
   const maxTime = filtrDatum.datumDo.hours(23).valueOf();
   const onTimeChange = (
@@ -25,6 +25,20 @@ const VykazyGantt = ({ filtrDatum, groups, items }) => {
       updateScrollCanvas(visibleTimeStart, visibleTimeEnd);
     }
   };
+
+  const groups = zamestnanci.map((zamestnanec) => {
+    return { ...zamestnanec, stackItems: true };
+  });
+
+  const items = vykazy.map((vykaz) => {
+    return {
+      ...vykaz,
+      title: `Operace ${vykaz.operace} z OPV ${vykaz.opv} na stroji ${vykaz.stroj}`,
+      canMove: false,
+      canResize: false,
+      canChangeGroup: false,
+    };
+  });
 
   return (
     <div>
