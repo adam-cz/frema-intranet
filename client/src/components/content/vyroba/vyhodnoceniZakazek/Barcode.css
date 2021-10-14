@@ -25,7 +25,7 @@
 }
 
 .nadpis {
-  margin: 1cm 0;
+  margin-bottom: 50px;
 }
 
 .operace {
@@ -50,7 +50,6 @@
 
 @page {
   size: A4;
-  margin: 2cm 0;
 }
 @media print {
   html,
@@ -72,5 +71,8 @@
   }
   .zalamovani {
     break-before: auto;
+  }
+  .nadpis {
+    break-before: always;
   }
 }

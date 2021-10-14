@@ -51,6 +51,9 @@ export const fetchVykazy = async (req, res) => {
               vykazy.push({
                 id: uniqid(),
                 group: zaznam.operator_id,
+                itemProps: {
+                  style: { lineHeight: 100 },
+                },
                 canMove: false,
                 canResize: false,
                 canChangeGroup: false,

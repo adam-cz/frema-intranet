@@ -22,7 +22,7 @@ const SingleOperBarcode = ({ operace }) => {
         <div className="popis">{operace.popis}</div>
         <div>
           {barcodes.map((barcode) => (
-            <div className="barcode-divider">
+            <div className="barcode-divider" key={barcode.value}>
               <b>{barcode.nazev !== 'NULL' && barcode.nazev}</b>
               <svg className="barcode" ref={barcode.barcodeRef} />
             </div>
