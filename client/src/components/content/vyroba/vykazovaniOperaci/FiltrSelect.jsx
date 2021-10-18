@@ -10,7 +10,6 @@ export const FiltrSelect = ({ filtr, setFiltr, setLoading, data }) => {
       style={{ width: 200 }}
       placeholder="Vyberte zaměstnance"
       onChange={(value, option) => {
-        console.log(option);
         setFiltr({
           ...filtr,
           zamestnanecId: value,

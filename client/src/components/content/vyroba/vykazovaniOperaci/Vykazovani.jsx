@@ -5,9 +5,11 @@ import { Divider, Spin, Space } from 'antd';
 import moment from 'moment';
 import { FiltrRangePick } from './FiltrRangePick';
 import { FiltrSelect } from './FiltrSelect';
+import RozpisVyberu from './RozpisVyberu';
 
 const OperationReporting = () => {
   const [data, setData] = useState(null);
+  const [dataFiltered, setDataFiltered] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filtr, setFiltr] = useState({
     datumOd: moment().hours(0),
@@ -16,16 +18,29 @@ const OperationReporting = () => {
   });
 
   useEffect(() => {
+    if (filtr.zamestnanecId && data)
+      setDataFiltered({
+        zamestnanci: data.zamestnanci.filter(
+          (zamestnanec) => zamestnanec.id === filtr.zamestnanecId
+        ),
+        vykazy: data.vykazy.filter(
+          (vykaz) => vykaz.group === filtr.zamestnanecId
+        ),
+      });
+    else setDataFiltered(data);
+  }, [filtr.zamestnanecId, data]);
+
+  useEffect(() => {
     if (loading)
       api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
         setData(res.data);
         setLoading(false);
-        console.log(res.data);
       });
   }, [filtr.datumOd, filtr.datumDo, loading]);
 
   return (
     <div>
+      {dataFiltered && console.log(dataFiltered)}
       <Divider>Filtr</Divider>
       {loading ? (
         <Spin />
@@ -48,14 +63,17 @@ const OperationReporting = () => {
         </>
       )}
       <Divider>Časová osa výkazů</Divider>
-      {data && (
+      {dataFiltered && (
         <VykazyGantt
-          zamestnanci={data.zamestnanci}
-          vykazy={data.vykazy}
+          zamestnanci={dataFiltered.zamestnanci}
+          vykazy={dataFiltered.vykazy}
           filtrDatum={filtr}
         />
       )}
       <Divider>Rozpis za vybrané období</Divider>
+      {dataFiltered?.zamestnanci.length === 1 && (
+        <RozpisVyberu dataFiltered={dataFiltered} />
+      )}
     </div>
   );
 };
