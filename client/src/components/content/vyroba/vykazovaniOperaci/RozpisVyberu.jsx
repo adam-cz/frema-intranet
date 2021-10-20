@@ -56,10 +56,7 @@ const RozpisVyberu = ({ dataFiltered }) => {
             trvani: vykaz.trvani,
           });
         else if (vykazExist && vykaz.end_time)
-          vykazExist.trvani += moment(vykaz.end_time).diff(
-            moment(vykaz.start_time),
-            'minutes'
-          );
+          vykazExist.trvani += vykaz.trvani;
       });
       console.log(vykazy);
       setData(vykazy);

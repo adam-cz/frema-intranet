@@ -14,7 +14,6 @@ export const fetchVykazy = async (req, res) => {
         $elemMatch: { cas: { $gte: req.body.datumOd, $lte: req.body.datumDo } },
       },
     });
-    let trvani = 0;
     procesy.forEach((proces) => {
       if (proces.zaznamy.length > 0) {
         proces.stroje.forEach((stroj) => {
