@@ -14,6 +14,7 @@ export const fetchVykazy = async (req, res) => {
         $elemMatch: { cas: { $gte: req.body.datumOd, $lte: req.body.datumDo } },
       },
     });
+    let trvani = 0;
     procesy.forEach((proces) => {
       if (proces.zaznamy.length > 0) {
         proces.stroje.forEach((stroj) => {
@@ -44,9 +45,8 @@ export const fetchVykazy = async (req, res) => {
               vykazy[poslIndex].opv === proces.opv
             ) {
               vykazy[poslIndex].end_time = zaznam.cas.valueOf();
-              vykazy[poslIndex].trvani = moment(zaznam.cas).diff(
-                moment(vykazy[poslIndex].start_time)
-              );
+              vykazy[poslIndex].trvani =
+                Date(zaznam.cas) - Date(vykazy[poslIndex].start_time);
             } else {
               if (vykazy.length > 0 && !vykazy[poslIndex].end_time)
                 vykazy[poslIndex].end_time = moment().valueOf();

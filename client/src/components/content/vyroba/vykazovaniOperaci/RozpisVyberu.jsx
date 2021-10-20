@@ -22,7 +22,7 @@ const columns = [
     title: 'Délka výkazu',
     dataIndex: 'trvani',
     key: 'trvani',
-    render: (value) => value,
+    render: (value) => value + ' min',
   },
   {
     title: 'Mzda',
