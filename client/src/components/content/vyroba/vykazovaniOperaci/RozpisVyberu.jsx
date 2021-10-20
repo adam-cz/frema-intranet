@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import { useState, useEffect } from 'react';
-import { uniq } from 'lodash';
+import moment from 'moment';
 
 const columns = [
   {
@@ -20,8 +20,9 @@ const columns = [
   },
   {
     title: 'Délka výkazu',
-    dataIndex: 'delka_vykazu',
-    key: 'delka_vykazu',
+    dataIndex: 'trvani',
+    key: 'trvani',
+    render: (value) => value,
   },
   {
     title: 'Mzda',
@@ -39,19 +40,29 @@ const RozpisVyberu = ({ dataFiltered }) => {
       console.log(dataFiltered);
       //let seznamOperaci = dataFiltered.vykazy.map((vykaz) => {
 
-      const vykazy = [];
+      let vykazy = [];
       dataFiltered.vykazy.forEach((vykaz, index, array) => {
-        if (
-          !vykazy.find(
-            (vykazHelper) =>
-              vykazHelper.opv === vykaz.opv &&
-              vykazHelper.operace === vykaz.operace
-          )
-        )
-          vykazy.push({ opv: vykaz.opv, operace: vykaz.operace });
+        const vykazExist = vykazy.find(
+          (vykazHelper) =>
+            vykazHelper.opv === vykaz.opv &&
+            vykazHelper.operace === vykaz.operace
+        );
+        if (!vykazExist && vykaz.end_time)
+          vykazy.push({
+            objednavka: vykaz.objednavka,
+            opv: vykaz.opv,
+            operace: vykaz.operace,
+            stroj: vykaz.stroj,
+            trvani: vykaz.trvani,
+          });
+        else if (vykazExist && vykaz.end_time)
+          vykazExist.trvani += moment(vykaz.end_time).diff(
+            moment(vykaz.start_time),
+            'minutes'
+          );
       });
       console.log(vykazy);
-      //setData(vykazy);
+      setData(vykazy);
       setLoading(false);
     }
   }, [dataFiltered, loading]);

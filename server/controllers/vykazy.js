@@ -42,9 +42,12 @@ export const fetchVykazy = async (req, res) => {
               vykazy[poslIndex].stroj === zaznam.stroj &&
               vykazy[poslIndex].operace === proces.polozka &&
               vykazy[poslIndex].opv === proces.opv
-            )
+            ) {
               vykazy[poslIndex].end_time = zaznam.cas.valueOf();
-            else {
+              vykazy[poslIndex].trvani = moment(zaznam.cas).diff(
+                moment(vykazy[poslIndex].start_time)
+              );
+            } else {
               if (vykazy.length > 0 && !vykazy[poslIndex].end_time)
                 vykazy[poslIndex].end_time = moment().valueOf();
               vykazy.push({
