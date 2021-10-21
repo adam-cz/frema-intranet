@@ -9,6 +9,7 @@ export const fetchVykazy = async (req, res) => {
   try {
     const vykazy = [];
     const zamestnanci = [];
+    //Načte všechny procesy z vybraného období
     const procesy = await Proces.find({
       zaznamy: {
         $elemMatch: { cas: { $gte: req.body.datumOd, $lte: req.body.datumDo } },
@@ -71,27 +72,3 @@ export const fetchVykazy = async (req, res) => {
     res.status(404).json({ error: err.message });
   }
 };
-
-/*
-
-[
-  {
-    jmneno, 
-    id, 
-    mzda, 
-    vykazy:
-      [
-        {
-          start,
-          stop,
-          stroj,
-          opv,
-          proces,
-          nazev
-        }
-      ]
-    }
-]
-
-
-*/

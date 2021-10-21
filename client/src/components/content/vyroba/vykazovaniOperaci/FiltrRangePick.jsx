@@ -1,38 +1,19 @@
-import { useState, useEffect } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
 import 'moment/locale/cs';
 import locale from 'antd/es/date-picker/locale/cs_CZ';
-import * as api from '../../../../api';
 
 moment.locale('cs');
 
 const { RangePicker } = DatePicker;
 
-const FiltrRangePick = ({
-  filtr,
-  setFiltr,
-  setDataFiltered,
-  setData,
-  setLoading,
-}) => {
-  useEffect(() => {
-    if (filtr.datumOd && filtr.datumDo)
-      api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
-        console.log('nacitam');
-        setData(res.data);
-        setDataFiltered(res.data);
-        console.log(filtr, res.data);
-      });
-  }, [filtr]);
-
+const FiltrRangePick = ({ filtr, setFiltr }) => {
   return (
     <RangePicker
       showToday={true}
       locale={locale}
       value={[filtr.datumOd, filtr.datumDo]}
       onChange={(Moment) => {
-        console.log('zmena data');
         setFiltr({ datumOd: Moment[0], datumDo: Moment[1] });
       }}
     />

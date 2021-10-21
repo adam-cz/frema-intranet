@@ -1,9 +1,9 @@
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
 
-const VykazyGantt = ({ filtrDatum, zamestnanci, vykazy }) => {
-  const minTime = filtrDatum.datumOd.hours(0).valueOf();
-  const maxTime = filtrDatum.datumDo.hours(23).valueOf();
+const VykazyGantt = ({ filtr, zamestnanci, vykazy, loading }) => {
+  const minTime = filtr.datumOd.valueOf();
+  const maxTime = filtr.datumDo.valueOf();
   const onTimeChange = (
     visibleTimeStart,
     visibleTimeEnd,
@@ -42,13 +42,15 @@ const VykazyGantt = ({ filtrDatum, zamestnanci, vykazy }) => {
 
   return (
     <div>
-      <Timeline
-        groups={groups}
-        items={items}
-        defaultTimeStart={filtrDatum.datumOd}
-        defaultTimeEnd={filtrDatum.datumDo}
-        onTimeChange={onTimeChange}
-      />
+      {!loading && (
+        <Timeline
+          groups={groups}
+          items={items}
+          defaultTimeStart={filtr.datumOd}
+          defaultTimeEnd={filtr.datumDo}
+          onTimeChange={onTimeChange}
+        />
+      )}
     </div>
   );
 };

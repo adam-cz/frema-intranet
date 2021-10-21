@@ -31,16 +31,14 @@ const columns = [
   },
 ];
 
-const RozpisVyberu = ({ data }) => {
+const RozpisVyberu = ({ data, loading }) => {
   const [vykazy, setVykazy] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  console.log(data, 'vypis dat');
-  useEffect(() => {}, [data]);
+  useEffect(() => {
+    console.log('vypis dat');
+  }, []);
 
   return (
     <div>
-      {data.zamestnanci[0].title}
       <Table columns={columns} dataSource={vykazy} loading={loading} />
     </div>
   );
