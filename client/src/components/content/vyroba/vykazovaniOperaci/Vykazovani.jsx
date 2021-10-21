@@ -3,7 +3,7 @@ import * as api from '../../../../api';
 import VykazyGantt from './VykazyGantt';
 import { Divider, Spin, Space } from 'antd';
 import moment from 'moment';
-import { FiltrRangePick } from './FiltrRangePick';
+import FiltrRangePick from './FiltrRangePick';
 import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
 
@@ -14,33 +14,22 @@ const OperationReporting = () => {
   const [filtr, setFiltr] = useState({
     datumOd: moment().hours(0),
     datumDo: moment().hours(24),
-    zamestnanecId: null,
   });
 
   useEffect(() => {
-    if (filtr.zamestnanecId && data)
-      setDataFiltered({
-        zamestnanci: data.zamestnanci.filter(
-          (zamestnanec) => zamestnanec.id === filtr.zamestnanecId
-        ),
-        vykazy: data.vykazy.filter(
-          (vykaz) => vykaz.group === filtr.zamestnanecId
-        ),
-      });
-    else setDataFiltered(data);
-  }, [filtr.zamestnanecId, data]);
-
-  useEffect(() => {
-    if (loading)
+    console.log('loading');
+    if (loading) {
       api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
         setData(res.data);
+        setDataFiltered(res.data);
         setLoading(false);
       });
-  }, [filtr.datumOd, filtr.datumDo, loading]);
+      console.log('nacteno');
+    }
+  }, []);
 
   return (
     <div>
-      {dataFiltered && console.log(dataFiltered)}
       <Divider>Filtr</Divider>
       {loading ? (
         <Spin />
@@ -52,13 +41,9 @@ const OperationReporting = () => {
               setFiltr={setFiltr}
               setLoading={setLoading}
               setData={setData}
+              setDataFiltered={setDataFiltered}
             />
-            <FiltrSelect
-              filtr={filtr}
-              setFiltr={setFiltr}
-              setLoading={setLoading}
-              data={data}
-            />
+            <FiltrSelect setDataFiltered={setDataFiltered} data={data} />
           </Space>
         </>
       )}
@@ -72,7 +57,7 @@ const OperationReporting = () => {
       )}
       <Divider>Rozpis za vybrané období</Divider>
       {dataFiltered?.zamestnanci.length === 1 && (
-        <RozpisVyberu dataFiltered={dataFiltered} />
+        <RozpisVyberu data={dataFiltered} />
       )}
     </div>
   );

@@ -2,20 +2,19 @@ import { Select } from 'antd';
 
 const { Option } = Select;
 
-export const FiltrSelect = ({ filtr, setFiltr, setLoading, data }) => {
+export const FiltrSelect = ({ data, setDataFiltered }) => {
   return (
     <Select
       showSearch
-      value={filtr.zamestnanecJmeno}
       style={{ width: 200 }}
       placeholder="Vyberte zaměstnance"
-      onChange={(value, option) => {
-        setFiltr({
-          ...filtr,
-          zamestnanecId: value,
-          zamestnanecJmeno: option.children,
+      onChange={(value) => {
+        setDataFiltered({
+          zamestnanci: data.zamestnanci.filter(
+            (zamestnanec) => zamestnanec.id === value
+          ),
+          vykazy: data.vykazy.filter((vykaz) => vykaz.group === value),
         });
-        setLoading(true);
       }}
       optionFilterProp="children"
       filterOption={(input, option) =>

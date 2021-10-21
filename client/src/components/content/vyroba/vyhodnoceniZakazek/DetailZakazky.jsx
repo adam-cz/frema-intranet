@@ -31,7 +31,7 @@ const DetailZakazky = () => {
     api.createProcedure(operaceFiltr).then(({ data }) => {
       console.log(data.payload);
       setPayload(
-        data.payload.sort((a, b) => parseInt(a.polozka) - parseInt(b.polozka))
+        data.payload.sort((a, b) => parseInt(a.opv) - parseInt(b.opv))
       );
     });
   };

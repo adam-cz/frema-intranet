@@ -16,24 +16,28 @@ export const Barcodes = ({ data: operace }) => {
   return (
     <div className="page">
       {postupy.map((postup) => (
-        <div className="zalamovani">
+        <div className="zalamovani" key={postup.opv}>
           {setPocet(operace, postup)}
           {pocet.current > 0 && (
-            <h1 className="nadpis">Operace pro ZP {postup}</h1>
+            <h1 key={postup.opv} className="nadpis">
+              Operace pro ZP {postup}
+            </h1>
           )}
-          {operace.map((operace) => {
-            if (
-              operace.opv.trim() === postup &&
-              operace.stredisko !== 999 && //vynecha vyvadeni z vyroby
-              operace.stredisko !== 500 // vynecha kooperace
-            )
-              return (
-                <SingleOperBarcode
-                  operace={operace}
-                  key={`${operace.opv}_${operace.polozka}`}
-                />
-              );
-          })}
+          {[...operace]
+            .sort((a, b) => parseInt(a.polozka) - parseInt(b.polozka))
+            .map((operace) => {
+              if (
+                operace.opv.trim() === postup &&
+                operace.stredisko !== 999 && //vynecha vyvadeni z vyroby
+                operace.stredisko !== 500 // vynecha kooperace
+              )
+                return (
+                  <SingleOperBarcode
+                    operace={operace}
+                    key={`${operace.opv}_${operace.polozka}_${operace.stroj}`}
+                  />
+                );
+            })}
         </div>
       ))}
     </div>

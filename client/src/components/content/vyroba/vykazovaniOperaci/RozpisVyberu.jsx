@@ -31,42 +31,17 @@ const columns = [
   },
 ];
 
-const RozpisVyberu = ({ dataFiltered }) => {
-  const [data, setData] = useState(null);
+const RozpisVyberu = ({ data }) => {
+  const [vykazy, setVykazy] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (loading) {
-      console.log(dataFiltered);
-      //let seznamOperaci = dataFiltered.vykazy.map((vykaz) => {
+  console.log(data, 'vypis dat');
+  useEffect(() => {}, [data]);
 
-      let vykazy = [];
-      dataFiltered.vykazy.forEach((vykaz, index, array) => {
-        const vykazExist = vykazy.find(
-          (vykazHelper) =>
-            vykazHelper.opv === vykaz.opv &&
-            vykazHelper.operace === vykaz.operace
-        );
-        if (!vykazExist && vykaz.end_time)
-          vykazy.push({
-            objednavka: vykaz.objednavka,
-            opv: vykaz.opv,
-            operace: vykaz.operace,
-            stroj: vykaz.stroj,
-            trvani: vykaz.trvani,
-          });
-        else if (vykazExist && vykaz.end_time)
-          vykazExist.trvani += vykaz.trvani;
-      });
-      console.log(vykazy);
-      setData(vykazy);
-      setLoading(false);
-    }
-  }, [dataFiltered, loading]);
   return (
     <div>
-      {dataFiltered.zamestnanci[0].title}
-      <Table columns={columns} dataSource={data} loading={loading} />
+      {data.zamestnanci[0].title}
+      <Table columns={columns} dataSource={vykazy} loading={loading} />
     </div>
   );
 };

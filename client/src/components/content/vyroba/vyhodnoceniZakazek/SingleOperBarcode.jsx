@@ -20,14 +20,12 @@ const SingleOperBarcode = ({ operace }) => {
     <div className="operace">
       <div className="kod">
         <div className="popis">{operace.popis}</div>
-        <div>
-          {barcodes.map((barcode) => (
-            <div className="barcode-divider" key={barcode.value}>
-              <b>{barcode.nazev !== 'NULL' && barcode.nazev}</b>
-              <svg className="barcode" ref={barcode.barcodeRef} />
-            </div>
-          ))}
-        </div>
+        {barcodes.map((barcode) => (
+          <div className="barcode-divider" key={barcode.value}>
+            <b>{barcode.nazev !== 'NULL' && barcode.nazev}</b>
+            <svg className="barcode" ref={barcode.barcodeRef} />
+          </div>
+        ))}
       </div>
       <div className="info">
         <span>
