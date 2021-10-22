@@ -11,9 +11,11 @@ export const FiltrSelect = ({ data, setDataFiltered }) => {
       onChange={(value) => {
         setDataFiltered({
           zamestnanci: data.zamestnanci.filter(
-            (zamestnanec) => zamestnanec.id === value
+            (zamestnanec) => zamestnanec.id === value || !value
           ),
-          vykazy: data.vykazy.filter((vykaz) => vykaz.group === value),
+          vykazy: data.vykazy.filter(
+            (vykaz) => vykaz.group === value || !value
+          ),
         });
       }}
       optionFilterProp="children"
