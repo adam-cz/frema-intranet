@@ -1,7 +1,13 @@
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
 
-const VykazyGantt = ({ filtr, zamestnanci, vykazy, loading }) => {
+const VykazyGantt = ({
+  filtr,
+  zamestnanci,
+  vykazy,
+  loading,
+  setDetailVykazu,
+}) => {
   const minTime = filtr.datumOd.valueOf();
   const maxTime = filtr.datumDo.valueOf();
   const onTimeChange = (
@@ -49,6 +55,10 @@ const VykazyGantt = ({ filtr, zamestnanci, vykazy, loading }) => {
           defaultTimeStart={filtr.datumOd}
           defaultTimeEnd={filtr.datumDo}
           onTimeChange={onTimeChange}
+          onItemSelect={(item) =>
+            setDetailVykazu(items.find((_item) => _item.id === item))
+          }
+          onItemDeselect={(item) => setDetailVykazu(null)}
         />
       )}
     </div>

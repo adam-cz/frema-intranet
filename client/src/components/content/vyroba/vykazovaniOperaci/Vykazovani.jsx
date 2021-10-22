@@ -6,10 +6,12 @@ import moment from 'moment';
 import FiltrRangePick from './FiltrRangePick';
 import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
+import DetailVykazu from './DetailVykazu';
 
 const initDate = { datumOd: moment().hours(0), datumDo: moment().hours(23) };
 
 const OperationReporting = () => {
+  const [detailVykazu, setDetailVykazu] = useState(null);
   const [dataFiltered, setDataFiltered] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filtr, setFiltr] = useState({
@@ -62,8 +64,16 @@ const OperationReporting = () => {
           zamestnanci={dataFiltered.zamestnanci}
           vykazy={dataFiltered.vykazy}
           filtr={filtr}
+          setDetailVykazu={setDetailVykazu}
         />
       )}
+      {detailVykazu && (
+        <>
+          <Divider>Detail Výkazu</Divider>
+          <DetailVykazu detailVykazu={detailVykazu} />
+        </>
+      )}
+
       <Divider>Rozpis za vybrané období</Divider>
       {dataFiltered?.zamestnanci.length === 1 && (
         <RozpisVyberu data={dataFiltered} loading={loading} />

@@ -34,7 +34,7 @@ const columns = [
 const RozpisVyberu = ({ data, loading }) => {
   const [vykazy, setVykazy] = useState(null);
   useEffect(() => {
-    console.log('vypis dat');
+    console.log(data);
   }, []);
 
   return (
