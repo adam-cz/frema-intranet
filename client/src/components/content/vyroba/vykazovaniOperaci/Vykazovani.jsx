@@ -52,7 +52,7 @@ const OperationReporting = () => {
         <Button loading={loading} onClick={clickHandler}>
           Zobrazit
         </Button>
-        {dataFiltered?.zamestnanci.length > 1 && (
+        {data?.zamestnanci.length > 1 && (
           <FiltrSelect setDataFiltered={setDataFiltered} data={data} />
         )}
       </Space>
