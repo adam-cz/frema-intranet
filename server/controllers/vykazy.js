@@ -16,58 +16,43 @@ export const fetchVykazy = async (req, res) => {
       },
     });
     procesy.forEach((proces) => {
-      if (proces.zaznamy.length > 0) {
-        proces.stroje.forEach((stroj) => {
-          //Vypreparuje záznamy na jednotlivé stroje a kvůli konzistenci seřadí dle data
-          const zaznamyStroje = proces.zaznamy
-            .filter((zaznam) => zaznam.stroj === stroj.nazev)
-            .sort((a, b) => a.cas.getTime() - b.cas.getTime());
-          zaznamyStroje?.forEach((zaznam) => {
-            //Vytvoří zvlášť seznam zaměstnanců, kteří v daném období vykazovali
-            if (
-              !zamestnanci.find(
-                (zamestnanec) => zamestnanec.id === zaznam.operator_id
-              )
-            )
-              zamestnanci.push({
-                title: zaznam.operator_jmeno,
-                id: zaznam.operator_id,
-                mzda: 10,
-              });
-
-            //Ověří jeslti poslední záznam není ukončený
-            const pIndex = vykazy.length - 1;
-            if (vykazy.length > 0 && !vykazy[pIndex].end_time) {
-              //Pokud není ukončený a je související, je ukončen a dopočteno trvání
-              if (
-                vykazy[pIndex].group === zaznam.operator_id &&
-                vykazy[pIndex].stroj === zaznam.stroj &&
-                vykazy[pIndex].operace === proces.polozka &&
-                vykazy[pIndex].opv === proces.opv
-              ) {
-                vykazy[pIndex].end_time = zaznam.cas.valueOf();
-                vykazy[pIndex].trvani = zaznam.cas - vykazy[pIndex].start_time;
-                //pokud není ani související, doplní se aktuální datum, pro účely zobrazení. Ve skutečnosti ale výkaz stále není ukončen
-              } else vykazy[pIndex].end_time = moment().valueOf();
-              //pokud je předchozí výkaz ukončen, vytvoří se nový
-            } else {
-              vykazy.push({
-                id: uniqid(),
-                group: zaznam.operator_id,
-                jmeno: zaznam.operator_jmeno,
-                zdroj: proces.stredisko,
-                start_time: zaznam.cas.valueOf(),
-                stroj: zaznam.stroj,
-                objednavka: proces.objednavka,
-                opv: proces.opv,
-                operace: proces.polozka,
-                nazev: proces.popis,
-                plan_cas: proces.minut_nor,
-              });
-            }
-          });
+      const _vykazy = [];
+      proces.zaznamy
+        ?.sort((a, b) => a.cas.getTime() - b.cas.getTime())
+        .forEach((zaznam, index) => {
+          if (!zamestnanci.find((zamestnanec) => zaznam.operator_id))
+            zamestnanci.push({
+              title: zaznam.operator_jmeno,
+              id: zaznam.operator_id,
+              mzda: 10,
+            });
+          const vykazExist = _vykazy.find(
+            (_vykaz) =>
+              _vykaz.group === zaznam.operator_id &&
+              _vykaz.stroj === zaznam.stroj &&
+              !_vykaz.end_time
+          );
+          if (vykazExist) {
+            vykazExist.end_time = zaznam.cas.valueOf();
+            vykazExist.trvani = zaznam.cas - vykazExist.start_time;
+          }
+          if (!vykazExist) {
+            _vykazy.push({
+              id: uniqid(),
+              group: zaznam.operator_id,
+              jmeno: zaznam.operator_jmeno,
+              zdroj: proces.stredisko,
+              start_time: zaznam.cas.valueOf(),
+              stroj: zaznam.stroj,
+              objednavka: proces.objednavka,
+              opv: proces.opv,
+              operace: proces.polozka,
+              nazev: proces.popis,
+              plan_cas: proces.minut_nor * 60 * 1000,
+            });
+          }
         });
-      }
+      vykazy.push(..._vykazy);
     });
 
     res.status(200).json({ vykazy, zamestnanci });
