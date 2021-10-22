@@ -24,7 +24,6 @@ const OperationReporting = () => {
       setData(res.data);
       setDataFiltered(res.data);
       setLoading(false);
-      console.log(res.data, 'po kliku');
     });
   };
 
@@ -33,7 +32,6 @@ const OperationReporting = () => {
       setData(res.data);
       setDataFiltered(res.data);
       setLoading(false);
-      console.log(res.data, 'pri nacteni');
     });
   }, []);
 
