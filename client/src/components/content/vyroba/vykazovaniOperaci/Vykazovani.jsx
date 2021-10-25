@@ -18,6 +18,7 @@ const OperationReporting = () => {
     datumOd: initDate.datumOd,
     datumDo: initDate.datumDo,
   });
+  const [restart, setRestart] = useState(true);
   const [data, setData] = useState(null);
 
   const clickHandler = () => {
@@ -30,12 +31,14 @@ const OperationReporting = () => {
   };
 
   useEffect(() => {
-    api.nacistVykazy(initDate.datumOd, initDate.datumDo).then((res) => {
-      setData(res.data);
-      setDataFiltered(res.data);
-      setLoading(false);
-    });
-  }, []);
+    if (restart)
+      api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
+        setData(res.data);
+        setDataFiltered(res.data);
+        setLoading(false);
+        setRestart(false);
+      });
+  }, [restart]);
 
   return (
     <div>
@@ -72,8 +75,8 @@ const OperationReporting = () => {
           <Divider>Detail Výkazu</Divider>
           <DetailVykazu
             detailVykazu={detailVykazu}
-            dataFiltered={dataFiltered}
-            setDataFiltered={setDataFiltered}
+            setRestart={setRestart}
+            setDetailVykazu={setDetailVykazu}
           />
         </>
       )}

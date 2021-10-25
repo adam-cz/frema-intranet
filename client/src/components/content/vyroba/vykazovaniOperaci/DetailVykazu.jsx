@@ -1,14 +1,48 @@
-import { Descriptions, Row, Col, Button, Space } from 'antd';
+import {
+  Descriptions,
+  Row,
+  Col,
+  Button,
+  Space,
+  Modal,
+  message,
+  DatePicker,
+} from 'antd';
 import moment from 'moment';
 import * as api from '../../../../api';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import locale from 'antd/es/date-picker/locale/cs_CZ';
 
-const DetailVykazu = ({ detailVykazu, setDataFiltered, dataFiltered }) => {
-  const handleEdit = () => {};
+const { confirm } = Modal;
+
+const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
+  const [editDate, setEditDate] = useState(false);
+
+  const handleEdit = () => {
+    console.log('uloženo');
+    setEditDate(!editDate);
+  };
 
   const handleDelete = ({ proces_id, start_time_id, end_time_id }) => {
-    api.smazatVykazy(proces_id, start_time_id, end_time_id).then((res) => {
-      if (res.data.status === 'success') {
-      }
+    confirm({
+      title: 'Smazat výkaz?',
+      okText: 'Smazat Výkaz',
+      okType: 'danger',
+      cancelText: 'Storno',
+      icon: <ExclamationCircleOutlined />,
+      content:
+        'Chystáte se trvale odstranit výkaz. Skutečně chcete pokračovat?',
+      onOk() {
+        api.smazatVykazy(proces_id, start_time_id, end_time_id).then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            setRestart(true);
+            setDetailVykazu(null);
+            message.success('Výkaz byl smazán!');
+          }
+        });
+      },
     });
   };
 
@@ -39,19 +73,44 @@ const DetailVykazu = ({ detailVykazu, setDataFiltered, dataFiltered }) => {
       <Col span={8}>
         <Descriptions column={1} title="Časové údaje">
           <Descriptions.Item label="Začátek výkazu">
-            <>{moment(detailVykazu.start_time).format('D.M. HH:mm')}</>
+            {editDate ? (
+              <DatePicker
+                locale={locale}
+                size="small"
+                format="D. M. HH:mm"
+                defaultValue={moment(detailVykazu.start_time)}
+                showTime
+              />
+            ) : (
+              moment(detailVykazu.start_time).format('D.M. HH:mm')
+            )}
           </Descriptions.Item>
           <Descriptions.Item label="Konec výkazu">
-            <>{moment(detailVykazu.end_time).format('D.M. HH:mm')}</>
+            {editDate ? (
+              <DatePicker
+                locale={locale}
+                size="small"
+                format="D. M. HH:mm"
+                defaultValue={moment(detailVykazu.end_time)}
+                showTime
+              />
+            ) : (
+              moment(detailVykazu.end_time).format('D.M. HH:mm')
+            )}
           </Descriptions.Item>
           <Descriptions.Item label="Délka výkazu">
             {moment.utc(detailVykazu.trvani).format('HH:mm')}
           </Descriptions.Item>
           <Descriptions.Item>
             <Space>
-              <Button size="small" onClick={() => handleEdit(detailVykazu)}>
-                Upravit čas
+              <Button size="small" onClick={() => setEditDate(!editDate)}>
+                {editDate ? 'Storno' : 'Upravit čas'}
               </Button>
+              {editDate && (
+                <Button size="small" onClick={() => handleEdit(detailVykazu)}>
+                  Uložit změny
+                </Button>
+              )}
               <Button
                 danger
                 size="small"
