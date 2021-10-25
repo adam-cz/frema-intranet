@@ -67,7 +67,6 @@ export const deleteCustomer = async (req, res) => {
 
 export const editCustomerPerson = async (req, res) => {
   try {
-    console.log(req.body);
     const customer = await Customer.findOneAndUpdate(
       { _id: req.body.customerID, 'persons._id': req.body.person._id },
       { $set: { 'persons.$': req.body.person } }

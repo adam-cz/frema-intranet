@@ -1,7 +1,17 @@
 import { Descriptions, Row, Col, Button, Space } from 'antd';
 import moment from 'moment';
+import * as api from '../../../../api';
 
-const DetailVykazu = ({ detailVykazu }) => {
+const DetailVykazu = ({ detailVykazu, setDataFiltered, dataFiltered }) => {
+  const handleEdit = () => {};
+
+  const handleDelete = ({ proces_id, start_time_id, end_time_id }) => {
+    api.smazatVykazy(proces_id, start_time_id, end_time_id).then((res) => {
+      if (res.data.status === 'success') {
+      }
+    });
+  };
+
   return (
     <Row>
       <Col span={8}>
@@ -29,23 +39,27 @@ const DetailVykazu = ({ detailVykazu }) => {
       <Col span={8}>
         <Descriptions column={1} title="Časové údaje">
           <Descriptions.Item label="Začátek výkazu">
-            <Space>
-              <>{moment(detailVykazu.start_time).format('D.M. HH:mm')}</>
-              <Button disabled size="small">
-                Změnit
-              </Button>
-            </Space>
+            <>{moment(detailVykazu.start_time).format('D.M. HH:mm')}</>
           </Descriptions.Item>
           <Descriptions.Item label="Konec výkazu">
-            <Space>
-              <>{moment(detailVykazu.end_time).format('D.M. HH:mm')}</>
-              <Button disabled size="small">
-                Změnit
-              </Button>
-            </Space>
+            <>{moment(detailVykazu.end_time).format('D.M. HH:mm')}</>
           </Descriptions.Item>
           <Descriptions.Item label="Délka výkazu">
             {moment.utc(detailVykazu.trvani).format('HH:mm')}
+          </Descriptions.Item>
+          <Descriptions.Item>
+            <Space>
+              <Button size="small" onClick={() => handleEdit(detailVykazu)}>
+                Upravit čas
+              </Button>
+              <Button
+                danger
+                size="small"
+                onClick={() => handleDelete(detailVykazu)}
+              >
+                Smazat výkaz
+              </Button>
+            </Space>
           </Descriptions.Item>
         </Descriptions>
       </Col>

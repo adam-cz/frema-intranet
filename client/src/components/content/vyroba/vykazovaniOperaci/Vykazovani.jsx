@@ -70,14 +70,16 @@ const OperationReporting = () => {
       {detailVykazu && (
         <>
           <Divider>Detail Výkazu</Divider>
-          <DetailVykazu detailVykazu={detailVykazu} />
+          <DetailVykazu
+            detailVykazu={detailVykazu}
+            dataFiltered={dataFiltered}
+            setDataFiltered={setDataFiltered}
+          />
         </>
       )}
 
       <Divider>Rozpis za vybrané období</Divider>
-      {dataFiltered?.zamestnanci.length === 1 && (
-        <RozpisVyberu data={dataFiltered} loading={loading} />
-      )}
+      {dataFiltered && <RozpisVyberu data={dataFiltered} loading={loading} />}
     </div>
   );
 };

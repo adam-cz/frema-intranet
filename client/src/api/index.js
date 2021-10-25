@@ -66,3 +66,5 @@ export const fetchOpvList = (objednavka) =>
 //Vykazy
 export const nacistVykazy = (datumOd, datumDo, uzivatelId) =>
   axios.post(`${api}vykazy/`, { datumOd, datumDo, uzivatelId });
+export const smazatVykazy = (procesId, startId, StopId) =>
+  axios.delete(`${api}vykazy/smazat`, { data: { procesId, startId, StopId } });

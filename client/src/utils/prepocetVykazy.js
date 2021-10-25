@@ -10,11 +10,9 @@ export default function prepocetVykazy({ vykazy }) {
     );
     if (vykazExist && vykaz.end_time) {
       vykazExist.trvani += vykaz.trvani;
-      console.log(vykazExist.trvani, 'update');
     }
     if (!vykazExist && vykaz.end_time) {
       vykazyTridene.push({ ...vykaz });
-      console.log(vykaz.trvani, 'novy', vykaz);
     }
   });
   return vykazyTridene;
