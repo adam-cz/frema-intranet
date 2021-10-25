@@ -14,6 +14,7 @@ const columns = [
     title: 'Objednávka',
     dataIndex: 'objednavka',
     key: 'objednavka',
+    render: (value) => <a href={'/vyroba/zakazky/' + value}>{value}</a>,
   },
   {
     title: 'OPV',

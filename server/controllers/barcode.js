@@ -51,14 +51,37 @@ export const setProces = async (req, res) => {
         proces: 'neexistuje',
       });
 
+    //Pokud existuje seznam strojů na daný zdroj a na stroji již běží operace, nastane chyba
+    const strojPouzivan = await User.find({
+      working: {
+        $elemMatch: {
+          stroj: barcode[2],
+        },
+      },
+    });
+    if (proces.stroje.length > 1 && strojPouzivan.length > 0)
+      return res.status(200).json({
+        status: 'error',
+        message: `Na stroji momentálně pracuje ${strojPouzivan[0].name} ${strojPouzivan[0].surname}`,
+      });
+
     //filtruje pouze záznamy na daný stroj.
     //Pokud je stroj výchozí (null), vrací všechny záznamy.
     const zaznamy = proces.zaznamy.filter(
       (zaznam) => zaznam.stroj === barcode[2]
     );
-
-    //pokud už vykonávám jinou operaci a nejedná se o vícestrojovku
-    //TODO
+    
+    //Pokud již zaměstnanec vykonává činnost na výchozím stroji, nastane chyba
+    const praceVychoziStroj = user.working.find(prace => prace.stroj === "NULL")
+    if (
+      user.working.find(prace => prace.opv === proces.opv)
+      user.working.find((prace) => prace.stroj === 'NULL') &&
+      barcode[2] === 'NULL'
+    )
+      return res.status(200).json({
+        status: 'error',
+        message: `Nejdříve ukončete svůj předchozí výkaz`,
+      });
 
     //Sudý záznam - vždy načten
     if (zaznamy.length % 2 === 0) {
@@ -68,6 +91,7 @@ export const setProces = async (req, res) => {
         operator_jmeno: req.body.user.jmeno,
         stroj: barcode[2],
       });
+      //Přiřadí uživateli aktivní proces
       user.working.push({
         opv: proces.opv,
         polozka: proces.polozka,
@@ -101,6 +125,7 @@ export const setProces = async (req, res) => {
         operator_jmeno: req.body.user.jmeno,
         stroj: barcode[2],
       });
+      //Odebere uživateli aktivní proces
       user.working.splice(
         user.working.findIndex(
           (item) =>
