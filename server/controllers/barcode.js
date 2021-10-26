@@ -65,23 +65,22 @@ export const setProces = async (req, res) => {
         message: `Na stroji momentálně pracuje ${strojPouzivan[0].name} ${strojPouzivan[0].surname}`,
       });
 
-    //filtruje pouze záznamy na daný stroj.
-    //Pokud je stroj výchozí (null), vrací všechny záznamy.
-    const zaznamy = proces.zaznamy.filter(
-      (zaznam) => zaznam.stroj === barcode[2]
-    );
-    
-    //Pokud již zaměstnanec vykonává činnost na výchozím stroji, nastane chyba
-    const praceVychoziStroj = user.working.find(prace => prace.stroj === "NULL")
+    //Pokud již zaměstnanec vykonává činnost na výchozím stroji a chce začít novou, nastane chyba
+    const aktivniPrace = user.working.find((prace) => prace.stroj === 'NULL');
     if (
-      user.working.find(prace => prace.opv === proces.opv)
-      user.working.find((prace) => prace.stroj === 'NULL') &&
-      barcode[2] === 'NULL'
+      aktivniPrace &&
+      !(aktivniPrace.opv === barcode[0] && aktivniPrace.polozka === barcode[1])
     )
       return res.status(200).json({
         status: 'error',
         message: `Nejdříve ukončete svůj předchozí výkaz`,
       });
+
+    //filtruje pouze záznamy na daný stroj.
+    //Pokud je stroj výchozí (null), vrací všechny záznamy.
+    const zaznamy = proces.zaznamy.filter(
+      (zaznam) => zaznam.stroj === barcode[2]
+    );
 
     //Sudý záznam - vždy načten
     if (zaznamy.length % 2 === 0) {

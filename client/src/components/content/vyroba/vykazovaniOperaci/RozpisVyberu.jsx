@@ -1,6 +1,7 @@
 import { Table } from 'antd';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
+import 'moment-duration-format';
 import prepocetVykazy from '../../../../utils/prepocetVykazy';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 
@@ -30,13 +31,13 @@ const columns = [
     title: 'Délka výkazu',
     dataIndex: 'trvani',
     key: 'trvani',
-    render: (value) => moment.utc(value).format('HH:mm'),
+    render: (value) => moment.duration(value).format('DD:HH:mm'),
   },
   {
     title: 'Plánovná délka',
     dataIndex: 'plan_cas',
     key: 'plan_cas',
-    render: (value) => moment.utc(value).format('HH:mm'),
+    render: (value) => moment.duration(value).format('DD:HH:mm'),
   },
   {
     title: 'Produktivita',

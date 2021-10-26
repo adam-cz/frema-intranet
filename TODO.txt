@@ -1,7 +1,7 @@
 BARCODE TERMINAL
 - logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
 - zobrazeni aktivnich procesu uzivatele
-- opravit: na bezicim CNC (stroji jinem nez NULL) by nemelo jit spustit soucasne vice procesu
+DONE - opravit: na bezicim CNC (stroji jinem nez NULL) by nemelo jit spustit soucasne vice procesu
 
 CLIENT
 - vypocet a zobrazeni vicestrojovky

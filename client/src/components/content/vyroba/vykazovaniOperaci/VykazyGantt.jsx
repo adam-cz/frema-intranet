@@ -1,5 +1,6 @@
+import moment from 'moment';
 import Timeline from 'react-calendar-timeline';
-import 'react-calendar-timeline/lib/Timeline.css';
+import './Timeline.css';
 
 const VykazyGantt = ({
   filtr,
@@ -32,6 +33,35 @@ const VykazyGantt = ({
     }
   };
 
+  const itemRenderer = ({ item, itemContext, getItemProps }) => {
+    const backgroundColor = itemContext.selected
+      ? item.selectedBgColor
+      : item.bgColor;
+
+    return (
+      <div
+        {...getItemProps({
+          style: {
+            color: item.color,
+            borderRadius: 4,
+          },
+        })}
+      >
+        <div
+          style={{
+            height: itemContext.dimensions.height,
+            overflow: 'hidden',
+            paddingLeft: 3,
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {itemContext.title}
+        </div>
+      </div>
+    );
+  };
+
   const groups = zamestnanci.map((zamestnanec) => {
     return { ...zamestnanec, stackItems: true };
   });
@@ -39,10 +69,16 @@ const VykazyGantt = ({
   const items = vykazy.map((vykaz) => {
     return {
       ...vykaz,
+      end_time: vykaz.end_time ? vykaz.end_time : moment().valueOf(),
       title: `Operace ${vykaz.operace} z OPV ${vykaz.opv} na stroji ${vykaz.stroj}`,
       canMove: false,
       canResize: false,
       canChangeGroup: false,
+      itemProps: {
+        style: {
+          borderRadius: 4,
+        },
+      },
     };
   });
 
@@ -55,6 +91,7 @@ const VykazyGantt = ({
           defaultTimeStart={filtr.datumOd}
           defaultTimeEnd={filtr.datumDo}
           onTimeChange={onTimeChange}
+          itemRenderer={itemRenderer}
           onItemSelect={(item) =>
             setDetailVykazu(items.find((_item) => _item.id === item))
           }

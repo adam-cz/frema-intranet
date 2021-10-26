@@ -16,7 +16,7 @@ export const fetchVykazy = async (req, res) => {
     });
     //Seřadí a iteruje záznamy každého procesu, jednotlivé výkazy za daný proces ukládá do pomocné proměnné
     procesy.forEach((proces) => {
-      const _vykazy = [];
+      let _vykazy = [];
       proces.zaznamy
         ?.sort((a, b) => a.cas.getTime() - b.cas.getTime())
         .forEach((zaznam) => {
@@ -41,8 +41,9 @@ export const fetchVykazy = async (req, res) => {
           //Pokud existuje, ukončí ho a dopočítá trvání
           if (vykazExist) {
             vykazExist.end_time = zaznam.cas.valueOf();
-            (vykazExist.end_time_id = zaznam._id),
-              (vykazExist.trvani = zaznam.cas - vykazExist.start_time);
+            vykazExist.end_time_id = zaznam._id;
+            vykazExist.ukonceno = true;
+            vykazExist.trvani = zaznam.cas - vykazExist.start_time;
           }
           //Pokud neexistuje, vytvoří ho
           if (!vykazExist) {
@@ -60,6 +61,7 @@ export const fetchVykazy = async (req, res) => {
               operace: proces.polozka,
               nazev: proces.popis,
               plan_cas: proces.minut_nor * 60 * 1000,
+              ukonceno: false,
             });
           }
         });
