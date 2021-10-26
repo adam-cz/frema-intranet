@@ -76,7 +76,7 @@ const VykazyGantt = ({
       canChangeGroup: false,
       itemProps: {
         style: {
-          borderRadius: 4,
+          backgroundColor: 'red',
         },
       },
     };

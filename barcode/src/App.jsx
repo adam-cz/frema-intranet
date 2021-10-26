@@ -1,5 +1,5 @@
 import './app.css';
-import { Layout, Tag } from 'antd';
+import { Layout, Tag, Row, Col } from 'antd';
 
 import { useState, useEffect } from 'react';
 import * as api from './api';
@@ -7,12 +7,14 @@ import * as api from './api';
 import Kroky from './components/kroky/Kroky';
 import CarovyKod from './components/carovyKod/CarovyKod';
 import Karta from './components/karta/Karta';
+import AktivniProcesy from './components/aktivniProcesy/AktivniProcesy';
 
 //Udává dobu v sekundách kdy se po načtení uživatele přepne interface z načítání čár. kódu zpět k načtení uživatele
 const initOdpocet = 10;
 const { Header, Content, Footer } = Layout;
 
 function App() {
+  const [messages, setMessages] = useState(null);
   const [loading, setLoading] = useState(false);
   const [offline, setOffline] = useState(false);
   const [uzivatel, setUzivatel] = useState(null);
@@ -98,28 +100,38 @@ function App() {
           <div className="steper">
             <Kroky uzivatel={uzivatel} odpocet={odpocet} />
           </div>
-          <div className="detail">
-            {uzivatel ? (
-              <CarovyKod
-                uzivatel={uzivatel}
-                setUzivatel={setUzivatel}
-                odpocet={odpocet}
-                setOdpocet={setOdpocet}
-                offline={offline}
-                setOffline={setOffline}
-                loading={loading}
-                setLoading={setLoading}
-              />
-            ) : (
-              <Karta
-                setUzivatel={setUzivatel}
-                loading={loading}
-                setLoading={setLoading}
-                offline={offline}
-                setOffline={setOffline}
-              />
-            )}
-          </div>
+          <Row justify="center" align="middle">
+            <Col span={8}>
+              {uzivatel?.procesy.length > 0 && (
+                <AktivniProcesy uzivatel={uzivatel} />
+              )}
+            </Col>
+            <Col span={8}>
+              <div className="detail">
+                {uzivatel ? (
+                  <CarovyKod
+                    uzivatel={uzivatel}
+                    setUzivatel={setUzivatel}
+                    odpocet={odpocet}
+                    setOdpocet={setOdpocet}
+                    offline={offline}
+                    setOffline={setOffline}
+                    loading={loading}
+                    setLoading={setLoading}
+                  />
+                ) : (
+                  <Karta
+                    setUzivatel={setUzivatel}
+                    loading={loading}
+                    setLoading={setLoading}
+                    offline={offline}
+                    setOffline={setOffline}
+                  />
+                )}
+              </div>
+            </Col>
+            <Col span={8}></Col>
+          </Row>
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Frema a.s. ©2021</Footer>

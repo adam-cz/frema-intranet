@@ -1,5 +1,6 @@
 import { message, Result, Image, Spin } from 'antd';
 import card from './card.gif';
+import modalInfo from '../modal/ModalInfo';
 
 import { useEffect } from 'react';
 import onScan from 'onscan.js';
@@ -24,7 +25,7 @@ const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
       const scanKod = scanVystup.detail.scanCode;
       if (!isRfid(scanKod)) {
         if (isBarcode(scanKod))
-          message.error('Nejdříve přiložte kartu ke čtečce');
+          modalInfo('error', 'Zpráva:', 'Nejdříve přiložte kartu ke čtečce');
         else message.error('Špatný formát karty');
         return;
       }
@@ -37,6 +38,7 @@ const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
             setLoading(false);
             if (data.status === 'success') setUzivatel(data.employee);
             message[data.status](data.message);
+            modalInfo(data.status, 'Zpráva:', data.message);
           })
           .catch((error) => {
             console.log(error);
