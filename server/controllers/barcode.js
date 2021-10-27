@@ -59,7 +59,14 @@ export const setProces = async (req, res) => {
         },
       },
     });
-    if (proces.stroje.length > 1 && strojPouzivan.length > 0)
+    console.log(strojPouzivan);
+    if (
+      proces.stroje.length > 1 &&
+      strojPouzivan.length > 0 &&
+      !strojPouzivan[0].working.find(
+        (aktiv) => aktiv.opv === barcode[0] && aktiv.polozka === barcode[1]
+      )
+    )
       return res.status(200).json({
         status: 'error',
         message: `Na stroji momentálně pracuje ${strojPouzivan[0].name} ${strojPouzivan[0].surname}`,

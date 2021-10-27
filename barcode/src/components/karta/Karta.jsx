@@ -1,6 +1,5 @@
-import { message, Result, Image, Spin } from 'antd';
+import { Result, Image, Spin } from 'antd';
 import card from './card.gif';
-import modalInfo from '../modal/ModalInfo';
 
 import { useEffect } from 'react';
 import onScan from 'onscan.js';
@@ -14,19 +13,26 @@ const config = {
   },
 };
 
-const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
+const Karta = ({
+  setUzivatel,
+  loading,
+  setLoading,
+  offline,
+  setOffline,
+  invokeModal,
+}) => {
   useEffect(() => {
     const handleOffline = (scanKod) => {
       setLoading(false);
       setUzivatel({ rfid: scanKod });
-      message.warning('Uživatel načten lokálně, terminál je OFFLINE');
+      invokeModal('warning', 'Uživatel načten lokálně, terminál je OFFLINE');
     };
     const overUzivatele = (scanVystup) => {
       const scanKod = scanVystup.detail.scanCode;
       if (!isRfid(scanKod)) {
         if (isBarcode(scanKod))
-          modalInfo('error', 'Zpráva:', 'Nejdříve přiložte kartu ke čtečce');
-        else message.error('Špatný formát karty');
+          invokeModal('error', 'Nejdříve přiložte kartu ke čtečce');
+        else invokeModal('error', 'Špatný formát karty');
         return;
       }
       if (loading) return;
@@ -37,8 +43,7 @@ const Karta = ({ setUzivatel, loading, setLoading, offline, setOffline }) => {
           .then(({ data }) => {
             setLoading(false);
             if (data.status === 'success') setUzivatel(data.employee);
-            message[data.status](data.message);
-            modalInfo(data.status, 'Zpráva:', data.message);
+            invokeModal(data.status, data.message);
           })
           .catch((error) => {
             console.log(error);

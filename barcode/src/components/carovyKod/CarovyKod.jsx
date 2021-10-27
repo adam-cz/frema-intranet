@@ -1,4 +1,4 @@
-import { message, Result, Image, Spin } from 'antd';
+import { Result, Image, Spin } from 'antd';
 import barcode from './barcode.gif';
 
 import { useEffect } from 'react';
@@ -22,6 +22,7 @@ const CarovyKod = ({
   setOffline,
   loading,
   setLoading,
+  invokeModal,
 }) => {
   useEffect(() => {
     let myInterval = setInterval(() => {
@@ -47,14 +48,17 @@ const CarovyKod = ({
       localStorage.setItem('vykazy', JSON.stringify(vykazy));
       setUzivatel(null);
       setOdpocet({ ...odpocet, value: odpocet.initValue });
-      message.warning('Výkaz uložen k pozdějšímu zpracování');
+      invokeModal('warning', 'Výkaz uložen k pozdějšímu zpracování');
     };
     const overCarovyKod = (scanVystup) => {
       const scanKod = scanVystup.detail.scanCode;
       if (!isBarcode(scanKod)) {
         if (isRfid(scanKod))
-          message.error('Uživatel je již načten, nyní načtěte čárový kód');
-        else message.error('Chybný formát čárového kódu');
+          invokeModal(
+            'error',
+            'Uživatel je již načten, nyní načtěte čárový kód'
+          );
+        else invokeModal('error', 'Chybný formát čárového kódu');
         setOdpocet({ ...odpocet, value: odpocet.initValue });
         return;
       }
@@ -64,13 +68,13 @@ const CarovyKod = ({
         api
           .setProces(scanKod, uzivatel)
           .then(({ data }) => {
-            if (data.status === ('success' || 'warning')) {
+            if (data.status === 'success' || data.status === 'warning') {
               setUzivatel(null);
             }
             if (data.status === 'error')
               setOdpocet({ ...odpocet, value: odpocet.initValue });
             setLoading(false);
-            message[data.status](data.message);
+            invokeModal(data.status, data.message);
             console.log(data);
           })
           .catch((error) => {

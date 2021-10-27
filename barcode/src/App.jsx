@@ -1,5 +1,5 @@
 import './app.css';
-import { Layout, Tag, Row, Col } from 'antd';
+import { Layout, Tag, Row, Col, Modal, Result } from 'antd';
 
 import { useState, useEffect } from 'react';
 import * as api from './api';
@@ -14,7 +14,12 @@ const initOdpocet = 10;
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  const [messages, setMessages] = useState(null);
+  const [modal, setModal] = useState({
+    timeout: null,
+    visible: false,
+    status: null,
+    title: null,
+  });
   const [loading, setLoading] = useState(false);
   const [offline, setOffline] = useState(false);
   const [uzivatel, setUzivatel] = useState(null);
@@ -22,6 +27,16 @@ function App() {
     initValue: initOdpocet,
     value: initOdpocet,
   });
+
+  const invokeModal = (status, title) => {
+    clearTimeout(modal.timeout);
+    const timeout = setTimeout(
+      () => setModal({ ...modal, visible: false, timeout: null }),
+      3000
+    );
+    setModal({ timeout, visible: true, status, title });
+  };
+
   const uploadVykazy = async () => {
     let vykazy = JSON.parse(localStorage.getItem('vykazy'));
     console.log(vykazy);
@@ -108,6 +123,15 @@ function App() {
             </Col>
             <Col span={8}>
               <div className="detail">
+                <Modal
+                  visible={modal.visible}
+                  centered={true}
+                  closable={false}
+                  title={null}
+                  footer={null}
+                >
+                  <Result status={modal.status} title={modal.title} />
+                </Modal>
                 {uzivatel ? (
                   <CarovyKod
                     uzivatel={uzivatel}
@@ -118,6 +142,7 @@ function App() {
                     setOffline={setOffline}
                     loading={loading}
                     setLoading={setLoading}
+                    invokeModal={invokeModal}
                   />
                 ) : (
                   <Karta
@@ -126,6 +151,7 @@ function App() {
                     setLoading={setLoading}
                     offline={offline}
                     setOffline={setOffline}
+                    invokeModal={invokeModal}
                   />
                 )}
               </div>
