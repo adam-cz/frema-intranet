@@ -22,12 +22,6 @@
   z-index: 88;
 }
 
-.rct-item {
-  border-style: 'solid';
-  border-width: 1;
-  border-radius: 4;
-}
-
 .react-calendar-timeline .rct-item .rct-item-content {
   position: sticky;
   position: -webkit-sticky;

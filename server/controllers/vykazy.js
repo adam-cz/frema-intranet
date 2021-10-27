@@ -80,9 +80,9 @@ export const smazatVykazy = async (req, res) => {
   try {
     console.log(req.body);
     const proces = await Proces.findOne({ _id: req.body.procesId });
-    await proces.zaznamy.pull({ _id: req.body.startId });
-    await proces.zaznamy.pull({ _id: req.body.stopId });
-    await proces.save();
+    //await proces.zaznamy.pull({ _id: req.body.startId });
+    //await proces.zaznamy.pull({ _id: req.body.stopId });
+    //await proces.save();
     console.log('smazano');
     res.status(204).json({ status: 'success', message: 'Výkaz byl smazán' });
   } catch (err) {

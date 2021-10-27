@@ -7,6 +7,7 @@ import {
   Modal,
   message,
   DatePicker,
+  Tag,
 } from 'antd';
 import moment from 'moment';
 import * as api from '../../../../api';
@@ -94,8 +95,10 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
                 defaultValue={moment(detailVykazu.end_time)}
                 showTime
               />
-            ) : (
+            ) : detailVykazu.ukonceno ? (
               moment(detailVykazu.end_time).format('D.M. HH:mm')
+            ) : (
+              !detailVykazu.ukonceno && <Tag color="green">Stále probíhá</Tag>
             )}
           </Descriptions.Item>
           <Descriptions.Item label="Délka výkazu">
@@ -103,15 +106,34 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           </Descriptions.Item>
           <Descriptions.Item>
             <Space>
-              <Button size="small" onClick={() => setEditDate(!editDate)}>
-                {editDate ? 'Storno' : 'Upravit čas'}
-              </Button>
+              {detailVykazu.ukonceno ? (
+                <Button
+                  disabled
+                  size="small"
+                  onClick={() => setEditDate(!editDate)}
+                >
+                  {editDate ? 'Storno' : 'Upravit čas'}
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  size="small"
+                  onClick={() => setEditDate(!editDate)}
+                >
+                  Ukončit výkaz
+                </Button>
+              )}
               {editDate && (
-                <Button size="small" onClick={() => handleEdit(detailVykazu)}>
+                <Button
+                  disabled
+                  size="small"
+                  onClick={() => handleEdit(detailVykazu)}
+                >
                   Uložit změny
                 </Button>
               )}
               <Button
+                disabled
                 danger
                 size="small"
                 onClick={() => handleDelete(detailVykazu)}

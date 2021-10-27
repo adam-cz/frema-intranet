@@ -1,7 +1,8 @@
 BARCODE TERMINAL
-- logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
-- zobrazeni aktivnich procesu uzivatele
+DONE - logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
+DONE - zobrazeni aktivnich procesu uzivatele
 DONE - opravit: na bezicim CNC (stroji jinem nez NULL) by nemelo jit spustit soucasne vice procesu
+- opravit: offline režim
 
 CLIENT
 - vypocet a zobrazeni vicestrojovky
@@ -12,8 +13,9 @@ CLIENT
 - uzaverka
 - statistiky zakazek po uzaverce
 - VYKAZOVANI OPERACI 
+    DONE - zvyrazneni neukoncenych procesu
     - zobrazeni casovych os vykazu podle zadanych parametru
-    - editace vykazu
+    - editace, mazani a ukonceni vykazu
     - podrobny vypocet mezd
 
 SERVER
