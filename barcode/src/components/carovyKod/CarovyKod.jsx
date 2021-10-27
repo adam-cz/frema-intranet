@@ -23,6 +23,7 @@ const CarovyKod = ({
   loading,
   setLoading,
   invokeModal,
+  addMessage,
 }) => {
   useEffect(() => {
     let myInterval = setInterval(() => {
@@ -49,6 +50,7 @@ const CarovyKod = ({
       setUzivatel(null);
       setOdpocet({ ...odpocet, value: odpocet.initValue });
       invokeModal('warning', 'Výkaz uložen k pozdějšímu zpracování');
+      addMessage('warning', 'Výkaz uložen k pozdějšímu zpracování');
     };
     const overCarovyKod = (scanVystup) => {
       const scanKod = scanVystup.detail.scanCode;
@@ -75,6 +77,7 @@ const CarovyKod = ({
               setOdpocet({ ...odpocet, value: odpocet.initValue });
             setLoading(false);
             invokeModal(data.status, data.message);
+            addMessage(data.status, data.message);
             console.log(data);
           })
           .catch((error) => {

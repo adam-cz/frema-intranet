@@ -2,12 +2,17 @@ import './app.css';
 import { Layout, Tag, Row, Col, Modal, Result } from 'antd';
 
 import { useState, useEffect } from 'react';
+import moment from 'moment';
+import 'moment/locale/cs';
 import * as api from './api';
 
 import Kroky from './components/kroky/Kroky';
 import CarovyKod from './components/carovyKod/CarovyKod';
 import Karta from './components/karta/Karta';
 import AktivniProcesy from './components/aktivniProcesy/AktivniProcesy';
+import Historie from './components/historie/Historie';
+
+moment.locale('cs');
 
 //Udává dobu v sekundách kdy se po načtení uživatele přepne interface z načítání čár. kódu zpět k načtení uživatele
 const initOdpocet = 10;
@@ -20,6 +25,7 @@ function App() {
     status: null,
     title: null,
   });
+  const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [offline, setOffline] = useState(false);
   const [uzivatel, setUzivatel] = useState(null);
@@ -28,11 +34,16 @@ function App() {
     value: initOdpocet,
   });
 
+  const addMessage = (status, title) => {
+    console.log(message);
+    setMessage([{ time: moment(), status, title }, ...message]);
+  };
+
   const invokeModal = (status, title) => {
     clearTimeout(modal.timeout);
     const timeout = setTimeout(
       () => setModal({ ...modal, visible: false, timeout: null }),
-      3000
+      5000
     );
     setModal({ timeout, visible: true, status, title });
   };
@@ -61,6 +72,7 @@ function App() {
           }
         } catch (err) {
           console.log('Neočekávaná chyba ', err);
+          addMessage('error', 'Neočekávaná chyba');
         }
       }
       if (vykazy.length > 0)
@@ -82,12 +94,12 @@ function App() {
             setOffline(false);
             await uploadVykazy();
           }
-          console.log('Spojení aktivní');
+          addMessage('success', 'Terminál je aktivní');
         })
         .catch((error) => {
           if (!offline) setOffline(true);
           console.log(error);
-          console.log('Připojení není dostupné');
+          addMessage('error', 'Připojení není dostupné');
         });
     };
     if (!offline) isAvailable();
@@ -143,6 +155,7 @@ function App() {
                     loading={loading}
                     setLoading={setLoading}
                     invokeModal={invokeModal}
+                    addMessage={addMessage}
                   />
                 ) : (
                   <Karta
@@ -152,11 +165,12 @@ function App() {
                     offline={offline}
                     setOffline={setOffline}
                     invokeModal={invokeModal}
+                    addMessage={addMessage}
                   />
                 )}
               </div>
             </Col>
-            <Col span={8}></Col>
+            <Col span={8}>{message && <Historie message={message} />}</Col>
           </Row>
         </div>
       </Content>

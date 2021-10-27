@@ -20,12 +20,14 @@ const Karta = ({
   offline,
   setOffline,
   invokeModal,
+  addMessage,
 }) => {
   useEffect(() => {
     const handleOffline = (scanKod) => {
       setLoading(false);
       setUzivatel({ rfid: scanKod });
       invokeModal('warning', 'Uživatel načten lokálně, terminál je OFFLINE');
+      addMessage('warning', 'Uživatel načten lokálně, terminál je OFFLINE');
     };
     const overUzivatele = (scanVystup) => {
       const scanKod = scanVystup.detail.scanCode;
@@ -44,6 +46,7 @@ const Karta = ({
             setLoading(false);
             if (data.status === 'success') setUzivatel(data.employee);
             invokeModal(data.status, data.message);
+            addMessage(data.status, data.message);
           })
           .catch((error) => {
             console.log(error);
