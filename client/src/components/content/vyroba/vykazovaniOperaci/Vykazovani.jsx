@@ -8,7 +8,10 @@ import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
 import DetailVykazu from './DetailVykazu';
 
-const initDate = { datumOd: moment().hours(0), datumDo: moment().hours(23) };
+const initDate = {
+  datumOd: moment().startOf('day').subtract(2, 'hour'),
+  datumDo: moment().endOf('day').subtract(2, 'hour'),
+};
 
 const OperationReporting = () => {
   const [detailVykazu, setDetailVykazu] = useState(null);

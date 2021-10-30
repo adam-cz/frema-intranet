@@ -21,7 +21,6 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
   const [editDate, setEditDate] = useState(false);
 
   const handleEdit = () => {
-    console.log('uloženo');
     setEditDate(!editDate);
   };
 
@@ -107,33 +106,20 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           <Descriptions.Item>
             <Space>
               {detailVykazu.ukonceno ? (
-                <Button
-                  disabled
-                  size="small"
-                  onClick={() => setEditDate(!editDate)}
-                >
+                <Button size="small" onClick={() => setEditDate(!editDate)}>
                   {editDate ? 'Storno' : 'Upravit čas'}
                 </Button>
               ) : (
-                <Button
-                  disabled
-                  size="small"
-                  onClick={() => setEditDate(!editDate)}
-                >
+                <Button size="small" onClick={() => setEditDate(!editDate)}>
                   Ukončit výkaz
                 </Button>
               )}
               {editDate && (
-                <Button
-                  disabled
-                  size="small"
-                  onClick={() => handleEdit(detailVykazu)}
-                >
+                <Button size="small" onClick={() => handleEdit(detailVykazu)}>
                   Uložit změny
                 </Button>
               )}
               <Button
-                disabled
                 danger
                 size="small"
                 onClick={() => handleDelete(detailVykazu)}

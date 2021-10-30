@@ -14,6 +14,14 @@ export const fetchVykazy = async (req, res) => {
         $elemMatch: { cas: { $gte: req.body.datumOd, $lte: req.body.datumDo } },
       },
     });
+    const _neukoncene = await Proces.aggregate([
+      { $project: { size: { $size: '$zaznamy' }, data: '$$ROOT' } },
+      { $match: { size: { $mod: [2, 1] } } },
+    ]);
+    const neukoncene = _neukoncene.filter(
+      (proces) => !_neukoncene.find((_proces) => _proces._id === proces._id)
+    );
+    console.log(neukoncene);
     //Seřadí a iteruje záznamy každého procesu, jednotlivé výkazy za daný proces ukládá do pomocné proměnné
     procesy.forEach((proces) => {
       let _vykazy = [];
@@ -80,10 +88,10 @@ export const smazatVykazy = async (req, res) => {
   try {
     console.log(req.body);
     const proces = await Proces.findOne({ _id: req.body.procesId });
-    //await proces.zaznamy.pull({ _id: req.body.startId });
-    //await proces.zaznamy.pull({ _id: req.body.stopId });
-    //await proces.save();
-    console.log('smazano');
+    await proces.zaznamy.pull({ _id: req.body.startId });
+    await proces.zaznamy.pull({ _id: req.body.stopId });
+    await proces.save();
+    console.log(proces);
     res.status(204).json({ status: 'success', message: 'Výkaz byl smazán' });
   } catch (err) {
     res.json({ status: 'error', message: err }).status(404);

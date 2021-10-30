@@ -100,19 +100,7 @@ const VykazyGantt = ({
           }
           onItemDeselect={(item) => setDetailVykazu(null)}
         >
-          <CustomMarker date={moment()} />
-          <CustomMarker date={filtr.datumOd}>
-            {/* custom renderer for this marker */}
-            {({ styles, date }) => {
-              const customStyles = {
-                ...styles,
-                backgroundColor: 'red',
-                width: '1px',
-              };
-              return <div style={customStyles} />;
-            }}
-          </CustomMarker>
-          <CustomMarker date={filtr.datumDo}>
+          <CustomMarker date={moment()}>
             {/* custom renderer for this marker */}
             {({ styles, date }) => {
               const customStyles = {

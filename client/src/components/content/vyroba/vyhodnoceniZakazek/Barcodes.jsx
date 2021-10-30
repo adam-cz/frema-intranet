@@ -25,19 +25,17 @@ export const Barcodes = ({ data: operace }) => {
           )}
           {[...operace]
             .sort((a, b) => parseInt(a.polozka) - parseInt(b.polozka))
-            .map((operace) => {
-              if (
+            .map(
+              (operace) =>
                 operace.opv.trim() === postup &&
                 operace.stredisko !== 999 && //vynecha vyvadeni z vyroby
-                operace.stredisko !== 500 // vynecha kooperace
-              )
-                return (
+                operace.stredisko !== 500 && ( // vynecha kooperace
                   <SingleOperBarcode
                     operace={operace}
                     key={`${operace.opv}_${operace.polozka}_${operace.stroj}`}
                   />
-                );
-            })}
+                )
+            )}
         </div>
       ))}
     </div>

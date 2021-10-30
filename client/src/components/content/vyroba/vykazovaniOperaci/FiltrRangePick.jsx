@@ -12,9 +12,15 @@ const FiltrRangePick = ({ filtr, setFiltr }) => {
     <RangePicker
       showToday={true}
       locale={locale}
-      value={[filtr.datumOd, filtr.datumDo]}
+      value={[
+        moment(filtr.datumOd).add(2, 'hour'),
+        moment(filtr.datumDo).add(2, 'hour'),
+      ]}
       onChange={(Moment) => {
-        setFiltr({ datumOd: Moment[0], datumDo: Moment[1] });
+        setFiltr({
+          datumOd: Moment[0].startOf('day').subtract(2, 'hour'),
+          datumDo: Moment[1].endOf('day').subtract(2, 'hour'),
+        });
       }}
     />
   );
