@@ -1,6 +1,7 @@
 import sql, { pool } from '../utils/karat.js';
 import Proces from '../models/proces.js';
 import { zdroje } from '../config/zdroje.js';
+import moment from 'moment';
 
 export const getOrderNumber = async (req, res) => {
   try {
@@ -183,8 +184,6 @@ const nactiOperace = async (objednavka) => {
 
 const doplnVykazyStroje = async (operaceBezVykazu) => {
   try {
-    const poolConnection = await pool;
-    const request = new sql.Request(poolConnection);
     await Promise.all(
       //Iteruje operace a dohledává existující záznamy výkazů a strojních sazeb v databázi
       operaceBezVykazu.map(async (operace, index, array) => {
@@ -192,35 +191,9 @@ const doplnVykazyStroje = async (operaceBezVykazu) => {
           opv: operace.opv,
           polozka: operace.polozka,
         });
-
-        if (proces?.zaznamy.length > 0) {
-          /* 
-          Seřadí výkazy v db podle data z důvodu konzistence při výpočtu časů.
-          Může totiž nastat situace, kdy záznamy z důvodu výpadku sítě a následnému
-          dohrání z terminálů nebudou v db řazeny dle data výkazu.
-          */
-          const serazeneVykazy = proces.zaznamy.sort(
-            (a, b) => a.cas.getTime() - b.cas.getTime()
-          );
-          array[index].vykazy = await Promise.all(
-            serazeneVykazy.map(async (vykaz) => {
-              const { recordset: hodinovaMzda } = await request.query(
-                `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-                  vykaz.operator_id
-                } AND rok = ${new Date(
-                  vykaz.cas
-                ).getFullYear()} AND mesic = ${new Date(
-                  vykaz.cas
-                ).getMonth()});`
-              );
-              return {
-                ...vykaz._doc,
-                hodinovaMzda: hodinovaMzda[0].prd_plati,
-              };
-            })
-          );
-        } else array[index].vykazy = null;
-        array[index].stroje = proces?.stroje.length > 0 ? proces.stroje : null;
+        operace.vykazy =
+          proces?.zaznamy.length > 0 ? [...proces.zaznamy] : null;
+        operace.stroje = proces?.stroje.length > 0 ? proces.stroje : null;
       })
     );
   } catch (err) {
@@ -327,67 +300,38 @@ export const doplnMzdyAZbytek = async (operaceBezMezd) => {
     const request = new sql.Request(poolConnection);
 
     //Iteruje operace a dopňuje mzdy, strojní náklady, čas a následně dopočte celkové částky
-    await Promise.all(
-      operaceBezMezd.map(async (operace, index, array) => {
-        let vykazanyCas = 0;
-        let strojNakl = 0;
-        let vykazanaMzda = 0;
 
-        operace.stroje &&
-          (await Promise.all(
-            //Rozdělí výkazy na jednotlivé stroje kvůli vícestrojovým sazbám a různým strojním nákladům
-            operace.stroje.map(async (stroj) => {
-              const vykazyNaStroj = operace.vykazy?.filter((vykaz) => {
-                return vykaz.stroj === stroj.nazev;
-              });
-              if (vykazyNaStroj && vykazyNaStroj.length >= 2) {
-                await Promise.all(
-                  vykazyNaStroj.map(async (vykaz, index, array) => {
-                    //Při každém sudém záznamu ho odečte od předchozího lichého pro zjištění délky úkony, poté zpracuje až další sudý
-                    if (index % 2 == 0 && array[index + 1]) {
-                      const delkaVykazu =
-                        new Date(array[index + 1].cas) -
-                        new Date(array[index].cas);
+    operaceBezMezd.map(async (operace, index, array) => {
+      let vykazanyCas = 0;
+      let strojNakl = 0;
+      let vykazanaMzda = 0;
 
-                      //Načte hodinovou mzdu zaměstnance z období výkonu výkazu
-                      const { recordset: hodinovaMzda } = await request.query(
-                        `SELECT TOP (500) [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-                          vykaz.operator_id
-                        } AND rok = ${new Date(
-                          vykaz.cas
-                        ).getFullYear()} AND mesic = ${new Date(
-                          vykaz.cas
-                        ).getMonth()});`
-                      );
-                      //přičítá mzdu k celkové částce za mzdy na operaci a sčítá vykázaný čas
-                      const delkaVykazuMin = delkaVykazu / 1000 / 60 / 60; //Hodiny
+      operace.vykazy?.forEach((vykaz) => {
+        const strojniSazba = operace.stroje.find(
+          (stroj) => stroj.nazev === vykaz.stroj
+        ).sazba;
+        const trvani = vykaz.stop
+          ? vykaz.stop - vykaz.start
+          : moment().valueOf() - vykaz.start;
+        vykazanyCas += trvani;
+        strojNakl += strojniSazba * (trvani / 1000 / 60 / 60);
+        vykazanaMzda += vykaz.sazba * (trvani / 1000 / 60 / 60);
+      });
 
-                      vykazanaMzda +=
-                        delkaVykazuMin * hodinovaMzda[0].prd_plati;
-                      vykazanyCas += delkaVykazuMin;
-                      strojNakl += delkaVykazuMin * stroj?.sazba || 0;
-                    }
-                  })
-                );
-              }
-            })
-          ));
+      //TODO: Dořešit výpočet mezd a trvání při vícestrojovce!!!
+      array[index].mzdy = vykazanaMzda;
+      array[index].trvani = vykazanyCas * 60; //Minuty
 
-        //TODO: Dořešit výpočet mezd a trvání při vícestrojovce!!!
-        array[index].mzdy = vykazanaMzda;
-        array[index].trvani = vykazanyCas * 60; //Minuty
-
-        array[index].nakl_stn = strojNakl;
-        array[index].nakl_r1 = vykazanaMzda * 0.34;
-        //Celkový součet reálných nákladů
-        array[index].nakl_celkem =
-          array[index].mzdy +
-          array[index].nakl_r1 +
-          array[index].nakl_stn +
-          array[index].material +
-          array[index].kooperace;
-      })
-    );
+      array[index].nakl_stn = strojNakl;
+      array[index].nakl_r1 = vykazanaMzda * 0.34;
+      //Celkový součet reálných nákladů
+      array[index].nakl_celkem =
+        array[index].mzdy +
+        array[index].nakl_r1 +
+        array[index].nakl_stn +
+        array[index].material +
+        array[index].kooperace;
+    });
   } catch (err) {
     console.log(err);
   }

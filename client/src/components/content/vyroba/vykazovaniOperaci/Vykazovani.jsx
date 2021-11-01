@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import * as api from '../../../../api';
 import VykazyGantt from './VykazyGantt';
-import { Divider, Space, Button } from 'antd';
+import { Divider, Space, Button, Tabs } from 'antd';
 import moment from 'moment';
+import 'moment/locale/cs';
 import FiltrRangePick from './FiltrRangePick';
 import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
 import DetailVykazu from './DetailVykazu';
+
+moment.locale('cs');
+
+const { TabPane } = Tabs;
 
 const initDate = {
   datumOd: moment().startOf('day').subtract(2, 'hour'),
@@ -84,8 +89,15 @@ const OperationReporting = () => {
         </>
       )}
 
-      <Divider>Rozpis za vybrané období</Divider>
-      {dataFiltered && <RozpisVyberu data={dataFiltered} loading={loading} />}
+      <Divider></Divider>
+      {dataFiltered && (
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Rozpis výkazů za vybrané období" key="1">
+            <RozpisVyberu data={dataFiltered} loading={loading} />
+          </TabPane>
+          <TabPane tab="Statistické údaje" key="2"></TabPane>
+        </Tabs>
+      )}
     </div>
   );
 };

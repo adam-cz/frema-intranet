@@ -1,5 +1,6 @@
 export default function prepocetMzdy(operace) {
   //Pomocná proměnná
+  console.log(operace);
   const vykazyHelper = [];
   //Iteruje operace a následně jejich výkazy
   operace.forEach((op) => {

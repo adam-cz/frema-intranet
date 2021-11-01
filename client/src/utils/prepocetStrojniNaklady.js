@@ -23,28 +23,17 @@ export default function prepocetStrojniNaklady(operace) {
           strojHelper.stroj === vykaz.stroj && strojHelper.zdroj === op.zdroj
       );
       //V případě, že je výkaz první nebo je ten předchozí ukončen, vytvoří nový
-      if (
-        stroj.vykazy.length === 0 ||
-        stroj.vykazy[stroj.vykazy.length - 1].stop
-      )
-        stroj.vykazy.push({
-          opv: op.opv,
-          polozka: op.polozka,
-          popis: op.popis,
-          vykazal: vykaz.operator_jmeno,
-          start: vykaz.cas,
-        });
-      //V případě, že předchozí výkaz není ukončen, ukončí a dopočítá data
-      else {
-        stroj.vykazy[stroj.vykazy.length - 1].stop = vykaz.cas;
-        stroj.vykazy[stroj.vykazy.length - 1].trvaniMin =
-          (new Date(stroj.vykazy[stroj.vykazy.length - 1].stop) -
-            new Date(stroj.vykazy[stroj.vykazy.length - 1].start)) /
-          1000 /
-          60;
-        stroj.vykazy[stroj.vykazy.length - 1].naklady =
-          (stroj.sazba * stroj.vykazy[stroj.vykazy.length - 1].trvaniMin) / 60;
-      }
+
+      stroj.vykazy.push({
+        opv: op.opv,
+        polozka: op.polozka,
+        popis: op.popis,
+        vykazal: vykaz.operator_jmeno,
+        start: vykaz.start,
+        stop: vykaz.stop,
+        trvaniMin: vykaz.trvani / 1000 / 60,
+        naklady: stroj.sazba * (vykaz.trvani / 1000 / 60 / 60),
+      });
     });
   });
   //Proiteruje výslednou pomocnou prom. a doplní součty do vyšších úrovní proměnné
