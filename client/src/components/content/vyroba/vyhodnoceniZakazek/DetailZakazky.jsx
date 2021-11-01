@@ -63,8 +63,17 @@ const DetailZakazky = () => {
   return (
     <div>
       <Breadcrumbs objednavka={objednavka} final={final} opv={opv} />
-      <Divider>Porovnání plánu a skutečnosti</Divider>
-      <div>{operaceFiltr && <GrafPorovnani operaceFiltr={operaceFiltr} />}</div>
+      <Divider />
+      {operaceFiltr && (
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Porovnání nákladů" key="1">
+            <GrafPorovnani operaceFiltr={operaceFiltr} />
+          </TabPane>
+          <TabPane tab="Poměr plánovaných a reálných nákladů" key="2"></TabPane>
+          <TabPane tab="Dokončenost výroby" key="3"></TabPane>
+          <TabPane tab="Vyhodnocení ziskovosti" key="4"></TabPane>
+        </Tabs>
+      )}
       <Divider>Zakázkové postupy objednávky {objednavka}</Divider>
       <SeznamZP />
       <Divider>Rozpis operací vybraných zakázkových postupů</Divider>

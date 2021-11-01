@@ -15,8 +15,11 @@ CLIENT
 - VYKAZOVANI OPERACI 
     DONE - zvyrazneni neukoncenych procesu
     DONE - zobrazeni casovych os vykazu podle zadanych parametru
-    - editace, mazani a ukonceni vykazu
-    - podrobny vypocet mezd
+    - pridani, editace, mazani a ukonceni vykazu
+    - detail vyberu
+    - vicestroj priplatky
+    - vikendove priplatky
+    - rozdeleni osy na smeny
 
 SERVER
 - vypocet vicestrojovky
