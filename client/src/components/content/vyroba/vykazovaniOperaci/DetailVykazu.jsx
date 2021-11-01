@@ -128,7 +128,11 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           <Descriptions.Item>
             <Space>
               {detailVykazu.ukonceno ? (
-                <Button size="small" onClick={() => setEditDate(!editDate)}>
+                <Button
+                  disabled
+                  size="small"
+                  onClick={() => setEditDate(!editDate)}
+                >
                   {editDate ? 'Storno' : 'Upravit čas'}
                 </Button>
               ) : (
@@ -160,11 +164,14 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           <Descriptions.Item label="Hodinová mzda pracovníka">
             {detailVykazu.sazba + ' Kč'}
           </Descriptions.Item>
-          <Descriptions.Item label="Příplatky">
+          {/* <Descriptions.Item label="Příplatky">
             <Tag color="green">Vícestroj +30%</Tag>
             <Tag color="green">Víkend +20%</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Vykázaná mzda"></Descriptions.Item>
+           */}
+          <Descriptions.Item label="Vykázaná mzda">
+            {Math.round(detailVykazu.mzda) + ' Kč'}
+          </Descriptions.Item>
         </Descriptions>
       </Col>
     </Row>

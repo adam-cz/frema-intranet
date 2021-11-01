@@ -10,6 +10,7 @@ export default function prepocetVykazy({ vykazy }) {
     );
     if (vykazExist && vykaz.end_time) {
       vykazExist.trvani += vykaz.trvani;
+      vykazExist.mzda += vykaz.mzda;
     }
     if (!vykazExist && vykaz.end_time) {
       vykazyTridene.push({
@@ -18,6 +19,7 @@ export default function prepocetVykazy({ vykazy }) {
         opv: vykaz.opv,
         operace: vykaz.operace,
         trvani: vykaz.trvani,
+        mzda: vykaz.mzda,
         id: vykaz.id,
         plan_cas: vykaz.plan_cas,
       });

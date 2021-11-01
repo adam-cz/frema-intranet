@@ -64,12 +64,14 @@ export const fetchVykazy = async (req, res) => {
           const pomerFiltr =
             (end_time - start_time) / (zaznam_stop - zaznam.start.valueOf());
           const plan_cas = pomerFiltr * proces.minut_nor * 60 * 1000;
-          const vicestroj =
+          /* 
+         const vicestroj =
             vykazy.length > 0 &&
             vykazy.filter((vykaz) =>
               _overPrunik(vykaz.start, vykaz.stop, zaznam.start, zaznam.stop)
             );
           console.log(vicestroj);
+            */
 
           //Doplní a vloží výkaz
           vykazy.push({
@@ -89,6 +91,7 @@ export const fetchVykazy = async (req, res) => {
             nazev: proces.popis,
             plan_cas,
             ukonceno: zaznam.stop,
+            mzda: ((end_time - start_time) / 1000 / 60 / 60) * zaznam.sazba,
           });
         });
     });
