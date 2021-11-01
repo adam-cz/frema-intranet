@@ -1,4 +1,6 @@
 import { Table } from 'antd';
+import moment from 'moment';
+import 'moment-duration-format';
 
 const formatter = new Intl.NumberFormat('cs-CZ', {
   style: 'currency',
@@ -47,7 +49,7 @@ const columns = [
     title: 'Vykázáno (min)',
     dataIndex: 'trvani',
     key: 'trvani',
-    render: (value) => Math.round(value),
+    render: (value) => moment.duration(value).format('DD:HH:mm'),
   },
   {
     title: 'Zdroj',

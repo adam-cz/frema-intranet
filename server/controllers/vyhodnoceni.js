@@ -296,11 +296,7 @@ const doplnKooperace = async (operaceBezKooper) => {
 
 export const doplnMzdyAZbytek = async (operaceBezMezd) => {
   try {
-    const poolConnection = await pool;
-    const request = new sql.Request(poolConnection);
-
     //Iteruje operace a dopňuje mzdy, strojní náklady, čas a následně dopočte celkové částky
-
     operaceBezMezd.map(async (operace, index, array) => {
       let vykazanyCas = 0;
       let strojNakl = 0;
@@ -320,7 +316,7 @@ export const doplnMzdyAZbytek = async (operaceBezMezd) => {
 
       //TODO: Dořešit výpočet mezd a trvání při vícestrojovce!!!
       array[index].mzdy = vykazanaMzda;
-      array[index].trvani = vykazanyCas * 60; //Minuty
+      array[index].trvani = vykazanyCas;
 
       array[index].nakl_stn = strojNakl;
       array[index].nakl_r1 = vykazanaMzda * 0.34;

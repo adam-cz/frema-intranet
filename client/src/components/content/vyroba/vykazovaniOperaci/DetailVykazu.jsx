@@ -76,7 +76,9 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
             {detailVykazu.jmeno}
           </Descriptions.Item>
           <Descriptions.Item label="Objednávka">
-            {detailVykazu.objednavka}
+            <a href={'/vyroba/zakazky/' + detailVykazu.objednavka}>
+              {detailVykazu.objednavka}
+            </a>
           </Descriptions.Item>
           <Descriptions.Item label="OPV">{detailVykazu.opv}</Descriptions.Item>
           <Descriptions.Item label="Číslo operace">

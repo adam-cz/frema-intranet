@@ -1,6 +1,7 @@
+import moment from 'moment';
+
 export default function prepocetMzdy(operace) {
   //Pomocná proměnná
-  console.log(operace);
   const vykazyHelper = [];
   //Iteruje operace a následně jejich výkazy
   operace.forEach((op) => {
@@ -14,7 +15,7 @@ export default function prepocetMzdy(operace) {
         vykazyHelper.push({
           id: vykaz.operator_id,
           jmeno: vykaz.operator_jmeno,
-          sazba: vykaz.hodinovaMzda,
+          sazba: vykaz.sazba,
           operace: [],
         });
       //Uloží si zaměstnance z aktuálního výkazu do proměnné
@@ -27,10 +28,7 @@ export default function prepocetMzdy(operace) {
       ) {
         zamestnanec.operace.push({
           stroj: vykaz.stroj,
-          opv: op.opv,
-          polozka: op.polozka,
           zdroj: op.zdroj,
-          popis: op.popis,
           vykazy: [],
         });
       }
@@ -38,31 +36,24 @@ export default function prepocetMzdy(operace) {
       const stroj = zamestnanec.operace.find(
         (operace) => operace.stroj === vykaz.stroj
       );
-      //V případě, že je výkaz první nebo je ten poslední ukončen, vytvoří nový záznam
-      if (
-        stroj.vykazy.length === 0 ||
-        stroj.vykazy[stroj.vykazy.length - 1].stop
-      )
-        stroj.vykazy.push({ start: vykaz.cas });
+      const trvani = vykaz.stop
+        ? moment(vykaz.stop).valueOf() - moment(vykaz.start).valueOf()
+        : moment().valueOf() - moment(vykaz.start).valueOf();
+
+      stroj.vykazy.push({
+        opv: op.opv,
+        polozka: op.polozka,
+        popis: op.popis,
+        start: vykaz.start,
+        stop: vykaz.stop,
+        trvaniMin: trvani / 1000 / 60,
+        mzda: vykaz.sazba * (trvani / 1000 / 60 / 60),
+        r1:
+          (op.nakl_r1_plan / op.mzdy_plan) *
+          (vykaz.sazba * (trvani / 1000 / 60 / 60)),
+      });
+
       //NEBO v případě, že předchozí výkaz neni ukončen, ukončí ho a dopočítá trvání výkazu
-      else {
-        stroj.vykazy[stroj.vykazy.length - 1].stop = vykaz.cas;
-        stroj.vykazy[stroj.vykazy.length - 1].trvaniMin =
-          (new Date(stroj.vykazy[stroj.vykazy.length - 1].stop) -
-            new Date(stroj.vykazy[stroj.vykazy.length - 1].start)) /
-          1000 /
-          60;
-        stroj.vykazy[stroj.vykazy.length - 1].mzda =
-          (vykaz.hodinovaMzda *
-            stroj.vykazy[stroj.vykazy.length - 1].trvaniMin) /
-          60;
-        console.log(op);
-        stroj.vykazy[stroj.vykazy.length - 1].r1 =
-          ((op.nakl_r1_plan / op.mzdy_plan) *
-            (vykaz.hodinovaMzda *
-              stroj.vykazy[stroj.vykazy.length - 1].trvaniMin)) /
-            60 || 0;
-      }
     });
   });
   //Iteruje pomocnou proměnnou a dopňuje součty výsledků do vyšších úrovní proměnné.
@@ -93,6 +84,5 @@ export default function prepocetMzdy(operace) {
     );
     vykaz.cinnost = vykaz.operace.filter((stroj) => stroj.cinnost).length;
   });
-
   return vykazyHelper;
 }

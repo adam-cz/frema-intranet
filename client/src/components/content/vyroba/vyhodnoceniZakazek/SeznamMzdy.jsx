@@ -81,6 +81,13 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
   const expandedRowRender = (vykazy) => {
     const expandedRowRender = (stroje) => {
       const columns = [
+        { title: 'OPV', dataIndex: 'opv', key: 'opv' },
+        {
+          title: 'Položka',
+          dataIndex: 'polozka',
+          key: 'polozka',
+        },
+        { title: 'Popis', dataIndex: 'popis', key: 'popis' },
         {
           title: 'Start',
           dataIndex: 'start',
@@ -150,13 +157,6 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         render: (value) => (value === 'NULL' ? 'Výchozí stroj' : value),
       },
       { title: 'Zdroj', dataIndex: 'zdroj', key: 'zdroj' },
-      { title: 'Popis', dataIndex: 'popis', key: 'popis' },
-      { title: 'OPV', dataIndex: 'opv', key: 'opv' },
-      {
-        title: 'Položka',
-        dataIndex: 'polozka',
-        key: 'polozka',
-      },
       {
         title: 'Vykázáno na stroji (min.)',
         dataIndex: 'vykazano',

@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default function prepocetStrojniNaklady(operace) {
   //Pomocná proměnná
   const strojeHelper = [];
@@ -22,7 +24,10 @@ export default function prepocetStrojniNaklady(operace) {
         (strojHelper) =>
           strojHelper.stroj === vykaz.stroj && strojHelper.zdroj === op.zdroj
       );
-      //V případě, že je výkaz první nebo je ten předchozí ukončen, vytvoří nový
+
+      const trvani = vykaz.stop
+        ? moment(vykaz.stop).valueOf() - moment(vykaz.start).valueOf()
+        : moment().valueOf() - moment(vykaz.start).valueOf();
 
       stroj.vykazy.push({
         opv: op.opv,
@@ -31,8 +36,8 @@ export default function prepocetStrojniNaklady(operace) {
         vykazal: vykaz.operator_jmeno,
         start: vykaz.start,
         stop: vykaz.stop,
-        trvaniMin: vykaz.trvani / 1000 / 60,
-        naklady: stroj.sazba * (vykaz.trvani / 1000 / 60 / 60),
+        trvaniMin: trvani / 1000 / 60,
+        naklady: stroj.sazba * (trvani / 1000 / 60 / 60),
       });
     });
   });
