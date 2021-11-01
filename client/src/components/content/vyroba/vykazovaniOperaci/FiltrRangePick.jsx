@@ -1,9 +1,6 @@
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import 'moment/locale/cs';
 import locale from 'antd/es/date-picker/locale/cs_CZ';
-
-moment.locale('cs');
 
 const { RangePicker } = DatePicker;
 
@@ -18,6 +15,7 @@ const FiltrRangePick = ({ filtr, setFiltr }) => {
       ]}
       onChange={(Moment) => {
         setFiltr({
+          ...filtr,
           datumOd: Moment[0].startOf('day').subtract(2, 'hour'),
           datumDo: Moment[1].endOf('day').subtract(2, 'hour'),
         });

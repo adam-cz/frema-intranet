@@ -1,6 +1,6 @@
-import React from 'react';
+import { Alert } from 'antd';
 
-const DetailZamestnance = () => {
+const DetailZamestnance = ({ zamestnanci, vykazy }) => {
   /*
 
 Jmeno
@@ -13,7 +13,17 @@ produktivita (cas vykazu vs plan)
 
 */
 
-  return <div></div>;
+  return (
+    <div>
+      {zamestnanci.length > 1 && (
+        <Alert
+          message="Zobrazená data zahrnují všechny zaměstnance z vybraného časového rozmezí. Pro statistiky konkrétního zaměstnance nastavte filtr"
+          type="warning"
+          showIcon
+        />
+      )}
+    </div>
+  );
 };
 
 export default DetailZamestnance;

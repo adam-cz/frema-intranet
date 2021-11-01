@@ -8,6 +8,7 @@ import FiltrRangePick from './FiltrRangePick';
 import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
 import DetailVykazu from './DetailVykazu';
+import DetailZamestnance from './DetailZamestnance';
 
 moment.locale('cs');
 
@@ -25,6 +26,7 @@ const OperationReporting = () => {
   const [filtr, setFiltr] = useState({
     datumOd: initDate.datumOd,
     datumDo: initDate.datumDo,
+    zamestnanecId: null,
   });
   const [restart, setRestart] = useState(true);
   const [data, setData] = useState(null);
@@ -32,6 +34,7 @@ const OperationReporting = () => {
   const clickHandler = () => {
     setLoading(true);
     api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
+      setFiltr({ ...filtr, zamestnanecId: null });
       setData(res.data);
       setDataFiltered(res.data);
       setLoading(false);
@@ -64,7 +67,12 @@ const OperationReporting = () => {
           Zobrazit
         </Button>
         {data?.zamestnanci.length > 1 && (
-          <FiltrSelect setDataFiltered={setDataFiltered} data={data} />
+          <FiltrSelect
+            setDataFiltered={setDataFiltered}
+            data={data}
+            filtr={filtr}
+            setFiltr={setFiltr}
+          />
         )}
       </Space>
 
@@ -95,7 +103,12 @@ const OperationReporting = () => {
           <TabPane tab="Rozpis výkazů za vybrané období" key="1">
             <RozpisVyberu data={dataFiltered} loading={loading} />
           </TabPane>
-          <TabPane tab="Statistické údaje" key="2"></TabPane>
+          <TabPane tab="Statistické údaje" key="2">
+            <DetailZamestnance
+              zamestnanci={dataFiltered.zamestnanci}
+              vykazy={dataFiltered.vykazy}
+            />
+          </TabPane>
         </Tabs>
       )}
     </div>
