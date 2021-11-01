@@ -24,7 +24,29 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
     setEditDate(!editDate);
   };
 
-  const handleDelete = ({ proces_id, start_time_id, end_time_id }) => {
+  const handleUkonciVykaz = ({ proces_id, id }) => {
+    confirm({
+      title: 'Ukončit výkaz?',
+      okText: 'Ukončit výkaz',
+      okType: 'danger',
+      cancelText: 'Storno',
+      icon: <ExclamationCircleOutlined />,
+      content:
+        'Chystáte se ručně uzavřít aktivní výkaz. Skutečně chcete pokračovat?',
+      onOk() {
+        api.ukoncitVykaz(proces_id, id).then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            setRestart(true);
+            setDetailVykazu(null);
+            message.success('Výkaz byl ukončen!');
+          }
+        });
+      },
+    });
+  };
+
+  const handleDelete = ({ proces_id, id }) => {
     confirm({
       title: 'Smazat výkaz?',
       okText: 'Smazat Výkaz',
@@ -34,7 +56,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
       content:
         'Chystáte se trvale odstranit výkaz. Skutečně chcete pokračovat?',
       onOk() {
-        api.smazatVykazy(proces_id, start_time_id, end_time_id).then((res) => {
+        api.smazatVykazy(proces_id, id).then((res) => {
           console.log(res);
           if (res.status === 204) {
             setRestart(true);
@@ -100,7 +122,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
               !detailVykazu.ukonceno && <Tag color="green">Stále probíhá</Tag>
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="Délka výkazu">
+          <Descriptions.Item label="Délka výkazu (za vybrané období)">
             {moment.utc(detailVykazu.trvani).format('HH:mm')}
           </Descriptions.Item>
           <Descriptions.Item>
@@ -110,7 +132,10 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
                   {editDate ? 'Storno' : 'Upravit čas'}
                 </Button>
               ) : (
-                <Button size="small" onClick={() => setEditDate(!editDate)}>
+                <Button
+                  size="small"
+                  onClick={() => handleUkonciVykaz(detailVykazu)}
+                >
                   Ukončit výkaz
                 </Button>
               )}
@@ -132,7 +157,13 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
       </Col>
       <Col span={8}>
         <Descriptions column={1} title="Mzdové údaje">
-          <Descriptions.Item label="Hodinová mzda"></Descriptions.Item>
+          <Descriptions.Item label="Hodinová mzda pracovníka">
+            {detailVykazu.sazba + ' Kč'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Příplatky">
+            <Tag color="green">Vícestroj +30%</Tag>
+            <Tag color="green">Víkend +20%</Tag>
+          </Descriptions.Item>
           <Descriptions.Item label="Vykázaná mzda"></Descriptions.Item>
         </Descriptions>
       </Col>

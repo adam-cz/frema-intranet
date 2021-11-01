@@ -1,5 +1,6 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
+import sql, { pool } from '../utils/karat.js';
 
 export const ping = (req, res) => {
   try {
@@ -35,6 +36,9 @@ export const verifyCardId = async (req, res) => {
 
 export const setProces = async (req, res) => {
   try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+
     const barcode = req.body.barcode.split('_');
     const cas = req.body.cas;
     const user = await User.findOne({ _id: req.body.user.id });
@@ -59,7 +63,6 @@ export const setProces = async (req, res) => {
         },
       },
     });
-    console.log(strojPouzivan);
     if (
       proces.stroje.length > 1 &&
       strojPouzivan.length > 0 &&
@@ -83,55 +86,18 @@ export const setProces = async (req, res) => {
         message: `Nejdříve ukončete svůj předchozí výkaz`,
       });
 
-    //filtruje pouze záznamy na daný stroj.
-    //Pokud je stroj výchozí (null), vrací všechny záznamy.
-    const zaznamy = proces.zaznamy.filter(
-      (zaznam) => zaznam.stroj === barcode[2]
+    //Hledá odpovídající neukončený výkaz
+    const vykazExist = proces.zaznamy.find(
+      (zaznam) =>
+        zaznam.operator_id === user._id.toString() &&
+        zaznam.stroj === barcode[2] &&
+        !zaznam.stop
     );
-
-    //Sudý záznam - vždy načten
-    if (zaznamy.length % 2 === 0) {
-      proces.zaznamy.push({
-        cas: cas || Date.now(),
-        operator_id: req.body.user.id,
-        operator_jmeno: req.body.user.jmeno,
-        stroj: barcode[2],
-      });
-      //Přiřadí uživateli aktivní proces
-      user.working.push({
-        opv: proces.opv,
-        polozka: proces.polozka,
-        stroj: barcode[2],
-      });
-      await proces.save();
-      await user.save();
-      return res.status(200).json({
-        status: 'success',
-        message: `Operace ${proces.polozka} na zakázkovém postupu ${proces.opv} načtena`,
-        proces,
-      });
-    }
-
-    //lichý záznam
-    if (zaznamy.length % 2 !== 0) {
-      //poslední lichý který vykonává někdo jiný
-      if (zaznamy[zaznamy.length - 1].operator_id != req.body.user.id)
-        return res.status(200).json({
-          status: 'error',
-          message: `Operaci ${proces.polozka} postupu ${
-            proces.opv
-          } již vykonává ${zaznamy[zaznamy.length - 1].operator_jmeno}!`,
-          proces,
-        });
-
-      //jinak ukonči proces
-      proces.zaznamy.push({
-        cas: Date.now(),
-        operator_id: req.body.user.id,
-        operator_jmeno: req.body.user.jmeno,
-        stroj: barcode[2],
-      });
-      //Odebere uživateli aktivní proces
+    console.log(typeof req.body.user.id, proces, vykazExist);
+    //Pokud nalezne, ukončí ho
+    if (vykazExist) {
+      vykazExist.stop = cas || Date.now();
+      //odebere z uživatele aktivní proces
       user.working.splice(
         user.working.findIndex(
           (item) =>
@@ -141,11 +107,48 @@ export const setProces = async (req, res) => {
         ),
         1
       );
-      await proces.save();
-      await user.save();
+      //Uloží změny
+      proces.save();
+      user.save();
+      //Vrací odpověď
       return res.status(200).json({
         status: 'warning',
         message: `Operace ${proces.polozka} z postupu ${proces.opv} dokončena nebo pozastavena`,
+        proces,
+      });
+    }
+
+    //Pokud nenalezne, vytvoří nový výkaz
+    if (!vykazExist) {
+      const { recordset: hodinovaMzda } = await request.query(
+        `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+          req.body.user.id
+        } AND rok = ${new Date(
+          cas || Date.now()
+        ).getFullYear()} AND mesic = ${new Date(
+          cas || Date.now()
+        ).getMonth()});`
+      );
+      proces.zaznamy.push({
+        start: cas || Date.now(),
+        operator_id: req.body.user.id,
+        operator_jmeno: req.body.user.jmeno,
+        stroj: barcode[2],
+        sazba: hodinovaMzda[0].prd_plati,
+      });
+      //a přiřadí uživateli aktivní proces
+      user.working.push({
+        opv: proces.opv,
+        polozka: proces.polozka,
+        stroj: barcode[2],
+      });
+      //Uloží změny
+      proces.save();
+      user.save();
+      //Vrací odpověď
+      return res.status(200).json({
+        status: 'success',
+        message: `Operace ${proces.polozka} na zakázkovém postupu ${proces.opv} načtena`,
         proces,
       });
     }

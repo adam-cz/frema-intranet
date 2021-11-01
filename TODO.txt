@@ -14,7 +14,7 @@ CLIENT
 - statistiky zakazek po uzaverce
 - VYKAZOVANI OPERACI 
     DONE - zvyrazneni neukoncenych procesu
-    - zobrazeni casovych os vykazu podle zadanych parametru
+    DONE - zobrazeni casovych os vykazu podle zadanych parametru
     - editace, mazani a ukonceni vykazu
     - podrobny vypocet mezd
 

@@ -77,7 +77,6 @@ const VykazyGantt = ({
   const items = vykazy.map((vykaz) => {
     return {
       ...vykaz,
-      end_time: vykaz.end_time ? vykaz.end_time : moment().valueOf(),
       title: `Operace ${vykaz.operace} z OPV ${vykaz.opv} na stroji ${vykaz.stroj}`,
       canMove: false,
       canResize: false,
