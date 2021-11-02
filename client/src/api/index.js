@@ -70,3 +70,7 @@ export const smazatVykazy = (procesId, zaznamId) =>
   axios.delete(`${api}vykazy/smazat`, { data: { procesId, zaznamId } });
 export const ukoncitVykaz = (procesId, zaznamId) =>
   axios.post(`${api}vykazy/ukoncit`, { procesId, zaznamId });
+export const upravitCas = (procesId, zaznamId, casy) =>
+  axios.post(`${api}vykazy/upravit`, { procesId, zaznamId, casy });
+export const vytvoritVykaz = (data) =>
+  axios.post(`${api}vykazy/vytvorit`, { data });

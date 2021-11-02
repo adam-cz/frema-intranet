@@ -19,8 +19,15 @@ const { confirm } = Modal;
 
 const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
   const [editDate, setEditDate] = useState(false);
+  const [novyCas, setNovyCas] = useState(null);
 
-  const handleEdit = () => {
+  const handleEdit = ({ proces_id, id }) => {
+    console.log(novyCas);
+    api.upravitCas(proces_id, id, novyCas).then((res) => {
+      console.log(res);
+      setRestart(true);
+      message[res.data.status](res.data.message);
+    });
     setEditDate(!editDate);
   };
 
@@ -103,6 +110,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
                 size="small"
                 format="D. M. HH:mm"
                 defaultValue={moment(detailVykazu.start_time)}
+                onChange={(value) => setNovyCas({ ...novyCas, od: value })}
                 showTime
               />
             ) : (
@@ -116,6 +124,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
                 size="small"
                 format="D. M. HH:mm"
                 defaultValue={moment(detailVykazu.end_time)}
+                onChange={(value) => setNovyCas({ ...novyCas, do: value })}
                 showTime
               />
             ) : detailVykazu.ukonceno ? (
@@ -130,11 +139,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           <Descriptions.Item>
             <Space>
               {detailVykazu.ukonceno ? (
-                <Button
-                  disabled
-                  size="small"
-                  onClick={() => setEditDate(!editDate)}
-                >
+                <Button size="small" onClick={() => setEditDate(!editDate)}>
                   {editDate ? 'Storno' : 'Upravit čas'}
                 </Button>
               ) : (

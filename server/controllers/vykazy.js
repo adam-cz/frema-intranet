@@ -139,3 +139,34 @@ export const ukoncitVykaz = async (req, res) => {
     res.json({ status: 'error', message: err }).status(404);
   }
 };
+
+export const vytvoritVykaz = async (req, res) => {
+  try {
+    res.status(204).json({ status: 'success', message: 'Výkaz byl vytvořen' });
+  } catch (err) {
+    res.json({ status: 'error', message: err }).status(404);
+  }
+};
+
+export const upravitCas = async (req, res) => {
+  try {
+    const proces = await Proces.findOne({ _id: req.body.procesId });
+    const zaznam = proces.zaznamy.find(
+      (zaznam) => zaznam._id == req.body.zaznamId
+    );
+    const casOd = req.body.casy?.od || zaznam.start;
+    const casDo = req.body.casy?.do || zaznam.stop;
+
+    if (casOd > casDo)
+      return res.status(200).json({
+        status: 'error',
+        message: 'Počáteční čas nemůže být vyšší než konečný',
+      });
+    zaznam.start = moment(casOd).valueOf();
+    zaznam.stop = moment(casDo).valueOf();
+    await proces.save();
+    res.status(200).json({ status: 'success', message: 'Čas byl upraven' });
+  } catch (err) {
+    res.json({ status: 'error', message: err }).status(404);
+  }
+};

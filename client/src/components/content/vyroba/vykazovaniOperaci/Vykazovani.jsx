@@ -9,6 +9,7 @@ import { FiltrSelect } from './FiltrSelect';
 import RozpisVyberu from './RozpisVyberu';
 import DetailVykazu from './DetailVykazu';
 import DetailZamestnance from './DetailZamestnance';
+import { EyeOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 moment.locale('cs');
 
@@ -49,7 +50,7 @@ const OperationReporting = () => {
         setLoading(false);
         setRestart(false);
       });
-  }, [restart]);
+  }, [restart, filtr.datumOd, filtr.datumDo]);
 
   return (
     <div>
@@ -63,7 +64,7 @@ const OperationReporting = () => {
           setData={setData}
           setDataFiltered={setDataFiltered}
         />
-        <Button loading={loading} onClick={clickHandler}>
+        <Button loading={loading} onClick={clickHandler} icon={<EyeOutlined />}>
           Zobrazit
         </Button>
         {data?.zamestnanci.length > 1 && (
@@ -78,13 +79,22 @@ const OperationReporting = () => {
 
       <Divider>Časová osa výkazů</Divider>
       {dataFiltered && (
-        <VykazyGantt
-          loading={loading}
-          zamestnanci={dataFiltered.zamestnanci}
-          vykazy={dataFiltered.vykazy}
-          filtr={filtr}
-          setDetailVykazu={setDetailVykazu}
-        />
+        <>
+          <VykazyGantt
+            loading={loading}
+            zamestnanci={dataFiltered.zamestnanci}
+            vykazy={dataFiltered.vykazy}
+            filtr={filtr}
+            setDetailVykazu={setDetailVykazu}
+          />
+          <Button
+            style={{ marginTop: 20 }}
+            type="primary"
+            icon={<PlusCircleOutlined />}
+          >
+            Přidat výkaz
+          </Button>
+        </>
       )}
       {detailVykazu && (
         <>
