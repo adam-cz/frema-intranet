@@ -74,3 +74,4 @@ export const upravitCas = (procesId, zaznamId, casy) =>
   axios.post(`${api}vykazy/upravit`, { procesId, zaznamId, casy });
 export const vytvoritVykaz = (data) =>
   axios.post(`${api}vykazy/vytvorit`, { data });
+export const hledejProces = (opv) => axios.post(`${api}vykazy/hledej`, { opv });

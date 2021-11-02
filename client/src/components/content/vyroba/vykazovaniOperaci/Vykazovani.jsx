@@ -10,6 +10,7 @@ import RozpisVyberu from './RozpisVyberu';
 import DetailVykazu from './DetailVykazu';
 import DetailZamestnance from './DetailZamestnance';
 import { EyeOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import PridatVykazModal from './PridatVykazModal';
 
 moment.locale('cs');
 
@@ -31,6 +32,8 @@ const OperationReporting = () => {
   });
   const [restart, setRestart] = useState(true);
   const [data, setData] = useState(null);
+  const [editDate, setEditDate] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const clickHandler = () => {
     setLoading(true);
@@ -40,6 +43,10 @@ const OperationReporting = () => {
       setDataFiltered(res.data);
       setLoading(false);
     });
+  };
+
+  const pridatVykaz = () => {
+    setModalVisible(true);
   };
 
   useEffect(() => {
@@ -86,14 +93,20 @@ const OperationReporting = () => {
             vykazy={dataFiltered.vykazy}
             filtr={filtr}
             setDetailVykazu={setDetailVykazu}
+            setEditDate={setEditDate}
           />
           <Button
             style={{ marginTop: 20 }}
             type="primary"
             icon={<PlusCircleOutlined />}
+            onClick={() => pridatVykaz()}
           >
             Přidat výkaz
           </Button>
+          <PridatVykazModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
         </>
       )}
       {detailVykazu && (
@@ -103,6 +116,8 @@ const OperationReporting = () => {
             detailVykazu={detailVykazu}
             setRestart={setRestart}
             setDetailVykazu={setDetailVykazu}
+            editDate={editDate}
+            setEditDate={setEditDate}
           />
         </>
       )}

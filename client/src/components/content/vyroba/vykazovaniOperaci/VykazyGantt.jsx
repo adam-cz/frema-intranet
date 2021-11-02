@@ -8,6 +8,7 @@ const VykazyGantt = ({
   vykazy,
   loading,
   setDetailVykazu,
+  setEditDate,
 }) => {
   const minTime = filtr.datumOd.valueOf();
   const maxTime = filtr.datumDo.valueOf();
@@ -85,10 +86,14 @@ const VykazyGantt = ({
           defaultTimeEnd={filtr.datumDo}
           onTimeChange={onTimeChange}
           itemRenderer={itemRenderer}
-          onItemSelect={(item) =>
-            setDetailVykazu(vykazy.find((_vykaz) => _vykaz.id === item))
-          }
-          onItemDeselect={(item) => setDetailVykazu(null)}
+          onItemSelect={(item) => {
+            setDetailVykazu(vykazy.find((_vykaz) => _vykaz.id === item));
+            setEditDate(false);
+          }}
+          onItemDeselect={(item) => {
+            setDetailVykazu(null);
+            setEditDate(false);
+          }}
         >
           <CustomMarker date={moment()}>
             {/* custom renderer for this marker */}

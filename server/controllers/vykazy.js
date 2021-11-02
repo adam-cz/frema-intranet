@@ -108,12 +108,28 @@ export const fetchVykazy = async (req, res) => {
 
 export const smazatVykazy = async (req, res) => {
   try {
-    console.log(req.body);
     const proces = await Proces.findOne({ _id: req.body.procesId });
+    const zaznam = proces.zaznamy.find(
+      (zaznam) => zaznam._id == req.body.zaznamId
+    );
+    //Pokud není záznam ukončen, odebere z uživatele záznam o aktivitě
+    if (!zaznam.stop) {
+      const user = await User.findOne({ _id: zaznam.operator_id });
+      user.working.splice(
+        user.working.findIndex(
+          (item) =>
+            item.opv === proces.opv &&
+            item.polozka === proces.polozka &&
+            item.stroj === zaznam.stroj
+        ),
+        1
+      );
+      await user.save();
+    }
+    //Smaže záznam
     await proces.zaznamy.pull({ _id: req.body.zaznamId });
     await proces.save();
-    console.log(proces);
-    res.status(204).json({ status: 'success', message: 'Výkaz byl smazán' });
+    res.status(200).json({ status: 'success', message: 'Výkaz byl smazán' });
   } catch (err) {
     res.json({ status: 'error', message: err }).status(404);
   }
@@ -126,15 +142,46 @@ export const ukoncitVykaz = async (req, res) => {
       (zaznam) => zaznam._id == req.body.zaznamId
     );
     const user = await User.findOne({ _id: zaznam.operator_id });
-    await user.working.pull({
-      opv: proces.opv,
-      polozka: proces.polozka,
-      stroj: zaznam.stroj,
-    });
-    if (!zaznam.stop) zaznam.stop = moment().valueOf();
-    await proces.save();
+    //Odebere zaznam o aktivni cinnosti z uzivatele
+    user.working.splice(
+      user.working.findIndex(
+        (item) =>
+          item.opv === proces.opv &&
+          item.polozka === proces.polozka &&
+          item.stroj === zaznam.stroj
+      ),
+      1
+    );
+    //Ukonci vykaz
+    zaznam.stop = moment().valueOf();
     await user.save();
-    res.status(204).json({ status: 'success', message: 'Výkaz byl smazán' });
+    await proces.save();
+
+    res.status(200).json({ status: 'success', message: 'Výkaz byl ukončen' });
+  } catch (err) {
+    res.json({ status: 'error', message: err }).status(404);
+  }
+};
+
+export const hledejProces = async (req, res) => {
+  const opv = req.body.opv;
+  try {
+    const procesy = await Proces.find({ opv });
+    if (procesy.length === 0)
+      return res.status(200).json({
+        status: 'danger',
+        message: 'Zakázkový postup nenalezen',
+        procesy: null,
+      });
+
+    const zamestnanci = await User.find({}, { name: 1, surname: 1, _id: 1 });
+    console.log(zamestnanci);
+    res.status(200).json({
+      status: 'success',
+      message: 'Zakázkový postup nalezen',
+      procesy,
+      zamestnanci,
+    });
   } catch (err) {
     res.json({ status: 'error', message: err }).status(404);
   }
@@ -142,7 +189,7 @@ export const ukoncitVykaz = async (req, res) => {
 
 export const vytvoritVykaz = async (req, res) => {
   try {
-    res.status(204).json({ status: 'success', message: 'Výkaz byl vytvořen' });
+    res.status(200).json({ status: 'success', message: 'Výkaz byl vytvořen' });
   } catch (err) {
     res.json({ status: 'error', message: err }).status(404);
   }
@@ -157,13 +204,16 @@ export const upravitCas = async (req, res) => {
     const casOd = req.body.casy?.od || zaznam.start;
     const casDo = req.body.casy?.do || zaznam.stop;
 
-    if (moment(casOd).ValueOf() > moment(casDo).ValueOf())
+    //Ověřuje jestli není počáteční čas výkazu vyšší než koncový
+    if (moment(casOd).valueOf() > moment(casDo).valueOf())
       return res.status(200).json({
         status: 'error',
-        message: 'Počáteční čas nemůže být vyšší než konečný',
+        message: 'Počáteční čas nemůže být vyšší než koncový',
       });
+
     zaznam.start = moment(casOd).valueOf();
-    zaznam.stop = moment(casDo).valueOf();
+    //Ověřuje, jestli není ukončen, případně změní jen start
+    if (zaznam.stop) zaznam.stop = moment(casDo).valueOf();
     await proces.save();
     res.status(200).json({ status: 'success', message: 'Čas byl upraven' });
   } catch (err) {

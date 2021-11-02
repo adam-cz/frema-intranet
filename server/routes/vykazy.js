@@ -9,12 +9,14 @@ import {
   ukoncitVykaz,
   upravitCas,
   vytvoritVykaz,
+  hledejProces,
 } from '../controllers/vykazy.js';
 
 const router = express.Router();
 
 //all the routes that have to do something with orders
 router.post('/', authenticateToken, fetchVykazy);
+router.post('/hledej', authenticateToken, hledejProces);
 router.post('/upravit', authenticateToken, upravitCas);
 router.post('/vytvorit', authenticateToken, vytvoritVykaz);
 router.post('/ukoncit', authenticateToken, ukoncitVykaz);

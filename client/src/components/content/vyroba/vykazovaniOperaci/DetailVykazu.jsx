@@ -17,8 +17,13 @@ import locale from 'antd/es/date-picker/locale/cs_CZ';
 
 const { confirm } = Modal;
 
-const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
-  const [editDate, setEditDate] = useState(false);
+const DetailVykazu = ({
+  detailVykazu,
+  setRestart,
+  setDetailVykazu,
+  editDate,
+  setEditDate,
+}) => {
   const [novyCas, setNovyCas] = useState(null);
 
   const handleEdit = ({ proces_id, id }) => {
@@ -43,11 +48,9 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
       onOk() {
         api.ukoncitVykaz(proces_id, id).then((res) => {
           console.log(res);
-          if (res.status === 204) {
-            setRestart(true);
-            setDetailVykazu(null);
-            message.success('Výkaz byl ukončen!');
-          }
+          setRestart(true);
+          setDetailVykazu(null);
+          message[res.data.status](res.data.message);
         });
       },
     });
@@ -64,12 +67,9 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
         'Chystáte se trvale odstranit výkaz. Skutečně chcete pokračovat?',
       onOk() {
         api.smazatVykazy(proces_id, id).then((res) => {
-          console.log(res);
-          if (res.status === 204) {
-            setRestart(true);
-            setDetailVykazu(null);
-            message.success('Výkaz byl smazán!');
-          }
+          setRestart(true);
+          setDetailVykazu(null);
+          message[res.data.status](res.data.message);
         });
       },
     });
@@ -118,7 +118,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
             )}
           </Descriptions.Item>
           <Descriptions.Item label="Konec výkazu">
-            {editDate ? (
+            {editDate && detailVykazu.ukonceno ? (
               <DatePicker
                 locale={locale}
                 size="small"
@@ -138,11 +138,15 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
           </Descriptions.Item>
           <Descriptions.Item>
             <Space>
-              {detailVykazu.ukonceno ? (
-                <Button size="small" onClick={() => setEditDate(!editDate)}>
-                  {editDate ? 'Storno' : 'Upravit čas'}
+              <Button size="small" onClick={() => setEditDate(!editDate)}>
+                {editDate ? 'Storno' : 'Upravit čas'}
+              </Button>
+              {editDate && (
+                <Button size="small" onClick={() => handleEdit(detailVykazu)}>
+                  Uložit změny
                 </Button>
-              ) : (
+              )}
+              {!detailVykazu.ukonceno && (
                 <Button
                   size="small"
                   onClick={() => handleUkonciVykaz(detailVykazu)}
@@ -150,11 +154,7 @@ const DetailVykazu = ({ detailVykazu, setRestart, setDetailVykazu }) => {
                   Ukončit výkaz
                 </Button>
               )}
-              {editDate && (
-                <Button size="small" onClick={() => handleEdit(detailVykazu)}>
-                  Uložit změny
-                </Button>
-              )}
+
               <Button
                 danger
                 size="small"
