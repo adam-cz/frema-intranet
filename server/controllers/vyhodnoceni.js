@@ -207,7 +207,7 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
     const request = new sql.Request(poolConnection);
     await Promise.all(
       //Iteruje operace a dohledává plán a skutečné zatížení materiálem
-      operaceBezMaterialu.map(async (operace, index, array) => {
+      operaceBezMaterialu.map(async (operace) => {
         const { recordset: material } = await request.query(
           `SELECT popis AS "nazev", 
           nomenklatura,
@@ -218,24 +218,24 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
           autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND polozka = ${operace.polozka};`
         );
 
-        array[index].material_data = material.length > 0 ? material : null;
-        array[index].material_plan = material.reduce(
+        operace.material_data = material.length > 0 ? material : null;
+        operace.material_plan = material.reduce(
           (total, currentValue) =>
             total + currentValue.pozadovano * currentValue.cena,
           0
         );
-        array[index].material = material.reduce(
+        operace.material = material.reduce(
           (total, currentValue) =>
             total + currentValue.vydano * currentValue.cena,
           0
         );
         //Dopočítá celkové plánované náklady na operaci
-        array[index].nakl_celkem_plan =
-          array[index].mzdy_plan +
-          array[index].nakl_r1_plan +
-          array[index].nakl_stn_plan +
-          array[index].material_plan +
-          array[index].kooperace_plan;
+        operace.nakl_celkem_plan =
+          operace.mzdy_plan +
+          operace.nakl_r1_plan +
+          operace.nakl_stn_plan +
+          operace.material_plan +
+          operace.kooperace_plan;
       })
     );
   } catch (err) {
@@ -249,7 +249,7 @@ const doplnKooperace = async (operaceBezKooper) => {
     const request = new sql.Request(poolConnection);
     await Promise.all(
       //Iteruje operace a v případě kooperace doplní data
-      operaceBezKooper.map(async (operace, index, array) => {
+      operaceBezKooper.map(async (operace) => {
         if (operace.zdroj === '500') {
           //V případě, že je operace kooperace, vyhledá požadavky na zdroje
           const { recordset: pozadavek } = await request.query(
@@ -264,14 +264,14 @@ const doplnKooperace = async (operaceBezKooper) => {
             cena_na_doklade AS "cena" FROM dba.zdr_koo_pol WHERE id_poz = ${pozadavek[0].id_poz};`
             );
             if (kooperace.length > 0) {
-              array[index].kooperace_data = [];
+              operace.kooperace_data = [];
               let cenaCelkem = 0;
               await Promise.all(
                 kooperace.map(async (koop) => {
                   const { recordset: doklad } = await request.query(
                     `SELECT zkraceny_nazev AS "nazev" FROM dba.zdr_koo_dkl WHERE doklad = '${koop.doklad}';`
                   );
-                  array[index].kooperace_data.push({
+                  operace.kooperace_data.push({
                     nazev: koop.nazev,
                     mnozstvi: koop.mnozstvi,
                     dodavatel: doklad[0].nazev,
@@ -280,13 +280,13 @@ const doplnKooperace = async (operaceBezKooper) => {
                   cenaCelkem += koop.cena * koop.mnozstvi;
                 })
               );
-              array[index].kooperace = cenaCelkem;
+              operace.kooperace = cenaCelkem;
               return;
             }
           }
         }
-        array[index].kooperace_data = null;
-        array[index].kooperace = 0;
+        operace.kooperace_data = null;
+        operace.kooperace = 0;
       })
     );
   } catch (err) {
@@ -297,7 +297,7 @@ const doplnKooperace = async (operaceBezKooper) => {
 export const doplnMzdyAZbytek = async (operaceBezMezd) => {
   try {
     //Iteruje operace a dopňuje mzdy, strojní náklady, čas a následně dopočte celkové částky
-    operaceBezMezd.map(async (operace, index, array) => {
+    operaceBezMezd.map(async (operace) => {
       let vykazanyCas = 0;
       let strojNakl = 0;
       let vykazanaMzda = 0;
@@ -315,18 +315,18 @@ export const doplnMzdyAZbytek = async (operaceBezMezd) => {
       });
 
       //TODO: Dořešit výpočet mezd a trvání při vícestrojovce!!!
-      array[index].mzdy = vykazanaMzda;
-      array[index].trvani = vykazanyCas;
+      operace.mzdy = vykazanaMzda;
+      operace.trvani = vykazanyCas;
 
-      array[index].nakl_stn = strojNakl;
-      array[index].nakl_r1 = vykazanaMzda * 0.34;
+      operace.nakl_stn = strojNakl;
+      operace.nakl_r1 = vykazanaMzda * 0.34;
       //Celkový součet reálných nákladů
-      array[index].nakl_celkem =
-        array[index].mzdy +
-        array[index].nakl_r1 +
-        array[index].nakl_stn +
-        array[index].material +
-        array[index].kooperace;
+      operace.nakl_celkem =
+        operace.mzdy +
+        operace.nakl_r1 +
+        operace.nakl_stn +
+        operace.material +
+        operace.kooperace;
     });
   } catch (err) {
     console.log(err);

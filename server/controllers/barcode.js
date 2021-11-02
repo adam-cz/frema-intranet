@@ -1,6 +1,7 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
 import sql, { pool } from '../utils/karat.js';
+import { zdroje } from '../config/zdroje.js';
 
 export const ping = (req, res) => {
   try {
@@ -53,6 +54,17 @@ export const setProces = async (req, res) => {
         status: 'error',
         message: 'Operace neexistuje',
         proces: 'neexistuje',
+      });
+
+    //Chybně načtený kód
+    const stroje = ['NULL'];
+    zdroje.forEach((zdroj) =>
+      zdroj.stroje.forEach((stroj) => stroje.push(stroj.nazev))
+    );
+    if (!stroje.includes(barcode[2]))
+      return res.status(200).json({
+        status: 'error',
+        message: 'Kód nebyl rozpoznán, zkuste jej načíst znova',
       });
 
     //Pokud existuje seznam strojů na daný zdroj a na stroji již běží operace, nastane chyba

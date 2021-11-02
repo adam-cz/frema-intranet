@@ -1,6 +1,7 @@
 export const zdroje = [
   {
     zdroj: '160',
+    vicestroj: true,
     stroje: [
       {
         nazev: 'AV 128 H',
