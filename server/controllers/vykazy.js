@@ -157,7 +157,7 @@ export const upravitCas = async (req, res) => {
     const casOd = req.body.casy?.od || zaznam.start;
     const casDo = req.body.casy?.do || zaznam.stop;
 
-    if (casOd > casDo)
+    if (moment(casOd).ValueOf() > moment(casDo).ValueOf())
       return res.status(200).json({
         status: 'error',
         message: 'Počáteční čas nemůže být vyšší než konečný',
