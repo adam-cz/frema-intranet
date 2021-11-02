@@ -1,3 +1,8 @@
+?Zjistit?
+- pripravny cas nezapocitavani
+- max odpracovanych hodin za den (pracovni fond a uvazek)
+
+
 BARCODE TERMINAL
 DONE - logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
 DONE - zobrazeni aktivnich procesu uzivatele
@@ -5,6 +10,7 @@ DONE - opravit: na bezicim CNC (stroji jinem nez NULL) by nemelo jit spustit sou
 - opravit: offline režim
 
 CLIENT
+- vyjmout z vypoctu str. nakl. pripravny cas
 - vypocet a zobrazeni vicestrojovky
 - generovani volnych carovych kodu
 - indikace dokoncenych (vyvedenych) opv

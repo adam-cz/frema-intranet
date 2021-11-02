@@ -75,6 +75,9 @@ export const fetchVykazy = async (req, res) => {
 
           //Doplní a vloží výkaz
           vykazy.push({
+            title: `Operace ${proces.polozka} z OPV ${proces.opv} na ${
+              zaznam.stroj === 'NULL' ? 'výchozím stroji' : zaznam.stroj
+            }`,
             group: zaznam.operator_id,
             jmeno: zaznam.operator_jmeno,
             zdroj: proces.stredisko,

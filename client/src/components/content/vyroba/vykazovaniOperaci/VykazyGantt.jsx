@@ -70,32 +70,23 @@ const VykazyGantt = ({
     );
   };
 
-  const groups = zamestnanci.map((zamestnanec) => {
-    return { ...zamestnanec, stackItems: true };
-  });
-
-  const items = vykazy.map((vykaz) => {
-    return {
-      ...vykaz,
-      title: `Operace ${vykaz.operace} z OPV ${vykaz.opv} na stroji ${vykaz.stroj}`,
-      canMove: false,
-      canResize: false,
-      canChangeGroup: false,
-    };
-  });
-
   return (
     <div>
       {!loading && (
         <Timeline
-          groups={groups}
-          items={items}
+          //  keys={{ groupIdKey: 'zamestnanci' }}
+          stackItems={true}
+          canMove={false}
+          canResize={false}
+          canChangeGroup={false}
+          groups={zamestnanci}
+          items={vykazy}
           defaultTimeStart={filtr.datumOd}
           defaultTimeEnd={filtr.datumDo}
           onTimeChange={onTimeChange}
           itemRenderer={itemRenderer}
           onItemSelect={(item) =>
-            setDetailVykazu(items.find((_item) => _item.id === item))
+            setDetailVykazu(vykazy.find((_vykaz) => _vykaz.id === item))
           }
           onItemDeselect={(item) => setDetailVykazu(null)}
         >
