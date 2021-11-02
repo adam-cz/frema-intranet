@@ -68,7 +68,7 @@ const httpsOptions = {
 };
 
 mongoose
-  .connect(process.env.MONGO_URI, mongoConfig)
+  .connect(process.env.MONGO_URI_PROD, mongoConfig)
   .then(() => {
     const server = https
       .createServer(httpsOptions, app)
