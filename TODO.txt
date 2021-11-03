@@ -21,7 +21,8 @@ CLIENT
 - VYKAZOVANI OPERACI 
     DONE - zvyrazneni neukoncenych procesu
     DONE - zobrazeni casovych os vykazu podle zadanych parametru
-    - pridani, editace, mazani a ukonceni vykazu
+    DONE - pridani, editace, mazani a ukonceni vykazu
+    - vycitani pouze relevantnich zamestnancu
     - detail vyberu
     - vicestroj priplatky
     - vikendove priplatky

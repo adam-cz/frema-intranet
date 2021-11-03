@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Table, Tag } from 'antd';
-import { DateTime } from 'luxon';
+import moment from 'moment';
+import 'moment-duration-format';
 import prepocetStrojniNaklady from '../../../../utils/prepocetStrojniNaklady';
 
 const formatter = new Intl.NumberFormat('cs-CZ', {
@@ -30,10 +31,10 @@ const columns = [
     render: (value) => formatter.format(value),
   },
   {
-    title: 'Celkem vykázáno (min.)',
+    title: 'Celkem vykázáno',
     dataIndex: 'vykazano',
     key: 'vykazano',
-    render: (value) => Math.round(value),
+    render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
   },
   {
     title: 'Náklady',
@@ -47,8 +48,7 @@ const columns = [
     render: (value) =>
       value ? (
         <Tag color="orange">
-          Stroj v proovzu od{' '}
-          {DateTime.fromISO(value).toLocaleString(DateTime.TIME_24_SIMPLE)}
+          Stroj v proovzu od {moment(value).format('HH:mm')}
         </Tag>
       ) : (
         <Tag color="green">Všechny výkazy dokončeny</Tag>
@@ -85,23 +85,23 @@ const SeznamStrojniNaklady = ({ operaceFiltr: operace }) => {
         title: 'Start',
         dataIndex: 'start',
         key: 'start',
-        render: (value) =>
-          DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT),
+        render: (value) => moment(value).format('D.M. HH:mm'),
       },
       {
         title: 'Stop',
         dataIndex: 'stop',
         key: 'stop',
         render: (value) =>
-          value
-            ? DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT)
-            : 'Výkaz není ukončen',
+          value ? moment(value).format('D.M. HH:mm') : 'Výkaz není ukončen',
       },
       {
-        title: 'Délka (min.)',
+        title: 'Délka',
         dataIndex: 'trvaniMin',
         key: 'trvaniMin',
-        render: (value) => (value ? Math.round(value) : 'Výkaz není ukončen'),
+        render: (value) =>
+          value
+            ? moment.duration(value, 'minutes').format('DD:HH:mm')
+            : 'Výkaz není ukončen',
       },
       {
         title: 'Náklady',

@@ -40,13 +40,13 @@ const columns = [
     key: 'odevedeno',
   },
   {
-    title: 'Trvání plán (min)',
+    title: 'Trvání plán',
     dataIndex: 'trvani_plan',
     key: 'trvani_plan',
-    render: (value) => Math.round(value),
+    render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
   },
   {
-    title: 'Vykázáno (min)',
+    title: 'Vykázáno',
     dataIndex: 'trvani',
     key: 'trvani',
     render: (value) => moment.duration(value).format('DD:HH:mm'),

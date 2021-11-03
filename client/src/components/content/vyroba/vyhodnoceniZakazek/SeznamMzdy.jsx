@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Table, Tag } from 'antd';
-import { DateTime } from 'luxon';
+import moment from 'moment';
+import 'moment-duration-format';
 import prepocetMzdy from '../../../../utils/prepocetMzdy';
 
 const formatter = new Intl.NumberFormat('cs-CZ', {
@@ -23,10 +24,10 @@ const columns = [
     render: (value) => formatter.format(value),
   },
   {
-    title: 'Celkem vykázáno (min.)',
+    title: 'Celkem vykázáno',
     dataIndex: 'vykazano',
     key: 'vykazano',
-    render: (value) => Math.round(value),
+    render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
   },
   {
     title: 'Mzda',
@@ -92,23 +93,23 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           title: 'Start',
           dataIndex: 'start',
           key: 'start',
-          render: (value) =>
-            DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT),
+          render: (value) => moment(value).format('D.M. HH:mm'),
         },
         {
           title: 'Stop',
           dataIndex: 'stop',
           key: 'stop',
           render: (value) =>
-            value
-              ? DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_SHORT)
-              : 'Výkaz není ukončen',
+            value ? moment(value).format('D.M. HH:mm') : 'Výkaz není ukončen',
         },
         {
-          title: 'Délka (min.)',
+          title: 'Délka',
           dataIndex: 'trvaniMin',
           key: 'trvaniMin',
-          render: (value) => (value ? Math.round(value) : 'Výkaz není ukončen'),
+          render: (value) =>
+            value
+              ? moment.duration(value, 'minutes').format('DD:HH:mm')
+              : 'Výkaz není ukončen',
         },
         {
           title: 'Mzda',
@@ -158,10 +159,10 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
       },
       { title: 'Zdroj', dataIndex: 'zdroj', key: 'zdroj' },
       {
-        title: 'Vykázáno na stroji (min.)',
+        title: 'Vykázáno na stroji',
         dataIndex: 'vykazano',
         key: 'vykazano',
-        render: (value) => Math.round(value),
+        render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
       },
       {
         title: 'Mzda na stroji',
@@ -188,10 +189,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         render: (value) =>
           value ? (
             <Tag color="orange">
-              Operace aktivní od{' '}
-              {DateTime.fromISO(value.start).toLocaleString(
-                DateTime.TIME_24_SIMPLE
-              )}
+              Operace aktivní od {moment(value).format('HH:mm')}
             </Tag>
           ) : (
             <Tag color="green">Všechny výkazy dokončeny</Tag>
