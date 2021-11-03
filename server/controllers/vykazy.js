@@ -205,7 +205,7 @@ export const upravitCas = async (req, res) => {
     const casDo = req.body.casy?.do || zaznam.stop;
 
     //Ověřuje jestli není počáteční čas výkazu vyšší než koncový
-    if (moment(casOd).valueOf() > moment(casDo).valueOf())
+    if (moment(casOd).valueOf() >= moment(casDo).valueOf())
       return res.status(200).json({
         status: 'error',
         message: 'Počáteční čas nemůže být vyšší než koncový',
