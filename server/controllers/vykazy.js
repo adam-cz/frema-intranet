@@ -1,5 +1,6 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
+import sql, { pool } from '../utils/karat.js';
 import moment from 'moment';
 
 const _overPrunik = (start, stop, filtrStart, filtrStop) =>
@@ -188,7 +189,38 @@ export const hledejProces = async (req, res) => {
 };
 
 export const vytvoritVykaz = async (req, res) => {
+  const data = req.body.data;
+  if (data.do && moment(data.od).valueOf() >= moment(data.do).valueOf())
+    return res.status(200).json({
+      status: 'error',
+      message: 'Počáteční čas nemůže být vyšší než koncový',
+    });
   try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const proces = await Proces.findOne({
+      opv: data.opv,
+      polozka: data.operace,
+    });
+    const user = await User.findOne({ _id: data.zamestnanecId });
+    const { recordset: hodinovaMzda } = await request.query(
+      `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+        user._id
+      } AND rok = ${new Date(
+        data.od || Date.now()
+      ).getFullYear()} AND mesic = ${new Date(
+        data.od || Date.now()
+      ).getMonth()});`
+    );
+    proces.zaznamy.push({
+      operator_id: user._id,
+      operator_jmeno: `${user.name} ${user.surname}`,
+      stroj: data.stroj,
+      sazba: hodinovaMzda[0].prd_plati,
+      start: data.od,
+      stop: data.do ? data.do : null,
+    });
+    await proces.save();
     res.status(200).json({ status: 'success', message: 'Výkaz byl vytvořen' });
   } catch (err) {
     res.json({ status: 'error', message: err }).status(404);

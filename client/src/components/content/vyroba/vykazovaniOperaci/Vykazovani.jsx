@@ -106,6 +106,7 @@ const OperationReporting = () => {
           <PridatVykazModal
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            setRestart={setRestart}
           />
         </>
       )}

@@ -1,4 +1,3 @@
-import { Table } from 'antd';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import 'moment-duration-format';
