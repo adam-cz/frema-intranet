@@ -34,10 +34,26 @@ const OperationReporting = () => {
   const [data, setData] = useState(null);
   const [editDate, setEditDate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [markers, setMarkers] = useState(null);
+
+  const defineMarkers = (datumOd, datumDo) => {
+    let markers = [];
+    let id = 1;
+    for (
+      let i = moment(datumOd).add(8, 'hours');
+      i <= moment(datumDo);
+      i.add(8, 'hours')
+    ) {
+      markers.push({ date: i.valueOf(), id });
+      id++;
+    }
+    return markers;
+  };
 
   const clickHandler = () => {
     setLoading(true);
     api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
+      setMarkers(defineMarkers(filtr.datumOd, filtr.datumDo));
       setFiltr({ ...filtr, zamestnanecId: null });
       setData(res.data);
       setDataFiltered(res.data);
@@ -52,6 +68,7 @@ const OperationReporting = () => {
   useEffect(() => {
     if (restart)
       api.nacistVykazy(filtr.datumOd, filtr.datumDo).then((res) => {
+        setMarkers(defineMarkers(filtr.datumOd, filtr.datumDo));
         setData(res.data);
         setDataFiltered(res.data);
         setLoading(false);
@@ -94,6 +111,7 @@ const OperationReporting = () => {
             filtr={filtr}
             setDetailVykazu={setDetailVykazu}
             setEditDate={setEditDate}
+            markers={markers}
           />
           <Button
             style={{ marginTop: 20 }}
@@ -119,6 +137,7 @@ const OperationReporting = () => {
             setDetailVykazu={setDetailVykazu}
             editDate={editDate}
             setEditDate={setEditDate}
+            markers={markers}
           />
         </>
       )}

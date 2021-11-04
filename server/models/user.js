@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   rfid: String,
+  jednicovy: Boolean,
   working: [{ opv: String, polozka: String, stroj: String }],
   isPresent: Boolean,
   lastOperation: Date,

@@ -7,12 +7,14 @@ BARCODE TERMINAL
 DONE - logovani vykazu (10 poslednich zobrazit, zbytek do .log nebo localstorage)
 DONE - zobrazeni aktivnich procesu uzivatele
 DONE - opravit: na bezicim CNC (stroji jinem nez NULL) by nemelo jit spustit soucasne vice procesu
-- opravit: offline režim
+- přepracovat offline režim
 
 CLIENT
 - vyjmout z vypoctu str. nakl. pripravny cas
-- vypocet a zobrazeni vicestrojovky
-- generovani volnych carovych kodu
+- indikace vicestrojovky a vikendovych vykazu
+- generovani volnych carovych kodu (separatni kolekce v db, 
+    v klientovy zalozka parovani, pri nacteni barkodu overit sparovani,
+    kdyztak uz hazet)
 - indikace dokoncenych (vyvedenych) opv
 - na zaklade dokonceni (vyvedeni) opv uzavrit moznost vykazovani
 - kolacove gafy planu a skutecnosti a prepinani mezi nimi
@@ -22,11 +24,11 @@ CLIENT
     DONE - zvyrazneni neukoncenych procesu
     DONE - zobrazeni casovych os vykazu podle zadanych parametru
     DONE - pridani, editace, mazani a ukonceni vykazu
-    - vycitani pouze relevantnich zamestnancu
+    DONE - vycitani pouze relevantnich zamestnancu
     - detail vyberu
     - vicestroj priplatky
     - vikendove priplatky
-    - rozdeleni osy na smeny
+    DONE - rozdeleni osy na smeny
 
 SERVER
 - vypocet vicestrojovky

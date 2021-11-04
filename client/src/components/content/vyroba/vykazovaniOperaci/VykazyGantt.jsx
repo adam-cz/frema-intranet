@@ -1,5 +1,8 @@
 import moment from 'moment';
-import Timeline, { CustomMarker } from 'react-calendar-timeline';
+import Timeline, {
+  CustomMarker,
+  TimelineMarkers,
+} from 'react-calendar-timeline';
 import './Timeline.css';
 
 const VykazyGantt = ({
@@ -9,6 +12,7 @@ const VykazyGantt = ({
   loading,
   setDetailVykazu,
   setEditDate,
+  markers,
 }) => {
   const minTime = filtr.datumOd.valueOf();
   const maxTime = filtr.datumDo.valueOf();
@@ -75,7 +79,7 @@ const VykazyGantt = ({
     <div>
       {!loading && (
         <Timeline
-          //  keys={{ groupIdKey: 'zamestnanci' }}
+          lineHeight={35}
           stackItems={true}
           canMove={false}
           canResize={false}
@@ -95,17 +99,33 @@ const VykazyGantt = ({
             setEditDate(false);
           }}
         >
-          <CustomMarker date={moment()}>
-            {/* custom renderer for this marker */}
-            {({ styles, date }) => {
-              const customStyles = {
-                ...styles,
-                backgroundColor: 'red',
-                width: '1px',
-              };
-              return <div style={customStyles} />;
-            }}
-          </CustomMarker>
+          <TimelineMarkers>
+            <CustomMarker date={moment()}>
+              {/* custom renderer for this marker */}
+              {({ styles, date }) => {
+                const customStyles = {
+                  ...styles,
+                  backgroundColor: 'red',
+                  width: '1px',
+                };
+                return <div style={customStyles} />;
+              }}
+            </CustomMarker>
+            {console.log(markers)}
+            {markers.length > 1 &&
+              markers.map((marker) => (
+                <CustomMarker key={marker.id} date={marker.date}>
+                  {({ styles, date }) => {
+                    const customStyles = {
+                      ...styles,
+                      backgroundColor: 'black',
+                      width: '2px',
+                    };
+                    return <div style={customStyles} />;
+                  }}
+                </CustomMarker>
+              ))}
+          </TimelineMarkers>
         </Timeline>
       )}
     </div>

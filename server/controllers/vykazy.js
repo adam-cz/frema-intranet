@@ -175,7 +175,10 @@ export const hledejProces = async (req, res) => {
         procesy: null,
       });
 
-    const zamestnanci = await User.find({}, { name: 1, surname: 1, _id: 1 });
+    const zamestnanci = await User.find(
+      { jednicovy: true },
+      { name: 1, surname: 1, _id: 1 }
+    );
     console.log(zamestnanci);
     res.status(200).json({
       status: 'success',
