@@ -86,7 +86,13 @@ const DetailZakazky = () => {
             </div>
           </TabPane>
           <TabPane tab="Dokončenost výroby" key="3">
-            <GrafDokoncenoProgress operaceFiltr={operaceFiltr} />
+            <div className="dokoncenost">
+              <div className="progress-bar">
+                {operaceFiltr && (
+                  <GrafDokoncenoProgress operaceFiltr={operaceFiltr} />
+                )}
+              </div>
+            </div>
           </TabPane>
           <TabPane tab="Vyhodnocení ziskovosti" key="4"></TabPane>
         </Tabs>

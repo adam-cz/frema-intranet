@@ -1,33 +1,46 @@
 import { Bullet } from '@ant-design/charts';
+import { AlipaySquareFilled } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 
 const GrafDokoncenoProgress = ({ operaceFiltr: operace }) => {
   console.log(operace);
-  var data = [
+
+  const data = [
     {
-      title: 'Dokončenost',
-      ranges: [100],
-      measures: [50],
-      target: 85,
+      title: 'Operace',
+      plan_vyroba: [
+        operace.reduce((total, current) => total + current.planvyroba, 0),
+      ],
+      odvedeno: [
+        operace.reduce((total, current) => total + current.odvedeno, 0),
+      ],
     },
   ];
-  var config = {
+  const config = {
     data: data,
-    measureField: 'measures',
-    rangeField: 'ranges',
-    targetField: 'target',
+    meta: {
+      ve_vyrobe: {
+        values: [
+          operace.reduce((total, current) => total + current.vevyrobe, 0),
+        ],
+      },
+    },
+    measureField: 'odvedeno',
+    rangeField: 'plan_vyroba',
+    targetField: 've_vyrobe',
     xField: 'title',
+    layout: 'vertical',
     color: {
       range: '#f0efff',
       measure: '#5B8FF9',
       target: '#3D76DD',
     },
     xAxis: { line: null },
-    yAxis: false,
-    layout: 'vertical',
-    label: {
-      measure: {
-        position: 'middle',
-        style: { fill: '#fff' },
+    yAxis: {
+      tickMethod: function tickMethod(_ref) {
+        var max = _ref.max;
+        var interval = Math.ceil(max / 5);
+        return [0, interval, interval * 2, interval * 3, interval * 4, max];
       },
     },
     legend: {
@@ -35,8 +48,8 @@ const GrafDokoncenoProgress = ({ operaceFiltr: operace }) => {
       position: 'bottom',
       items: [
         {
-          value: 'Vykázané operace',
-          name: 'Vykázané operace',
+          value: 'Dokončenost',
+          name: 'Dokončenost',
           marker: {
             symbol: 'square',
             style: {
