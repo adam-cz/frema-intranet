@@ -17,6 +17,7 @@ const procesSchema = mongoose.Schema({
       operator_jmeno: String,
       sazba: Number,
       stroj: String,
+      soubezne_procesy: [],
     },
   ],
   prvniVykaz: Date,

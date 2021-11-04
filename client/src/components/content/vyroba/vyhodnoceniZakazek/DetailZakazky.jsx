@@ -1,5 +1,5 @@
 import './DetailZakazky.css';
-import { Divider, Tabs, Button, Row, Col } from 'antd';
+import { Divider, Tabs, Button, Typography } from 'antd';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -18,8 +18,10 @@ import NewWindow from 'react-new-window';
 import SeznamStrojniNaklady from './SeznamStrojniNaklady';
 import SeznamMaterial from './SeznamMaterial';
 import SeznamKooperace from './SeznamKooperace';
+import GrafDokoncenoProgress from './GrafDokoncenoProgress';
 
 const { TabPane } = Tabs;
+const { Title } = Typography;
 
 const DetailZakazky = () => {
   const { objednavka, final, opv } = useParams();
@@ -74,14 +76,18 @@ const DetailZakazky = () => {
           <TabPane tab="Poměr plánovaných a reálných nákladů" key="2">
             <div className="kolace">
               <div className="kolacPlan">
+                <Title level={5}>Plánované náklady:</Title>
                 <GrafKolacPlan operaceFiltr={operaceFiltr} />
               </div>
               <div className="kolac">
+                <Title level={5}>Skutečné náklady:</Title>
                 <GrafKolac operaceFiltr={operaceFiltr} />
               </div>
             </div>
           </TabPane>
-          <TabPane tab="Dokončenost výroby" key="3"></TabPane>
+          <TabPane tab="Dokončenost výroby" key="3">
+            <GrafDokoncenoProgress operaceFiltr={operaceFiltr} />
+          </TabPane>
           <TabPane tab="Vyhodnocení ziskovosti" key="4"></TabPane>
         </Tabs>
       )}

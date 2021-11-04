@@ -12,7 +12,7 @@ const GrafKolacPlan = ({ operaceFiltr: operace }) => {
     {
       type: 'Socální a zdravotní',
       value: Math.round(
-        operace.reduce((total, current) => total + current.nakl_r1, 0)
+        operace.reduce((total, current) => total + current.nakl_r1_plan, 0)
       ),
     },
     {
@@ -51,6 +51,24 @@ const GrafKolacPlan = ({ operaceFiltr: operace }) => {
     data: data.map((item) => item.value > 0 && item),
     angleField: 'value',
     colorField: 'type',
+    color: ({ type }) => {
+      if (type === 'Mzdy') {
+        return '#6395F9';
+      }
+      if (type === 'Socální a zdravotní') {
+        return '#7666F9';
+      }
+      if (type === 'Strojní náklady') {
+        return '#F6C022';
+      }
+      if (type === 'Kooperace') {
+        return '#657798';
+      }
+      if (type === 'Materiál') {
+        return '#62DAAB';
+      }
+      return 'white';
+    },
     radius: 0.75,
     legend: {
       position: 'left',
