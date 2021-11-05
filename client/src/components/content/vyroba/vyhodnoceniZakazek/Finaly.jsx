@@ -47,6 +47,7 @@ const Finaly = ({ setVyber }) => {
         record.uzavreno ? 'table-row-uzavreno' : 'table-row-neuzavreno'
       }
       dataSource={finaly}
+      size="small"
       columns={columns}
       loading={loading}
       rowKey="opv"

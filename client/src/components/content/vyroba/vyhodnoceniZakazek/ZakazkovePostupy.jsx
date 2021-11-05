@@ -60,6 +60,10 @@ const ZakazkovePostupy = ({ setVyber }) => {
 
   return (
     <TableSearch
+      rowClassName={(record) =>
+        record.uzavreno ? 'table-row-uzavreno' : 'table-row-neuzavreno'
+      }
+      size="small"
       dataSource={postupy}
       columns={columns}
       loading={loading}

@@ -54,6 +54,7 @@ const Objednavky = ({ setObjednavka }) => {
 
   return (
     <TableSearch
+      size="small"
       dataSource={objednavky}
       columns={columns}
       loading={loading}
