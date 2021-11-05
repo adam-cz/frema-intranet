@@ -1,6 +1,7 @@
 export const zdroje = [
   {
     zdroj: '160',
+    nazev: 'CNC',
     vicestroj: true,
     stroje: [
       {

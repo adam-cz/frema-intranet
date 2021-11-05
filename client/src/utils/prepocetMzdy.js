@@ -29,6 +29,7 @@ export default function prepocetMzdy(operace) {
         zamestnanec.operace.push({
           stroj: vykaz.stroj,
           zdroj: op.zdroj,
+          zdroj_nazev: op.zdroj_nazev,
           vykazy: [],
         });
       }

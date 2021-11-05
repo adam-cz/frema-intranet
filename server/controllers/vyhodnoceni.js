@@ -131,6 +131,11 @@ const nactiOperace = async (objednavka) => {
     //Vyhledá finální zakázkové postupy objednávky
     const zakazkovePostupyFinaly = await fetchFinals(objednavka);
 
+    //Načte názvy zdrojů
+    const { recordset: zdroje } = await request.query(
+      `SELECT zdroj, nazev FROM dba.zdr_zdr;`
+    );
+
     //Vyhledá podřízené zakázkové postupy finálů
     await Promise.all(
       zakazkovePostupyFinaly.map(async (final) => {
@@ -157,6 +162,8 @@ const nactiOperace = async (objednavka) => {
             operaceKarat.map((op) =>
               operace.push({
                 ...op,
+                zdroj_nazev: zdroje.find((zdroj) => zdroj.zdroj === op.zdroj)
+                  .nazev,
                 id: `${op.opv}_${op.polozka}`,
                 //Pro získání celkové částky je nutno násobit počtem kusů
                 trvani_plan: op.trvani_plan * op.planvyroba,

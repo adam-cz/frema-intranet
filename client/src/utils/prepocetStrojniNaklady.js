@@ -15,6 +15,7 @@ export default function prepocetStrojniNaklady(operace) {
         strojeHelper.push({
           stroj: vykaz.stroj,
           zdroj: op.zdroj,
+          zdroj_nazev: op.zdroj_nazev,
           sazba: op.stroje.find((stroj) => vykaz.stroj === stroj.nazev).sazba,
           vykazy: [],
         });
@@ -53,6 +54,5 @@ export default function prepocetStrojniNaklady(operace) {
     );
     stroj.cinnost = stroj.vykazy?.find((vykaz) => !vykaz.stop)?.start || false;
   });
-
   return strojeHelper;
 }

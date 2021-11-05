@@ -27,7 +27,7 @@ const columns = [
     title: 'Celkem vykázáno',
     dataIndex: 'vykazano',
     key: 'vykazano',
-    render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
+    render: (value) => moment.duration(value, 'minutes').format('HH:mm'),
   },
   {
     title: 'Mzda',
@@ -108,7 +108,7 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
           key: 'trvaniMin',
           render: (value) =>
             value
-              ? moment.duration(value, 'minutes').format('DD:HH:mm')
+              ? moment.duration(value, 'minutes').format('HH:mm')
               : 'Výkaz není ukončen',
         },
         {
@@ -155,14 +155,15 @@ const SeznamMzdy = ({ operaceFiltr: operace }) => {
         title: 'Stroj',
         dataIndex: 'stroj',
         key: 'stroj',
-        render: (value) => (value === 'NULL' ? 'Výchozí stroj' : value),
+        render: (value, record) =>
+          value === 'NULL' ? `Zařízení zdroje ${record.zdroj_nazev}` : value,
       },
       { title: 'Zdroj', dataIndex: 'zdroj', key: 'zdroj' },
       {
         title: 'Vykázáno na stroji',
         dataIndex: 'vykazano',
         key: 'vykazano',
-        render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
+        render: (value) => moment.duration(value, 'minutes').format('HH:mm'),
       },
       {
         title: 'Mzda na stroji',

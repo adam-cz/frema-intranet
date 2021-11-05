@@ -17,7 +17,7 @@ const columns = [
     dataIndex: 'stroj',
     key: 'stroj',
     render: (value, record) =>
-      value === 'NULL' ? `Zařízení zdroje ${record.zdroj}` : value,
+      value === 'NULL' ? `Zařízení zdroje ${record.zdroj_nazev}` : value,
   },
   {
     title: 'Zdroj',
@@ -34,7 +34,7 @@ const columns = [
     title: 'Celkem vykázáno',
     dataIndex: 'vykazano',
     key: 'vykazano',
-    render: (value) => moment.duration(value, 'minutes').format('DD:HH:mm'),
+    render: (value) => moment.duration(value, 'minutes').format('HH:mm'),
   },
   {
     title: 'Náklady',
@@ -60,7 +60,7 @@ const SeznamStrojniNaklady = ({ operaceFiltr: operace }) => {
   const [operaceStrNakl, setOperaceStrNakl] = useState(null);
   const [loading, setLoading] = useState(true);
   const operaceRef = useRef(null);
-
+  console.log(operace);
   //Způsobí přepočet při změně výběru ZP
   useEffect(() => {
     if (operace !== operaceRef.current) setLoading(true);
@@ -100,7 +100,7 @@ const SeznamStrojniNaklady = ({ operaceFiltr: operace }) => {
         key: 'trvaniMin',
         render: (value) =>
           value
-            ? moment.duration(value, 'minutes').format('DD:HH:mm')
+            ? moment.duration(value, 'minutes').format('HH:mm')
             : 'Výkaz není ukončen',
       },
       {

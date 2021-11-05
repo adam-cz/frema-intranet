@@ -1,6 +1,4 @@
 import { Bullet } from '@ant-design/charts';
-import { AlipaySquareFilled } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
 
 const GrafDokoncenoProgress = ({ operaceFiltr: operace }) => {
   console.log(operace);
@@ -14,6 +12,9 @@ const GrafDokoncenoProgress = ({ operaceFiltr: operace }) => {
       odvedeno: [
         operace.reduce((total, current) => total + current.odvedeno, 0),
       ],
+      ve_vyrobe:
+        operace.reduce((total, current) => total + current.odvedeno, 0) +
+        operace.reduce((total, current) => total + current.vevyrobe, 0),
     },
   ];
   const config = {
