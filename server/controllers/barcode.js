@@ -56,6 +56,7 @@ export const setProces = async (req, res) => {
         proces: 'neexistuje',
       });
 
+    /*
     //ZP je již vyveden a vykazování na danou operaci je uzamčeno
     if (
       (await request.query(
@@ -66,6 +67,7 @@ export const setProces = async (req, res) => {
         status: 'error',
         message: 'Zakázkový postup je již uzavřen. Vykazování uzamčeno.',
       });
+      */
 
     //Chybně načtený kód
     const stroje = ['NULL'];
