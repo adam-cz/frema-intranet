@@ -3,6 +3,7 @@ import TableSearch from '../../ui/TableSearch';
 import * as api from '../../../../api/index';
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
+import './Table.css';
 
 const Finaly = ({ setVyber }) => {
   const history = useHistory();
@@ -42,6 +43,9 @@ const Finaly = ({ setVyber }) => {
 
   return (
     <TableSearch
+      rowClassName={(record) =>
+        record.uzavreno ? 'table-row-uzavreno' : 'table-row-neuzavreno'
+      }
       dataSource={finaly}
       columns={columns}
       loading={loading}

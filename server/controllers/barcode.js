@@ -56,6 +56,17 @@ export const setProces = async (req, res) => {
         proces: 'neexistuje',
       });
 
+    //ZP je již vyveden a vykazování na danou operaci je uzamčeno
+    if (
+      (await request.query(
+        `SELECT xuzavreno AS "uzavreno",FROM dba.v_opvvyrza WHERE opv = '${barcode[0]}';`
+      )[0].uzavreno) === 1
+    )
+      return res.status(200).json({
+        status: 'error',
+        message: 'Zakázkový postup je již uzavřen. Vykazování uzamčeno.',
+      });
+
     //Chybně načtený kód
     const stroje = ['NULL'];
     zdroje.forEach((zdroj) =>

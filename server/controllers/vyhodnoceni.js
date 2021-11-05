@@ -81,6 +81,7 @@ const fetchFinals = async (objednavka) => {
       `SELECT TOP (500) TRIM(opv) AS "opv",
       objednavka,
       nazev,
+      xuzavreno AS "uzavreno",
       da_vy_op AS "datum_vytvoreni",
       planvyroba FROM dba.v_opv ${
         objednavka && `WHERE objednavka = '${objednavka}'`
@@ -100,6 +101,7 @@ const fetchOpvs = async (final) => {
       `SELECT TOP 500 TRIM(opv) AS "opv", 
       TRIM (opvfinal) AS "opvfinal",
       da_vy_op AS "datum_vzniku",
+      xuzavreno AS "uzavreno",
       popis, 
       planvyroba, 
       vevyrobe, 
