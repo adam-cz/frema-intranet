@@ -34,6 +34,13 @@ const Finaly = ({ setVyber }) => {
       key: 'datum_vytvoreni',
       render: (value) => DateTime.fromISO(value).toLocaleString(),
     },
+    {
+      title: 'Uzavřeno',
+      dataIndex: 'uzavreno',
+      key: 'uzavreno',
+      sorter: (a, b) => a.uzavreno - b.uzavreno,
+      render: (value) => (value === 0 ? 'ne' : 'ano'),
+    },
   ];
 
   useEffect(() => {

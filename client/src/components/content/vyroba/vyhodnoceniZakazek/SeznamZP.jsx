@@ -13,10 +13,9 @@ const formatter = new Intl.NumberFormat('cs-CZ', {
 });
 const { Text } = Typography;
 
-const SeznamZP = () => {
+const SeznamZP = ({ postupy, setPostupy }) => {
   const history = useHistory();
   const { objednavka, final, opv } = useParams();
-  const [postupy, setPostupy] = useState(null);
   const [loading, setLoading] = useState(true);
   const columns = [
     {

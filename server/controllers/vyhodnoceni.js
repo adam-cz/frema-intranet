@@ -65,7 +65,12 @@ const fetchOrders = async () => {
       [zkraceny_nazev], 
       [dat_por], 
       [dat_dodani], 
-      [dat_expedice] FROM dba.op_zahlavi WHERE denik = 'OP' ORDER BY dat_por DESC;`
+      [dat_expedice],
+      [cena_bez_dph],
+      [dph],
+      [cena_celkem],
+      [kurz],
+      [vyrizeno] FROM dba.op_zahlavi WHERE denik = 'OP' ORDER BY dat_por DESC;`
     );
     return objednavky;
   } catch (err) {
@@ -344,12 +349,28 @@ export const doplnMzdyAZbytek = async (operaceBezMezd) => {
 
 export const fetchData = async (req, res) => {
   try {
+    const poolConnection = await pool;
+    const request = new sql.Request(poolConnection);
+    const { recordset: objednavka } = await request.query(
+      `SELECT [doklad], 
+      [poznamka], 
+      [zkraceny_nazev], 
+      [dat_por], 
+      [dat_dodani], 
+      [dat_expedice],
+      [cena_bez_dph],
+      [dph],
+      [cena_celkem],
+      [kurz],
+      [vyrizeno] FROM dba.op_zahlavi WHERE doklad = '${req.params.order}'`
+    );
+
     const operace = await nactiOperace(req.params.order);
     await doplnVykazyStroje(operace);
     await doplnMaterialAPlan(operace);
     await doplnKooperace(operace);
     await doplnMzdyAZbytek(operace);
-    res.status(200).json(operace);
+    res.status(200).json({ operace, objednavka: objednavka[0] });
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err });

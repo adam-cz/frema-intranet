@@ -19,6 +19,7 @@ import SeznamStrojniNaklady from './SeznamStrojniNaklady';
 import SeznamMaterial from './SeznamMaterial';
 import SeznamKooperace from './SeznamKooperace';
 import GrafDokoncenoProgress from './GrafDokoncenoProgress';
+import { reduce } from 'lodash';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -26,24 +27,47 @@ const { Title } = Typography;
 const DetailZakazky = () => {
   const { objednavka, final, opv } = useParams();
   const [loading, setLoading] = useState(true);
+  const [postupy, setPostupy] = useState(null);
   const [operace, setOperace] = useState(null);
+  const [objednavkaDetail, setObjednavkaDetail] = useState(null);
   const [operaceFiltr, setOperaceFiltr] = useState(null);
   const [payload, setPayload] = useState(null);
 
   //Zpracování čárových kódů
   const clickHandler = () => {
     api.createProcedure(operaceFiltr).then(({ data }) => {
-      console.log(data.payload);
       setPayload(
         data.payload.sort((a, b) => parseInt(a.opv) - parseInt(b.opv))
       );
     });
   };
 
+  //Doplní souhrnná data objednávky
+  useEffect(() => {
+    if (postupy) {
+      console.log(postupy);
+      setObjednavkaDetail({
+        ...objednavkaDetail,
+        planVyroba: postupy.reduce(
+          (postup, total) => total + postup.planvyroba,
+          0
+        ),
+      });
+    }
+  }, [operaceFiltr]);
+
+  useEffect(() => {
+    console.log(objednavkaDetail);
+  }, [objednavkaDetail]);
+
   //Načítá operace na základě objednávky v prametru URL
   useEffect(() => {
     if (loading && !operace) {
-      api.fetchOperace(objednavka).then((result) => setOperace(result.data));
+      api.fetchOperace(objednavka).then((result) => {
+        console.log(result.data);
+        setOperace(result.data.operace);
+        setObjednavkaDetail(result.data.objednavka);
+      });
     }
   }, [operace, loading, objednavka]);
 
@@ -68,6 +92,7 @@ const DetailZakazky = () => {
     <div>
       <Breadcrumbs objednavka={objednavka} final={final} opv={opv} />
       <Divider />
+      {objednavkaDetail?.vyrizeno === 0}
       {operaceFiltr && (
         <Tabs defaultActiveKey="1">
           <TabPane tab="Porovnání nákladů" key="1">
@@ -98,7 +123,7 @@ const DetailZakazky = () => {
         </Tabs>
       )}
       <Divider>Zakázkové postupy objednávky {objednavka}</Divider>
-      <SeznamZP />
+      <SeznamZP postupy={postupy} setPostupy={setPostupy} />
       <Divider>Rozpis operací vybraných zakázkových postupů</Divider>
       <div>
         <Button className="buttonOperace" type="primary" onClick={clickHandler}>
