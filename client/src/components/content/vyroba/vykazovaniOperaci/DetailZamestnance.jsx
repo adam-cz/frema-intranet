@@ -1,4 +1,6 @@
 import { Alert, Descriptions, Row, Col, Space } from 'antd';
+import { useState, useEffect } from 'react';
+import prepocetVykazyZamestnance from '../../../../utils/prepocetStatistikyZamestnance';
 
 const DetailZamestnance = ({ zamestnanci, vykazy }) => {
   /*
@@ -12,6 +14,13 @@ produktivita (vyuziti pracovni doby)
 produktivita (cas vykazu vs plan)
 
 */
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (vykazy) {
+      setData(prepocetVykazyZamestnance(vykazy, zamestnanci));
+    }
+  }, [vykazy]);
 
   return (
     <div>

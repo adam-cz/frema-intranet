@@ -1,5 +1,4 @@
 export default function prepocetVykazy({ vykazy }) {
-  console.log(vykazy);
   const vykazyTridene = [];
   vykazy.forEach((vykaz) => {
     let vykazExist = vykazyTridene.find(
@@ -25,6 +24,5 @@ export default function prepocetVykazy({ vykazy }) {
       });
     }
   });
-  console.log(vykazyTridene);
   return vykazyTridene;
 }

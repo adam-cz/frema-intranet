@@ -29,7 +29,6 @@ const DetailVykazu = ({
   const handleEdit = ({ proces_id, id }) => {
     console.log(novyCas);
     api.upravitCas(proces_id, id, novyCas).then((res) => {
-      console.log(res);
       setRestart(true);
       message[res.data.status](res.data.message);
     });
@@ -47,7 +46,6 @@ const DetailVykazu = ({
         'Chystáte se ručně uzavřít aktivní výkaz. Skutečně chcete pokračovat?',
       onOk() {
         api.ukoncitVykaz(proces_id, id).then((res) => {
-          console.log(res);
           setRestart(true);
           setDetailVykazu(null);
           message[res.data.status](res.data.message);

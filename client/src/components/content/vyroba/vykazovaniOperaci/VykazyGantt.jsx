@@ -111,7 +111,6 @@ const VykazyGantt = ({
                 return <div style={customStyles} />;
               }}
             </CustomMarker>
-            {console.log(markers)}
             {markers.length > 1 &&
               markers.map((marker) => (
                 <CustomMarker key={marker.id} date={marker.date}>
