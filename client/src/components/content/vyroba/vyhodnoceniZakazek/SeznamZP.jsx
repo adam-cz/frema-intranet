@@ -159,6 +159,27 @@ const SeznamZP = ({ postupy, setPostupy }) => {
         else return <Text>{formatter.format(value)}</Text>;
       },
     },
+    {
+      title: 'Uzavřeno',
+      dataIndex: 'uzavreno',
+      key: 'uzavreno',
+      sorter: (a, b) => a.uzavreno - b.uzavreno,
+      render: (value, record) => {
+        if (!opv && final && record.opvfinal !== final)
+          return (
+            <Text style={{ color: '#D6DBDE' }}>
+              {value === 0 ? 'ne' : 'ano'}
+            </Text>
+          );
+        if (opv && record.opv !== opv)
+          return (
+            <Text style={{ color: '#D6DBDE' }}>
+              {value === 0 ? 'ne' : 'ano'}
+            </Text>
+          );
+        else return <Text>{value === 0 ? 'ne' : 'ano'}</Text>;
+      },
+    },
   ];
 
   useEffect(() => {
@@ -168,11 +189,14 @@ const SeznamZP = ({ postupy, setPostupy }) => {
         setLoading(false);
       });
     }
-  }, [loading, objednavka]);
+  }, [loading, objednavka, setPostupy]);
 
   return (
     <div>
       <Table
+        rowClassName={(record) =>
+          record.uzavreno ? 'table-row-uzavreno' : 'table-row-neuzavreno'
+        }
         dataSource={postupy}
         columns={columns}
         loading={loading}

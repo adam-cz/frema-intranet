@@ -1,5 +1,5 @@
 import './DetailZakazky.css';
-import { Divider, Tabs, Button, Typography } from 'antd';
+import { Divider, Tabs, Button, Typography, Alert } from 'antd';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -19,7 +19,6 @@ import SeznamStrojniNaklady from './SeznamStrojniNaklady';
 import SeznamMaterial from './SeznamMaterial';
 import SeznamKooperace from './SeznamKooperace';
 import GrafDokoncenoProgress from './GrafDokoncenoProgress';
-import { reduce } from 'lodash';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -49,9 +48,10 @@ const DetailZakazky = () => {
       setObjednavkaDetail({
         ...objednavkaDetail,
         planVyroba: postupy.reduce(
-          (postup, total) => total + postup.planvyroba,
+          (total, postup) => total + postup.planvyroba,
           0
         ),
+        odvedeno: postupy.reduce((total, postup) => total + postup.odvedeno, 0),
       });
     }
   }, [operaceFiltr]);
@@ -92,7 +92,24 @@ const DetailZakazky = () => {
     <div>
       <Breadcrumbs objednavka={objednavka} final={final} opv={opv} />
       <Divider />
-      {objednavkaDetail?.vyrizeno === 0}
+      {objednavkaDetail?.vyrizeno === 0 ? (
+        <Alert
+          type="error"
+          message="Objednávka není uzavřena, celkové údaje se ještě mohou měnit!"
+          showIcon
+        />
+      ) : (
+        ''
+      )}
+      {postupy?.length === 0 ? (
+        <Alert
+          type="warning"
+          message="Objednávka ještě nebyla zpracována technologem a nemá vytvořeny zakázkové postupy!"
+          showIcon
+        />
+      ) : (
+        ''
+      )}
       {operaceFiltr && (
         <Tabs defaultActiveKey="1">
           <TabPane tab="Porovnání nákladů" key="1">

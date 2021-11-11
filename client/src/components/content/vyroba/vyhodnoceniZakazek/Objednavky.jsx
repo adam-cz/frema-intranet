@@ -89,8 +89,8 @@ const Objednavky = ({ setObjednavka }) => {
       rowClassName={(record) =>
         record.vyrizeno ? 'table-row-vyfa' : 'table-row-nevyfa'
       }
-      size="small"
       dataSource={objednavky}
+      size="small"
       columns={columns}
       loading={loading}
       rowKey="doklad"
