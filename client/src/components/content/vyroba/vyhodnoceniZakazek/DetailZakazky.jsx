@@ -19,6 +19,7 @@ import SeznamStrojniNaklady from './SeznamStrojniNaklady';
 import SeznamMaterial from './SeznamMaterial';
 import SeznamKooperace from './SeznamKooperace';
 import GrafDokoncenoProgress from './GrafDokoncenoProgress';
+import GrafZiskovost from './GrafZiskovost';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -44,7 +45,6 @@ const DetailZakazky = () => {
   //Doplní souhrnná data objednávky
   useEffect(() => {
     if (postupy) {
-      console.log(postupy);
       setObjednavkaDetail({
         ...objednavkaDetail,
         planVyroba: postupy.reduce(
@@ -56,15 +56,10 @@ const DetailZakazky = () => {
     }
   }, [operaceFiltr]);
 
-  useEffect(() => {
-    console.log(objednavkaDetail);
-  }, [objednavkaDetail]);
-
   //Načítá operace na základě objednávky v prametru URL
   useEffect(() => {
     if (loading && !operace) {
       api.fetchOperace(objednavka).then((result) => {
-        console.log(result.data);
         setOperace(result.data.operace);
         setObjednavkaDetail(result.data.objednavka);
       });
@@ -136,7 +131,12 @@ const DetailZakazky = () => {
               </div>
             </div>
           </TabPane>
-          <TabPane tab="Vyhodnocení ziskovosti" key="4"></TabPane>
+          <TabPane tab="Vyhodnocení ziskovosti" key="4">
+            <GrafZiskovost
+              operace={operace}
+              objednavkaDetail={objednavkaDetail}
+            />
+          </TabPane>
         </Tabs>
       )}
       <Divider>Zakázkové postupy objednávky {objednavka}</Divider>
