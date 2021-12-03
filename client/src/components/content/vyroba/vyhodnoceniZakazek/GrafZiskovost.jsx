@@ -1,4 +1,4 @@
-import { Row, Col, Statistic, Space } from 'antd';
+import { Row, Col, Statistic } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
 const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
