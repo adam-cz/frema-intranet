@@ -20,6 +20,7 @@ import SeznamMaterial from './SeznamMaterial';
 import SeznamKooperace from './SeznamKooperace';
 import GrafDokoncenoProgress from './GrafDokoncenoProgress';
 import GrafZiskovost from './GrafZiskovost';
+import PridatVykazModal from '../vykazovaniOperaci/PridatVykazModal';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -32,6 +33,7 @@ const DetailZakazky = () => {
   const [objednavkaDetail, setObjednavkaDetail] = useState(null);
   const [operaceFiltr, setOperaceFiltr] = useState(null);
   const [payload, setPayload] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   //Zpracování čárových kódů
   const clickHandler = () => {
@@ -40,6 +42,10 @@ const DetailZakazky = () => {
         data.payload.sort((a, b) => parseInt(a.opv) - parseInt(b.opv))
       );
     });
+  };
+
+  const volneKodyModal = () => {
+    setModalVisible(true);
   };
 
   //Doplní souhrnná data objednávky
@@ -149,11 +155,11 @@ const DetailZakazky = () => {
         <Button
           className="buttonOperace"
           type="primary"
-          onClick={clickHandler}
-          disabled
+          onClick={() => volneKodyModal()}
         >
           Generovat volné čárové kódy
         </Button>
+        <PridatVykazModal modalVisible={modalVisible} />
       </div>
       {payload && (
         <NewWindow
