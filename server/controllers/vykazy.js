@@ -206,20 +206,38 @@ export const vytvoritVykaz = async (req, res) => {
       polozka: data.operace,
     });
     const user = await User.findOne({ _id: data.zamestnanecId });
-    const { recordset: hodinovaMzda } = await request.query(
-      `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-        user._id
-      } AND rok = ${new Date(
-        data.od || Date.now()
-      ).getFullYear()} AND mesic = ${new Date(
-        data.od || Date.now()
-      ).getMonth()});`
-    );
+
+    /*
+      /  Získání hodinové sazby zaměstnance
+      /  - Sazba se bere z hodinového průměru za předchozí kvartál
+      /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se sazbou z minulého měsíce
+      /  - Pokud není k dispozici žádný údaj, což by se stalo pouze v případě, že zaměstnanec nebyl ještě naveden do
+      /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
+      */
+
+    let date = new Date(cas || Date.now()); // Datum pro které získáváme sazbu
+
+    // Funkce pro získání hodinové sazby na základě osobního čísla a data
+    const zjistiMzdu = async (date) => {
+      return await request.query(
+        `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+          user.id
+        } AND rok = ${date.getFullYear()} AND mesic = ${date.getMonth()});`
+      );
+    };
+
+    // do proměnné uloží hodinovou sazbu z aktuálního měsíce,
+    // v případě, že sazba neexistuje, pokusí se zjistit sazbu z měsíce předchozího
+    // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 150kč.
+    const hodinovaMzda = (await zjistiMzdu(date)).recordset[0] ||
+      (date.setMonth(date.getMonth() - 1) &&
+        (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 150 };
+
     proces.zaznamy.push({
       operator_id: user._id,
       operator_jmeno: `${user.name} ${user.surname}`,
       stroj: data.stroj,
-      sazba: hodinovaMzda[0].prd_plati,
+      sazba: hodinovaMzda.prd_plati,
       start: data.od,
       stop: data.do ? data.do : null,
     });

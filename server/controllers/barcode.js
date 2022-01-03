@@ -118,7 +118,7 @@ export const setProces = async (req, res) => {
         zaznam.stroj === barcode[2] &&
         !zaznam.stop
     );
-    console.log(typeof req.body.user.id, proces, vykazExist);
+
     //Pokud nalezne, ukončí ho
     if (vykazExist) {
       vykazExist.stop = cas || Date.now();
@@ -145,21 +145,38 @@ export const setProces = async (req, res) => {
 
     //Pokud nenalezne, vytvoří nový výkaz
     if (!vykazExist) {
-      const { recordset: hodinovaMzda } = await request.query(
-        `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-          req.body.user.id
-        } AND rok = ${new Date(
-          cas || Date.now()
-        ).getFullYear()} AND mesic = ${new Date(
-          cas || Date.now()
-        ).getMonth()});`
-      );
+      /*
+      /  Získání hodinové sazby zaměstnance
+      /  - Sazba se bere z hodinového průměru za předchozí kvartál
+      /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se sazbou z minulého měsíce
+      /  - Pokud není k dispozici žádný údaj, což by se stalo pouze v případě, že zaměstnanec nebyl ještě naveden do
+      /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
+      */
+
+      let date = new Date(cas || Date.now()); // Datum pro které získáváme sazbu
+
+      // Funkce pro získání hodinové sazby na základě osobního čísla a data
+      const zjistiMzdu = async (date) => {
+        return await request.query(
+          `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
+            req.body.user.id
+          } AND rok = ${date.getFullYear()} AND mesic = ${date.getMonth()});`
+        );
+      };
+
+      // do proměnné uloží hodinovou sazbu z aktuálního měsíce,
+      // v případě, že sazba neexistuje, pokusí se zjistit sazbu z měsíce předchozího
+      // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 150kč.
+      const hodinovaMzda = (await zjistiMzdu(date)).recordset[0] ||
+        (date.setMonth(date.getMonth() - 1) &&
+          (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 150 };
+
       proces.zaznamy.push({
         start: cas || Date.now(),
         operator_id: req.body.user.id,
         operator_jmeno: req.body.user.jmeno,
         stroj: barcode[2],
-        sazba: hodinovaMzda[0].prd_plati,
+        sazba: hodinovaMzda.prd_plati,
       });
       //a přiřadí uživateli aktivní proces
       user.working.push({
@@ -178,6 +195,7 @@ export const setProces = async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
     res.status(404).json({ error: err });
   }
 };

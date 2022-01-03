@@ -62,7 +62,7 @@ const mongoConfig = {
 };
 
 mongoose
-  .connect(process.env.MONGO_URI, mongoConfig)
+  .connect(process.env.MONGO_URI_PROD, mongoConfig)
   .then(() => {
     app.listen(port, () =>
       console.log(
