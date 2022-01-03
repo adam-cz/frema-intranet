@@ -1,7 +1,7 @@
 # frema-intranet
 Frema a.s. company intranet solution
 
-!!System is depply connected to IS KARAT and Estelar attendance system and not working standalone
+!!System is deeply connected to IS KARAT and Estelar attendance system and not working standalone
 
 implemented technologies:
 - MVC architecture
