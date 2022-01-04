@@ -153,6 +153,7 @@ const DetailZakazky = () => {
           Generovat čárové kódy k operacím
         </Button>
         <Button
+          disabled
           className="buttonOperace"
           type="primary"
           onClick={() => volneKodyModal()}

@@ -215,13 +215,13 @@ export const vytvoritVykaz = async (req, res) => {
       /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
       */
 
-    let date = new Date(cas || Date.now()); // Datum pro které získáváme sazbu
+    let date = new Date(data.od || Date.now()); // Datum pro které získáváme sazbu
 
     // Funkce pro získání hodinové sazby na základě osobního čísla a data
     const zjistiMzdu = async (date) => {
       return await request.query(
         `SELECT [prd_plati] FROM dba.mzdy WHERE (oscislo = ${
-          user.id
+          user._id
         } AND rok = ${date.getFullYear()} AND mesic = ${date.getMonth()});`
       );
     };

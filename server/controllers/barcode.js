@@ -3,6 +3,7 @@ import User from '../models/user.js';
 import sql, { pool } from '../utils/karat.js';
 import { zdroje } from '../config/zdroje.js';
 
+// Funkce, kterou client ověřuje, zda-li je server již k dispozici
 export const ping = (req, res) => {
   try {
     return res.status(200).json({ status: 'operational' });
@@ -12,6 +13,9 @@ export const ping = (req, res) => {
   }
 };
 
+// Ověřuje existenci uživatele v databázi
+// - V případě, že uživatel neexistuje, vrací status error a message pro zobrazení na frontendu
+// - Jinak vrací status success, message a objekt s uživatelskými daty
 export const verifyCardId = async (req, res) => {
   try {
     const user = await User.findOne({ rfid: req.params.id });
@@ -22,7 +26,7 @@ export const verifyCardId = async (req, res) => {
     const employee = {
       id: user._id,
       jmeno: `${user.name} ${user.surname}`,
-      procesy: user.working,
+      procesy: user.working, // user.working obsahuje aktivní operace uživatele
     };
     return res.status(200).json({
       status: 'success',
@@ -35,12 +39,25 @@ export const verifyCardId = async (req, res) => {
   }
 };
 
+/*
+/  Funkce obstarává ověření čárového kódu a ověření a přiřazování operací
+/  - Nejdříve ověřuje existenci operace z načteného čárového kódu v databázi
+/  - Následuje ověření existence názvu stroje z ČK (stává se, že bývá chybně načten čtečkou)
+/  - Pokračuje ověření, zda-li na stroji již neběží jiná operace. Toto se vztahuje jen na stroje 
+/    definované zvlášť v ./config/zdroje.js, nikoliv na defaultni stroje zdroje (označení NULL),
+/    těch totiž může být na daný zdroj k dispozici více.
+/  - Dále ověřuje, zda-li zaměstnanec nepracuje již na jiné operaci. Toto platí pouze pokud je operace
+/    prováděna na výchozím stroji (NULL), stroje z ./config/zdroje.js jsou při tomto ověření ignorovány,
+/    protože se jedná o CNC, na kterých je potřeba umožnit vícestrojovku (TODO: přidat parametr pro vícestrojovku a ověřovat na základě něj)
+/  - Pokud všechna ověření proběhnou v pořádku tak se operace u daného uživatele buď ukončí nebo započne.
+*/
+
 export const setProces = async (req, res) => {
   try {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
 
-    const barcode = req.body.barcode.split('_');
+    const barcode = req.body.barcode.split('_'); // Rozdělí ČK na OPV, číslo operace a stroj
     const cas = req.body.cas;
     const user = await User.findOne({ _id: req.body.user.id });
     const proces = await Proces.findOne({
@@ -48,7 +65,7 @@ export const setProces = async (req, res) => {
       polozka: barcode[1],
     });
 
-    //Pokud nenajde existující proces, nepokračuje
+    //Pokud v databázi neexistuje proces z ČK, ukončí.
     if (!proces)
       return res.status(200).json({
         status: 'error',
@@ -69,11 +86,13 @@ export const setProces = async (req, res) => {
       });
       */
 
-    //Chybně načtený kód
+    // Vytvoří seznam strojů vhodných pro danou operaci
     const stroje = ['NULL'];
     zdroje.forEach((zdroj) =>
       zdroj.stroje.forEach((stroj) => stroje.push(stroj.nazev))
     );
+
+    // Kontroluje zda-li seznam strojů obsahuje stroj z ČK, jinak ukončí
     if (!stroje.includes(barcode[2]))
       return res.status(200).json({
         status: 'error',
@@ -148,7 +167,7 @@ export const setProces = async (req, res) => {
       /*
       /  Získání hodinové sazby zaměstnance
       /  - Sazba se bere z hodinového průměru za předchozí kvartál
-      /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se sazbou z minulého měsíce
+      /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se se sazbou z minulého měsíce
       /  - Pokud není k dispozici žádný údaj, což by se stalo pouze v případě, že zaměstnanec nebyl ještě naveden do
       /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
       */

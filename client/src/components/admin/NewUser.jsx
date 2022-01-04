@@ -21,7 +21,7 @@ function NewUser() {
         style={{ width: 300 }}
         label="Zaměstnanec"
         name="id"
-        rules={[{ required: true, message: 'Zadejte firemní mail!' }]}
+        rules={[{ required: true, message: 'Vyberte zaměstnance' }]}
       >
         <Select
           showSearch
@@ -44,29 +44,14 @@ function NewUser() {
         </Select>
       </Form.Item>
 
-      <Form.Item
-        style={{ width: 300 }}
-        label="RFID"
-        name="rfid"
-        rules={[{ required: true, message: 'Načtěte kartu!' }]}
-      >
+      <Form.Item style={{ width: 300 }} label="RFID" name="rfid">
         <Input />
       </Form.Item>
-      <Form.Item
-        style={{ width: 300 }}
-        label="E-mail"
-        name="email"
-        rules={[{ required: true, message: 'Zadejte firemní mail!' }]}
-      >
+      <Form.Item style={{ width: 300 }} label="E-mail" name="email">
         <Input />
       </Form.Item>
 
-      <Form.Item
-        style={{ width: 300 }}
-        label="Heslo"
-        name="password"
-        rules={[{ required: true, message: 'Zadejte heslo!' }]}
-      >
+      <Form.Item style={{ width: 300 }} label="Heslo" name="password">
         <Input.Password />
       </Form.Item>
 

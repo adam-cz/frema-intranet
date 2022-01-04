@@ -109,11 +109,13 @@ const PridatVykazModal = ({ modalVisible, setModalVisible, setRestart }) => {
               <Text>Zvolte operaci</Text>
             </Col>
             <Col offset={1}>
-              <Select style={{ width: 60 }} onSelect={handleChangeOperace}>
+              <Select style={{ width: 250 }} onSelect={handleChangeOperace}>
                 {data?.procesy
                   .sort((a, b) => a.polozka.localeCompare(b.polozka))
                   .map((postup) => (
-                    <Option value={postup.polozka}>{postup.polozka}</Option>
+                    <Option value={postup.polozka}>
+                      {postup.polozka} - {postup.popis}
+                    </Option>
                   ))}
               </Select>
             </Col>
