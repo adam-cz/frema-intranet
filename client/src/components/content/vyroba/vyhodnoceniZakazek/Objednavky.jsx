@@ -90,6 +90,7 @@ const Objednavky = ({ setObjednavka }) => {
         record.vyrizeno ? 'table-row-vyfa' : 'table-row-nevyfa'
       }
       dataSource={objednavky}
+      pagination={{ pageSize: 100 }}
       size="small"
       columns={columns}
       loading={loading}

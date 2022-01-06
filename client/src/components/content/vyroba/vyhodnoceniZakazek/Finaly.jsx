@@ -55,6 +55,7 @@ const Finaly = ({ setVyber }) => {
       }
       dataSource={finaly}
       size="small"
+      pagination={{ pageSize: 100 }}
       columns={columns}
       loading={loading}
       rowKey="opv"

@@ -66,6 +66,7 @@ const ZakazkovePostupy = ({ setVyber }) => {
       size="small"
       dataSource={postupy}
       columns={columns}
+      pagination={{ pageSize: 100 }}
       loading={loading}
       rowKey="opv"
       onRow={(record) => {

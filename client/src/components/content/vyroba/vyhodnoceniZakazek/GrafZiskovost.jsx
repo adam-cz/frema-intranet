@@ -15,11 +15,12 @@ const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
   };
   const procenta = {
     skutecnost:
-      ((objednavka.cena_bez_dph - naklady.skutecne) / objednavka.cena_bez_dph) *
+      ((objednavka.cena_bez_dph * objednavka.kurz - naklady.skutecne) /
+        (objednavka.cena_bez_dph * objednavka.kurz)) *
       100,
     plan:
-      ((objednavka.cena_bez_dph - naklady.planovane) /
-        objednavka.cena_bez_dph) *
+      ((objednavka.cena_bez_dph * objednavka.kurz - naklady.planovane) /
+        (objednavka.cena_bez_dph * objednavka.kurz)) *
       100,
   };
 
@@ -29,7 +30,7 @@ const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
         <Col span={24}>
           <Statistic
             title="Fakturovaná cena"
-            value={objednavka.cena_bez_dph}
+            value={objednavka.cena_bez_dph * objednavka.kurz}
             groupSeparator="."
             decimalSeparator=","
             suffix="Kč"
@@ -48,7 +49,7 @@ const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
         <Col span={4}>
           <Statistic
             title="Skutečný zisk"
-            value={objednavka.cena_bez_dph - naklady.skutecne}
+            value={objednavka.cena_bez_dph * objednavka.kurz - naklady.skutecne}
             precision={0}
             groupSeparator="."
             decimalSeparator=","
@@ -89,7 +90,9 @@ const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
         <Col span={4}>
           <Statistic
             title="Plánovaný zisk"
-            value={objednavka.cena_bez_dph - naklady.planovane}
+            value={
+              objednavka.cena_bez_dph * objednavka.kurz - naklady.planovane
+            }
             precision={0}
             groupSeparator="."
             decimalSeparator=","
