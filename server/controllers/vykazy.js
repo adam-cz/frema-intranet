@@ -212,7 +212,7 @@ export const vytvoritVykaz = async (req, res) => {
       /  - Sazba se bere z hodinového průměru za předchozí kvartál
       /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se sazbou z minulého měsíce
       /  - Pokud není k dispozici žádný údaj, což by se stalo pouze v případě, že zaměstnanec nebyl ještě naveden do
-      /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
+      /  systému, ale už vykazuje, tak se použije průměrná sazba 0Kč.
       */
 
     let date = new Date(data.od || Date.now()); // Datum pro které získáváme sazbu
@@ -228,10 +228,10 @@ export const vytvoritVykaz = async (req, res) => {
 
     // do proměnné uloží hodinovou sazbu z aktuálního měsíce,
     // v případě, že sazba neexistuje, pokusí se zjistit sazbu z měsíce předchozího
-    // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 150kč.
+    // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 0kč.
     const hodinovaMzda = (await zjistiMzdu(date)).recordset[0] ||
       (date.setMonth(date.getMonth() - 1) &&
-        (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 150 };
+        (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 0 };
 
     proces.zaznamy.push({
       operator_id: user._id,
