@@ -113,12 +113,15 @@ export const present = async () => {
     await User.find()
       .cursor()
       .eachAsync(async (doc, i) => {
-        const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
-          (el) => el.RC == doc._id
-        );
-        doc.isPresent = Pritomnost;
-        doc.lastOperation = new Date(DatumCasOperace);
-        await doc.save();
+        //automat nezjišťovat
+        if (doc.rfid != '11111111') {
+          const { Pritomnost, DatumCasOperace } = presence.recordsets[0].find(
+            (el) => el.RC == doc._id
+          );
+          doc.isPresent = Pritomnost;
+          doc.lastOperation = new Date(DatumCasOperace);
+          await doc.save();
+        }
       });
   } catch (err) {
     console.log(err.message);

@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   password: String,
   rfid: String,
   jednicovy: Boolean,
-  working: [{ opv: String, polozka: String, stroj: String }],
+  working: [{ opv: String, polozka: String, stroj: String, zdroj: String }],
   isPresent: Boolean,
   lastOperation: Date,
   role: [{ type: String }],

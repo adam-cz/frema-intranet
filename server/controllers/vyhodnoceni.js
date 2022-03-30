@@ -229,7 +229,7 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
           vydano, 
           mj AS "merna_jednotka", 
           cena,
-          autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND polozka = ${operace.polozka};`
+          autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND dooper = ${operace.polozka};`
         );
 
         operace.material_data = material.length > 0 ? material : null;

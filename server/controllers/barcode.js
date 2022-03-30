@@ -1,6 +1,7 @@
 import Proces from '../models/proces.js';
 import User from '../models/user.js';
 import sql, { pool } from '../utils/karat.js';
+import { najdiSoubezneProcesy } from '../utils/helper.js';
 import { zdroje } from '../config/zdroje.js';
 
 // Funkce, kterou client ověřuje, zda-li je server již k dispozici
@@ -120,7 +121,11 @@ export const setProces = async (req, res) => {
       });
 
     //Pokud již zaměstnanec vykonává činnost na výchozím stroji a chce začít novou, nastane chyba
-    const aktivniPrace = user.working.find((prace) => prace.stroj === 'NULL');
+    //vicestrojovka povolena pro zdroj 170, TODO: vyhodnocovat seznam povolenych zdroju pro vicestroj
+    console.log(user);
+    const aktivniPrace = user.working.find(
+      (prace) => prace.stroj === 'NULL' && prace.zdroj !== '170'
+    );
     if (
       aktivniPrace &&
       !(aktivniPrace.opv === barcode[0] && aktivniPrace.polozka === barcode[1])
@@ -169,7 +174,7 @@ export const setProces = async (req, res) => {
       /  - Sazba se bere z hodinového průměru za předchozí kvartál
       /  - Pokud aktuální sazba ještě není k dispozici (stává se začátkem kvartálu), počítá se se sazbou z minulého měsíce
       /  - Pokud není k dispozici žádný údaj, což by se stalo pouze v případě, že zaměstnanec nebyl ještě naveden do
-      /  systému, ale už vykazuje, tak se použije průměrná sazba 150Kč.
+      /  systému nebo neexistuje (automat), ale už vykazuje, tak se použije průměrná sazba 0 Kč.
       */
 
       let date = new Date(cas || Date.now()); // Datum pro které získáváme sazbu
@@ -185,10 +190,14 @@ export const setProces = async (req, res) => {
 
       // do proměnné uloží hodinovou sazbu z aktuálního měsíce,
       // v případě, že sazba neexistuje, pokusí se zjistit sazbu z měsíce předchozího
-      // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 150kč.
+      // pokud neexistuje ani ta, což by se stát nemělo, počítá se se sazbou 0 kč.
       const hodinovaMzda = (await zjistiMzdu(date)).recordset[0] ||
         (date.setMonth(date.getMonth() - 1) &&
-          (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 150 };
+          (await zjistiMzdu(date)).recordset[0]) || { prd_plati: 0 };
+
+      // ověří zda-li nemá pracovník aktivní jiný souběžný proces a případně vloží do
+      // pole soubezne_procesy pro usnadnění výpočtu vícestrojové práce
+      //console.log(najdiSoubezneProcesy());
 
       proces.zaznamy.push({
         start: cas || Date.now(),
@@ -202,6 +211,7 @@ export const setProces = async (req, res) => {
         opv: proces.opv,
         polozka: proces.polozka,
         stroj: barcode[2],
+        zdroj: proces.stredisko,
       });
       //Uloží změny
       proces.save();
