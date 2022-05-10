@@ -16,11 +16,11 @@ const GrafZiskovost = ({ operace, objednavkaDetail: objednavka }) => {
   const procenta = {
     skutecnost:
       ((objednavka.cena_bez_dph * objednavka.kurz - naklady.skutecne) /
-        (objednavka.cena_bez_dph * objednavka.kurz)) *
+        naklady.skutecne) *
       100,
     plan:
       ((objednavka.cena_bez_dph * objednavka.kurz - naklady.planovane) /
-        (objednavka.cena_bez_dph * objednavka.kurz)) *
+        naklady.planovane) *
       100,
   };
 
