@@ -17,12 +17,12 @@ export const Barcodes = ({ data: operace }) => {
     <div className="page">
       {postupy.map((postup) => (
         <div className="zalamovani" key={postup.opv}>
-          {console.log(postupy)}
           {setPocet(operace, postup)}
           {pocet.current > 0 && (
             <>
               Objednávka: <b>{operace[0].objednavka} </b>
-              Výkres: <b>{operace.find((opv) => postup).vykres}</b>
+              Výkres:
+              <b> {operace.find((operace) => operace.opv === postup).vykres}</b>
               <h1 key={postup} className="nadpis">
                 Číslo ZP {postup}
               </h1>
