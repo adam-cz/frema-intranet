@@ -20,12 +20,22 @@ export const Barcodes = ({ data: operace }) => {
           {setPocet(operace, postup)}
           {pocet.current > 0 && (
             <>
-              Objednávka: <b>{operace[0].objednavka} </b>
-              Výkres:
-              <b> {operace.find((operace) => operace.opv === postup).vykres}</b>
-              <h1 key={postup} className="nadpis">
+              <h1
+                style={{ marginBottom: '5px' }}
+                key={postup}
+                className="nadpis"
+              >
                 Číslo ZP {postup}
               </h1>
+              <p style={{ marginBottom: '0px' }}>
+                Objednávka: <b>{operace[0].objednavka} </b>
+              </p>
+              <p>
+                Výkres:
+                <b>
+                  {operace.find((operace) => operace.opv === postup).vykres}
+                </b>
+              </p>
             </>
           )}
           {[...operace]
