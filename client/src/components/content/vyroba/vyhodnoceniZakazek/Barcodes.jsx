@@ -5,7 +5,7 @@ import SingleOperBarcode from './SingleOperBarcode';
 export const Barcodes = ({ data: operace }) => {
   const postupy = [...new Set(operace.map((operace) => operace.opv.trim()))];
   const pocet = useRef(null);
-
+  console.log(operace);
   const setPocet = (operace, postup) => {
     pocet.current = operace.filter(
       (op) =>
@@ -17,11 +17,16 @@ export const Barcodes = ({ data: operace }) => {
     <div className="page">
       {postupy.map((postup) => (
         <div className="zalamovani" key={postup.opv}>
+          {console.log(postupy)}
           {setPocet(operace, postup)}
           {pocet.current > 0 && (
-            <h1 key={postup.opv} className="nadpis">
-              Operace pro ZP {postup}
-            </h1>
+            <>
+              Objednávka: <b>{operace[0].objednavka} </b>
+              Výkres: <b>{operace.find((opv) => postup).vykres}</b>
+              <h1 key={postup} className="nadpis">
+                Číslo ZP {postup}
+              </h1>
+            </>
           )}
           {[...operace]
             .sort((a, b) => parseInt(a.polozka) - parseInt(b.polozka))

@@ -159,9 +159,10 @@ const nactiOperace = async (objednavka) => {
             vevyrobe,
             odvedeno,
             popis,
-            zdroj,          
+            zdroj, 
+            TRIM(postup) AS "vykres",         
             minut_nor AS "trvani_plan",
-            nakl_stn AS nakl_stn_plan, 
+            nakl_stn AS "nakl_stn_plan", 
             nakl_mzd AS "mzdy_plan",
             nakl_r1 AS "nakl_r1_plan" FROM dba.v_opvoper WHERE opv = '${zakazkovyPostup.opv}' ORDER BY 'polozka';`
             );
@@ -189,7 +190,6 @@ const nactiOperace = async (objednavka) => {
         );
       })
     );
-
     return operace;
   } catch (err) {
     console.log(err);
@@ -389,6 +389,7 @@ export const createProcedure = async (req, res) => {
       req.body.map(async (operace) => {
         const found = await Proces.findOne({
           opv: operace.opv.trim(),
+          vykres: operace.vykres,
           polozka: operace.polozka,
         });
         if (found && operace.zdroj !== ('999' || '500')) results.push(found);
@@ -396,6 +397,7 @@ export const createProcedure = async (req, res) => {
           const zdroj = zdroje.find((zdroj) => zdroj.zdroj === operace.zdroj);
           const result = await Proces.create({
             opv: operace.opv,
+            vykres: operace.vykres,
             objednavka: operace.objednavka,
             polozka: operace.polozka,
             planvyroba: operace.planvyroba,
@@ -417,6 +419,7 @@ export const createProcedure = async (req, res) => {
         }
       })
     );
+    //console.log(results);
     res.status(200).json({
       type: 'success',
       message: `Čárové kódy vygenerovány`,
