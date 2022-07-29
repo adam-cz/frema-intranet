@@ -60,7 +60,7 @@ const fetchOrders = async () => {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     const { recordset: objednavky } = await request.query(
-      `SELECT TOP (500) [doklad], 
+      `SELECT TOP (1000) [doklad], 
       [poznamka], 
       [zkraceny_nazev], 
       [dat_por], 
@@ -83,7 +83,7 @@ const fetchFinals = async (objednavka) => {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     const { recordset: finaly } = await request.query(
-      `SELECT TOP (500) TRIM(opv) AS "opv",
+      `SELECT TOP (1000) TRIM(opv) AS "opv",
       objednavka,
       nazev,
       xuzavreno AS "uzavreno",
@@ -103,7 +103,7 @@ const fetchOpvs = async (final) => {
     const poolConnection = await pool;
     const request = new sql.Request(poolConnection);
     const { recordset: opvs } = await request.query(
-      `SELECT TOP 500 TRIM(opv) AS "opv", 
+      `SELECT TOP 1000 TRIM(opv) AS "opv", 
       TRIM (opvfinal) AS "opvfinal",
       da_vy_op AS "datum_vzniku",
       xuzavreno AS "uzavreno",
