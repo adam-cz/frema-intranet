@@ -222,6 +222,20 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
     await Promise.all(
       //Iteruje operace a dohledává plán a skutečné zatížení materiálem
       operaceBezMaterialu.map(async (operace) => {
+        //pri desate operaci overuje existenci nepřiřazeného materiálu na nulové operaci
+        let material0 = null;
+        if (operace.polozka === 10) {
+          const { recordset } = await request.query(
+            `SELECT popis AS "nazev", 
+            nomenklatura,
+            pozadovano, 
+            vydano, 
+            mj AS "merna_jednotka", 
+            cena,
+            autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND dooper = 0;`
+          );
+          material0 = recordset;
+        }
         const { recordset: material } = await request.query(
           `SELECT popis AS "nazev", 
           nomenklatura,
@@ -231,6 +245,9 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
           cena,
           autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND dooper = ${operace.polozka};`
         );
+
+        //pokud existuje neprirazeny material, priradi k operaci 10
+        if (material0) material.push(...material0);
 
         operace.material_data = material.length > 0 ? material : null;
         operace.material_plan = material.reduce(
