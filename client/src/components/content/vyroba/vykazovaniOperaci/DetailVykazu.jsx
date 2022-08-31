@@ -166,7 +166,7 @@ const DetailVykazu = ({
       </Col>
       <Col span={8}>
         <Descriptions column={1} title="Mzdové údaje">
-          <Descriptions.Item label="Hodinová mzda pracovníka">
+          {/*  <Descriptions.Item label="Hodinová mzda pracovníka">
             {detailVykazu.sazba + ' Kč'}
           </Descriptions.Item>
           {/* <Descriptions.Item label="Příplatky">
