@@ -263,7 +263,6 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
             dba.v_opvmat.opv = '${operace.opv}' AND 
             dba.v_opvmat.dooper = ${operace.polozka};`
         );
-        console.log(material);
         //pokud existuje neprirazeny material, priradi k operaci 10
         if (material0) material.push(...material0);
 
