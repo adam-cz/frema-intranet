@@ -226,38 +226,55 @@ const doplnMaterialAPlan = async (operaceBezMaterialu) => {
         let material0 = null;
         if (operace.polozka === 10) {
           const { recordset } = await request.query(
-            `SELECT popis AS "nazev", 
-            nomenklatura,
-            pozadovano, 
-            vydano, 
-            mj AS "merna_jednotka", 
-            cena,
-            autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND dooper = 0;`
+            `SELECT dba.v_opvmat.popis AS "nazev", 
+            dba.v_opv_rv1.oceneni AS cena,
+            dba.v_opvmat.cena AS cena_plan,
+            dba.v_opvmat.polozka,
+            dba.v_opvmat.nomenklatura,
+            dba.v_opvmat.pozadovano, 
+            dba.v_opvmat.vydano, 
+            dba.v_opvmat.mj AS "merna_jednotka", 
+            dba.v_opvmat.autor FROM dba.v_opvmat 
+            INNER JOIN dba.v_opv_rv1 ON
+              dba.v_opv_rv1.opv = dba.v_opvmat.opv AND
+              dba.v_opv_rv1.opv_polozka = dba.v_opvmat.polozka AND
+              dba.v_opv_rv1.typ = '30'
+            WHERE
+              dba.v_opvmat.opv = '${operace.opv}' AND 
+              dba.v_opvmat.dooper = 0;`
           );
           material0 = recordset;
         }
         const { recordset: material } = await request.query(
-          `SELECT popis AS "nazev", 
-          nomenklatura,
-          pozadovano, 
-          vydano, 
-          mj AS "merna_jednotka", 
-          cena,
-          autor FROM dba.v_opvmat WHERE opv = '${operace.opv}' AND dooper = ${operace.polozka};`
+          `SELECT dba.v_opvmat.popis AS "nazev", 
+          dba.v_opv_rv1.oceneni AS cena,
+          dba.v_opvmat.cena AS cena_plan,
+          dba.v_opvmat.polozka,
+          dba.v_opvmat.nomenklatura,
+          dba.v_opvmat.pozadovano, 
+          dba.v_opvmat.vydano, 
+          dba.v_opvmat.mj AS "merna_jednotka", 
+          dba.v_opvmat.autor FROM dba.v_opvmat 
+          INNER JOIN dba.v_opv_rv1 ON
+            dba.v_opv_rv1.opv = dba.v_opvmat.opv AND
+            dba.v_opv_rv1.opv_polozka = dba.v_opvmat.polozka AND
+            dba.v_opv_rv1.typ = '30'
+          WHERE
+            dba.v_opvmat.opv = '${operace.opv}' AND 
+            dba.v_opvmat.dooper = ${operace.polozka};`
         );
-
+        console.log(material);
         //pokud existuje neprirazeny material, priradi k operaci 10
         if (material0) material.push(...material0);
 
         operace.material_data = material.length > 0 ? material : null;
         operace.material_plan = material.reduce(
           (total, currentValue) =>
-            total + currentValue.pozadovano * currentValue.cena,
+            total + currentValue.pozadovano * currentValue.cena_plan,
           0
         );
         operace.material = material.reduce(
-          (total, currentValue) =>
-            total + currentValue.vydano * currentValue.cena,
+          (total, currentValue) => total + currentValue.cena,
           0
         );
         //Dopočítá celkové plánované náklady na operaci
