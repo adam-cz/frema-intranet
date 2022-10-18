@@ -11,25 +11,25 @@ const crmSchema = mongoose.Schema({
   coms: {
     phone: {
       done: { type: Boolean, default: false },
-      date: { type: Date, default: Date.now() },
+      date: { type: Date, default: Date.now },
     },
     email: {
       done: { type: Boolean, default: false },
-      date: { type: Date, default: Date.now() },
+      date: { type: Date, default: Date.now },
     },
     visit: {
       done: { type: Boolean, default: false },
-      date: { type: Date, default: Date.now() },
+      date: { type: Date, default: Date.now },
     },
     order: {
       done: { type: Boolean, default: false },
-      date: { type: Date, default: Date.now() },
+      date: { type: Date, default: Date.now },
     },
   },
   records: [
     {
       created: {
-        date: { type: Date, default: Date.now() },
+        date: { type: Date, default: Date.now },
         id: Number,
       },
 
@@ -37,7 +37,7 @@ const crmSchema = mongoose.Schema({
     },
   ],
   created: {
-    date: { type: Date, default: Date.now() },
+    date: { type: Date, default: Date.now },
     id: Number,
     name: String,
   },
