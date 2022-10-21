@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const customerSchema = mongoose.Schema({
-  ico: Number,
+  ico: String,
   name: String,
   created: {
     by: Number,
